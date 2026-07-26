@@ -1,0 +1,17 @@
+{
+    "Cancel": "අවලංගු කරන්න",
+    "Dashboard": "පාලක පුවරුව",
+    "Log Out": "",
+    "Login": "ඇතුළු වන්න",
+    "Logout": "ඉවත් වන්න",
+    "Profile": "පැතිකඩ",
+    "Register": "ලියාපදිංචි වන්න",
+    "Save": "සුරකින්න",
+    "Settings": "සැකසුම්",
+    "Text here": "",
+    "Welcome": "සාදරයෙන් පිළිගනිමු",
+    "You're logged in!": "",
+    "auth.failed": "",
+    "auth.password": "",
+    "auth.throttle": ""
+}

@@ -1,0 +1,17 @@
+{
+    "Cancel": "ரத்து செய்",
+    "Dashboard": "டாஷ்போர்டு",
+    "Log Out": "",
+    "Login": "உள்நுழை",
+    "Logout": "வெளியேறு",
+    "Profile": "சுயவிவரம்",
+    "Register": "பதிவு செய்",
+    "Save": "சேமி",
+    "Settings": "அமைப்புகள்",
+    "Text here": "",
+    "Welcome": "வரவேற்கிறோம்",
+    "You're logged in!": "",
+    "auth.failed": "",
+    "auth.password": "",
+    "auth.throttle": ""
+}

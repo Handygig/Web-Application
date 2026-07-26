@@ -1,0 +1,17 @@
+{
+    "Cancel": "Cancel",
+    "Dashboard": "Dashboard",
+    "Log Out": "Log Out",
+    "Login": "Login",
+    "Logout": "Logout",
+    "Profile": "Profile",
+    "Register": "Register",
+    "Save": "Save",
+    "Settings": "Settings",
+    "Text here": "Text here",
+    "Welcome": "Welcome",
+    "You're logged in!": "You're logged in!",
+    "auth.failed": "auth.failed",
+    "auth.password": "auth.password",
+    "auth.throttle": "auth.throttle"
+}
