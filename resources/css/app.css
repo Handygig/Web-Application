@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+
+    /* Blue Theme (Default) */
+    :root,
+    .theme-blue {
+        --color-accent: #0090FF;
+        --color-accent-hover: #0080E5;
+        --color-accent-soft: rgba(0, 144, 255, 0.08);
+        --color-bg-light: #eaf4ff;
+        --color-grid-bg: #ebf3fc;
+        --color-grid-line: rgba(0, 144, 255, 0.07);
+        --color-accent-rgb: 0, 144, 255;
+    }
+
+    /* Green Theme */
+    .theme-green {
+        --color-accent: #4CAF70;
+        --color-accent-hover: #00A06E;
+        --color-accent-soft: rgba(0, 178, 122, 0.08);
+        --color-bg-light: #e6f7f2;
+        --color-grid-bg: #e6f7f2;
+        --color-grid-line: rgba(0, 178, 122, 0.07);
+        --color-accent-rgb: 0, 178, 122;
+    }
+
+    /* Dark Blue Theme */
+    .theme-darkblue {
+        --color-accent: #18252F;
+        --color-accent-hover: #121E26;
+        --color-accent-soft: rgba(24, 37, 47, 0.08);
+        --color-bg-light: #f0f3f5;
+        --color-grid-bg: #e2e8f0;
+        --color-grid-line: rgba(24, 37, 47, 0.07);
+        --color-accent-rgb: 24, 37, 47;
+    }
+}
