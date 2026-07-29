@@ -83,7 +83,6 @@ jobs:
             docker run -d --name servishift -p 5001:80 \
               --restart unless-stopped \
               --network proxy \
-              --network database \
               -v $(pwd)/servishift-storage:/var/www/html/storage \
               -e APP_NAME="${{ secrets.APP_NAME }}" \
               -e APP_ENV="${{ secrets.APP_ENV }}" \
@@ -109,6 +108,9 @@ jobs:
               -e LOG_CHANNEL="${{ secrets.LOG_CHANNEL }}" \
               -e VITE_APP_NAME="${{ secrets.APP_NAME }}" \
               ghcr.io/${{ env.REPO_LOWER }}:prod
+
+            # Attach the container to the SECOND network
+            docker network connect database servishift
 
             # Clean up unused images
             docker image prune -f
