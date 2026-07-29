@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AdminLayout';
 import { Head } from '@inertiajs/react';
-import { useTranslation } from '@/lib/useTranslation';
+import { useTranslation } from '@/Hooks/useTranslation';
 
 export default function Dashboard() {
     const { t } = useTranslation();
