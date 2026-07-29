@@ -1,0 +1,126 @@
+name: Build, Push, and Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Lowercase Repository Config
+        run: |
+          echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ env.REPO_LOWER }}:prod
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}:buildcache,mode=max
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Lowercase Repository Config
+        run: |
+          echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_SSH_HOST }}
+          username: ${{ secrets.VPS_SSH_USERNAME }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          script: |
+            # Log in to GitHub Container Registry
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            # Pull the latest image
+            docker pull ghcr.io/${{ env.REPO_LOWER }}:prod
+
+            # Stop and remove existing container (if any)
+            docker stop servishift || true
+            docker rm servishift || true
+
+            # Run the container with environment variables
+            docker run -d --name servishift -p 5001:80 \
+              --restart unless-stopped \
+              --network lamp_default \
+              -v $(pwd)/servishift-storage:/var/www/html/storage \
+              -e APP_NAME="${{ secrets.APP_NAME }}" \
+              -e APP_ENV="${{ secrets.APP_ENV }}" \
+              -e APP_KEY="${{ secrets.APP_KEY }}" \
+              -e APP_DEBUG="${{ secrets.APP_DEBUG }}" \
+              -e APP_URL="${{ secrets.APP_URL }}" \
+              -e APP_LOCALE="${{ secrets.APP_LOCALE }}" \
+              -e DB_CONNECTION="${{ secrets.DB_CONNECTION }}" \
+              -e DB_HOST="${{ secrets.DB_HOST }}" \
+              -e DB_PORT="${{ secrets.DB_PORT }}" \
+              -e DB_DATABASE="${{ secrets.DB_DATABASE }}" \
+              -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
+              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              -e MAIL_MAILER="${{ secrets.MAIL_MAILER }}" \
+              -e MAIL_HOST="${{ secrets.MAIL_HOST }}" \
+              -e MAIL_PORT="${{ secrets.MAIL_PORT }}" \
+              -e MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
+              -e MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
+              -e MAIL_FROM_ADDRESS="${{ secrets.MAIL_FROM_ADDRESS }}" \
+              -e MAIL_FROM_NAME="${{ secrets.MAIL_FROM_NAME }}" \
+              -e SESSION_DRIVER="${{ secrets.SESSION_DRIVER }}" \
+              -e QUEUE_CONNECTION="${{ secrets.QUEUE_CONNECTION }}" \
+              -e LOG_CHANNEL="${{ secrets.LOG_CHANNEL }}" \
+              -e VITE_APP_NAME="${{ secrets.APP_NAME }}" \
+              ghcr.io/${{ env.REPO_LOWER }}:prod
+
+            # Clean up unused images
+            docker image prune -f
+
+            # Set proper permissions for storage directory
+            docker exec servishift chown -R www-data:www-data /var/www/html/storage
+            docker exec servishift chmod -R 775 /var/www/html/storage
+
+            # Run Laravel migrations
+            docker exec servishift php artisan migrate --force
+
+            # Optional: Run cache optimization
+            docker exec servishift php artisan storage:link || echo "Storage link already exists"
+            docker exec servishift php artisan config:cache
+            docker exec servishift php artisan route:cache
+            docker exec servishift php artisan view:cache || echo "View cache failed, skipping..."
