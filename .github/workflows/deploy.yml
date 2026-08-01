@@ -80,7 +80,7 @@ jobs:
             docker rm servishift || true
 
             # Run the container with environment variables
-            docker run -d --name servishift -p 5001:80 \
+            docker run -d --name servishift \
               --restart unless-stopped \
               --network proxy \
               -v $(pwd)/servishift-storage:/var/www/html/storage \
