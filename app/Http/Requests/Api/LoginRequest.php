@@ -23,8 +23,9 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => ['required_without:firebase_token', 'nullable', 'email'],
+            'password' => ['required_without:firebase_token', 'nullable', 'string'],
+            'firebase_token' => ['required_without:password', 'nullable', 'string'],
             'device_name' => ['required', 'string'],
         ];
     }

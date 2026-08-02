@@ -24,11 +24,14 @@ class RegisterRequest extends FormRequest
      */
     public function rules(): array
     {
+        $hasFirebaseToken = $this->has('firebase_token');
+
         return [
-            'full_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'phone' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'firebase_token' => ['nullable', 'string'],
+            'full_name' => [$hasFirebaseToken ? 'nullable' : 'required', 'string', 'max:255'],
+            'email' => [$hasFirebaseToken ? 'nullable' : 'required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => [$hasFirebaseToken ? 'nullable' : 'required', 'string', 'max:255'],
+            'password' => [$hasFirebaseToken ? 'nullable' : 'required', 'confirmed', Rules\Password::defaults()],
             'device_name' => ['required', 'string'],
         ];
     }
