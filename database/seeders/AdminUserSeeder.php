@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -14,6 +15,7 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Admin
         $admin = User::firstOrCreate(
             ['email' => 'admin@handygig.com'],
             [
@@ -30,5 +32,29 @@ class AdminUserSeeder extends Seeder
         Admin::firstOrCreate([
             'user_id' => $admin->id,
         ]);
+
+        // Company
+        $companyUser = User::firstOrCreate(
+            ['email' => 'company@handygig.com'],
+            [
+                'role' => 'company',
+                'full_name' => 'GigCo Services LLC',
+                'phone' => '0987654321',
+                'password' => Hash::make('password'),
+                'status' => 'active',
+            ]
+        );
+
+        $companyUser->assignRole('company');
+
+        Company::firstOrCreate(
+            ['user_id' => $companyUser->id],
+            [
+                'company_name' => 'GigCo Services LLC',
+                'registration_no' => 'REG-123456789',
+                'address' => '123 Business Road, Corporate Suite 500',
+                'approval_status' => 'approved',
+            ]
+        );
     }
 }

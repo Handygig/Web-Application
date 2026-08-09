@@ -11,18 +11,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('user/profile', [AuthController::class, 'profile']);
     Route::match(['put', 'patch'], 'user/profile', [AuthController::class, 'updateProfile']);
     Route::post('auth/logout', [AuthController::class, 'logout']);
-});
 
-// Protected Customer API Routes
-Route::middleware(['auth:sanctum', 'role:customer'])->prefix('customer')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
+    // Protected Customer API Routes
+    Route::middleware('role:customer')->prefix('customer')->group(function () {
     });
-});
 
-// Protected Provider API Routes
-Route::middleware(['auth:sanctum', 'role:provider'])->prefix('provider')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
+    // Protected Provider API Routes
+    Route::middleware('role:provider')->prefix('provider')->group(function () {
     });
 });

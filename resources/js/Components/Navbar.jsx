@@ -104,14 +104,20 @@ export default function Navbar({ onMenuToggle }) {
                   </div>
                 )}
 
-                <Link
-                  href={route('profile.edit')}
-                  onClick={() => setProfileOpen(false)}
-                  className="flex items-center gap-2 px-4 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
-                >
-                  <User className="h-4 w-4" />
-                  <span>{t('Profile')}</span>
-                </Link>
+                {(() => {
+                  const userRoles = auth?.user?.roles?.map((r) => r.name) ?? [];
+                  const role = userRoles.includes('admin') ? 'admin' : 'company';
+                  return (
+                    <Link
+                      href={route(role + '.profile.index')}
+                      onClick={() => setProfileOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
+                    >
+                      <User className="h-4 w-4" />
+                      <span>{t('Profile')}</span>
+                    </Link>
+                  );
+                })()}
 
                 <button
                   onClick={handleLogout}
