@@ -26,7 +26,7 @@ export const formatDate = (dateStr) => {
         if (!isNaN(date.getTime())) {
             return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
         }
-    } catch { }
+    } catch { /* non-parseable date, fall through */ }
     return dateStr;
 };
 

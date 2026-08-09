@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { usePage } from '@inertiajs/react';
-import Navbar from '../Components/common/Navbar';
-import Sidebar from '../Components/common/Sidebar';
+import Navbar from '../Components/Navbar';
+import Sidebar from '../Components/Sidebar';
 import { getNavByRole } from '../config/navConfig';
-import GridScan from '../Components/common/GridScan';
-import Toast from '../Components/ui/Toast';
+import Toast from '../Components/Other/Toast';
 import { useTranslation } from '../Hooks/useTranslation';
 
 function roleFromPath(pathname) {
-  if (pathname?.startsWith('/super-admin')) return 'super-admin';
   if (pathname?.startsWith('/admin')) return 'admin';
-  if (pathname?.startsWith('/ehs')) return 'ehs';
-  if (pathname?.startsWith('/user')) return 'user';
+  if (pathname?.startsWith('/company')) return 'company';
   return null;
 }
 
@@ -21,25 +18,10 @@ export default function AppLayout({ children }) {
 
   // Resolve the user's primary role
   const userRoles = auth?.user?.roles?.map((r) => r.name) ?? [];
-  const primaryRole = userRoles.includes('super-admin')
-    ? 'super-admin'
-    : userRoles.includes('admin')
-      ? 'admin'
-      : userRoles.includes('ehs')
-        ? 'ehs'
-        : userRoles.includes('external')
-          ? 'external'
-          : 'user';
+  const isAdmin = userRoles.includes('admin');
 
-  const availableRoles = userRoles.includes('super-admin')
-    ? ['user', 'ehs', 'admin', 'super-admin']
-    : userRoles.includes('admin')
-      ? ['user', 'ehs', 'admin']
-      : userRoles.includes('ehs')
-        ? ['user', 'ehs']
-        : userRoles.includes('external')
-          ? ['external']
-          : ['user'];
+  const primaryRole = isAdmin ? 'admin' : 'company';
+  const availableRoles = useMemo(() => (isAdmin ? ['admin', 'company'] : ['company']), [isAdmin]);
 
   const [activeRole, setActiveRole] = useState(() => {
     const pathRole = roleFromPath(window.location.pathname);
@@ -48,7 +30,11 @@ export default function AppLayout({ children }) {
     if (availableRoles.includes(pathRole)) return pathRole;
     return availableRoles.includes(storedRole) ? storedRole : primaryRole;
   });
-  const [visibleFlash, setVisibleFlash] = useState(null);
+
+  // Derive a safe active role — if current value is no longer available, fall back to primary
+  const resolvedActiveRole = availableRoles.includes(activeRole) ? activeRole : primaryRole;
+
+  const [dismissedFlashKey, setDismissedFlashKey] = useState(null);
 
   // Theme state
   const [theme, setTheme] = useState(() => {
@@ -66,9 +52,9 @@ export default function AppLayout({ children }) {
   // Support theme toggling from child components via custom events
   useEffect(() => {
     const handleThemeToggle = () => {
-      setTheme((t) => {
-        if (t === 'theme-blue') return 'theme-green';
-        if (t === 'theme-green') return 'theme-darkblue';
+      setTheme((currentTheme) => {
+        if (currentTheme === 'theme-blue') return 'theme-green';
+        if (currentTheme === 'theme-green') return 'theme-darkblue';
         return 'theme-blue';
       });
     };
@@ -85,52 +71,34 @@ export default function AppLayout({ children }) {
     };
   }, []);
 
+  // Persist the active role to localStorage whenever it changes
   useEffect(() => {
-    const pathRole = roleFromPath(window.location.pathname);
-    if (availableRoles.includes(pathRole) && activeRole !== pathRole) {
-      setActiveRole(pathRole);
-      localStorage.setItem('safora-active-role', pathRole);
-      return;
-    }
+    localStorage.setItem('safora-active-role', resolvedActiveRole);
+  }, [resolvedActiveRole]);
 
-    if (!availableRoles.includes(activeRole)) {
-      setActiveRole(primaryRole);
-      return;
-    }
+  // Derive the flash to display from Inertia's flash prop
+  const flashMessage = flash?.success || flash?.error;
+  const flashKey = flashMessage ?? null;
+  const visibleFlash = useMemo(() => {
+    if (!flashMessage || flashKey === dismissedFlashKey) return null;
+    return { message: flashMessage, type: flash?.success ? 'success' : 'error' };
+  }, [flashMessage, flashKey, dismissedFlashKey, flash?.success]);
 
-    localStorage.setItem('safora-active-role', activeRole);
-  }, [activeRole, availableRoles, primaryRole]);
-
+  // Auto-dismiss after 4.5 s
   useEffect(() => {
-    const message = flash?.success || flash?.error;
-
-    if (!message) {
-      setVisibleFlash(null);
-      return;
-    }
-
-    setVisibleFlash({
-      message,
-      type: flash?.success ? 'success' : 'error',
-    });
-
-    const timeout = window.setTimeout(() => setVisibleFlash(null), 4500);
-
+    if (!visibleFlash) return;
+    const timeout = window.setTimeout(() => setDismissedFlashKey(flashKey), 4500);
     return () => window.clearTimeout(timeout);
-  }, [flash]);
+  }, [visibleFlash, flashKey]);
 
   // Resolve nav items for the active role
   const NAV_BY_ROLE = getNavByRole(t);
-  const rawNavItems = userRoles.includes('external')
-    ? NAV_BY_ROLE.external
-    : (NAV_BY_ROLE[activeRole] ?? NAV_BY_ROLE.user);
-  const isHod = Number(auth?.user?.is_hod) === 1;
+  const rawNavItems = NAV_BY_ROLE[resolvedActiveRole] ?? NAV_BY_ROLE.company;
   const userPermissions = auth?.user?.permissions ?? {};
 
   const filterNavItems = (items) => {
     return items
       .filter((item) => {
-        if (item.hodOnly && !isHod) return false;
         if (item.permission && !userPermissions[item.permission]) return false;
         return true;
       })
@@ -148,32 +116,16 @@ export default function AppLayout({ children }) {
 
   return (
     <div className="relative isolate h-screen overflow-hidden bg-shell-gradient font-sans transition-colors duration-350">
-      <GridScan
-        sensitivity={0.55}
-        lineThickness={1.8}
-        linesColor="#ffffff"
-        gridScale={0.1}
-        scanColor="#0090FF"
-        scanOpacity={0.4}
-        noiseIntensity={0.005}
-        lineJitter={0.06}
-        scanGlow={0.3}
-        scanSoftness={1.7}
-        scanDuration={2.0}
-        scanDelay={2.0}
-        enableScan={false}
-      />
-
       <div className="relative z-10 flex h-full flex-col">
         <Navbar
-          activeRole={activeRole}
+          activeRole={resolvedActiveRole}
           onRoleChange={setActiveRole}
           theme={theme}
           onThemeToggle={() =>
-            setTheme((t) =>
-              t === 'theme-blue'
+            setTheme((currentTheme) =>
+              currentTheme === 'theme-blue'
                 ? 'theme-green'
-                : t === 'theme-green'
+                : currentTheme === 'theme-green'
                   ? 'theme-darkblue'
                   : 'theme-blue'
             )
@@ -191,7 +143,7 @@ export default function AppLayout({ children }) {
         <Toast
           message={visibleFlash.message}
           type={visibleFlash.type}
-          onClose={() => setVisibleFlash(null)}
+          onClose={() => setDismissedFlashKey(flashKey)}
         />
       )}
     </div>

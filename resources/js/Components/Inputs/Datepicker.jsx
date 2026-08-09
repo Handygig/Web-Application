@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useEffect } from 'react';
-import { Popover, Transition } from '@headlessui/react';
+import { Popover } from '@headlessui/react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import dayjs from 'dayjs';
 
@@ -145,11 +145,10 @@ export default forwardRef(function Datepicker(
           <>
             <Popover.Button
               ref={ref}
-              className={`flex w-full items-center gap-2 rounded-[4px] border bg-transparent px-4 py-3 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-1 focus:ring-theme-accent transition-all ${
-                error
+              className={`flex w-full items-center gap-2 rounded-[4px] border bg-transparent px-4 py-3 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-1 focus:ring-theme-accent transition-all ${error
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10'
                   : 'border-[#7A7E884D] focus:border-theme-accent'
-              }`}
+                }`}
             >
               <CalendarIcon className="h-4 w-4 text-slate-400" />
               <span className={value ? 'text-slate-700' : 'text-slate-400'}>
@@ -206,13 +205,12 @@ export default forwardRef(function Datepicker(
                           type="button"
                           disabled={isDisabled}
                           onClick={() => handleDateClick(d, close)}
-                          className={`mx-auto flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors ${
-                            isDisabled
+                          className={`mx-auto flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors ${isDisabled
                               ? 'text-slate-200 cursor-not-allowed'
                               : !isCurrentMonth
                                 ? 'text-slate-300 hover:text-slate-400'
                                 : 'text-slate-700 hover:bg-slate-100'
-                          } ${isSelected && !isDisabled ? 'bg-theme-accent text-white font-medium hover:bg-theme-accent/90' : ''}`}
+                            } ${isSelected && !isDisabled ? 'bg-theme-accent text-white font-medium hover:bg-theme-accent/90' : ''}`}
                         >
                           {d.date()}
                         </button>
@@ -276,22 +274,20 @@ export default forwardRef(function Datepicker(
                       <button
                         type="button"
                         onClick={() => updateTime('period', 'AM')}
-                        className={`flex-1 rounded-[4px] text-xs font-medium transition-colors ${
-                          currentDate.format('A') === 'AM'
+                        className={`flex-1 rounded-[4px] text-xs font-medium transition-colors ${currentDate.format('A') === 'AM'
                             ? 'bg-theme-accent text-white shadow-sm'
                             : 'text-slate-500 hover:text-slate-700'
-                        }`}
+                          }`}
                       >
                         AM
                       </button>
                       <button
                         type="button"
                         onClick={() => updateTime('period', 'PM')}
-                        className={`flex-1 rounded-[4px] text-xs font-medium transition-colors ${
-                          currentDate.format('A') === 'PM'
+                        className={`flex-1 rounded-[4px] text-xs font-medium transition-colors ${currentDate.format('A') === 'PM'
                             ? 'bg-theme-accent text-white shadow-sm'
                             : 'text-slate-500 hover:text-slate-700'
-                        }`}
+                          }`}
                       >
                         PM
                       </button>

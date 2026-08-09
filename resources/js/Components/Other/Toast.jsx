@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from '../../Hooks/useTranslation';
-import { CircleCheckBig, CircleX, Info } from 'lucide-react';
+import { CircleCheckBig, Info } from 'lucide-react';
 
 export default function Toast({ message, type = 'success', onClose }) {
   const { t } = useTranslation();
   const [isExiting, setIsExiting] = useState(false);
 
+  const prevMessageRef = useRef(null);
+
   useEffect(() => {
-    setIsExiting(false);
+    if (message !== prevMessageRef.current) {
+      prevMessageRef.current = message;
+      setIsExiting(false);
+    }
+
     const timer = setTimeout(() => {
       setIsExiting(true);
       const exitTimer = setTimeout(() => {
@@ -84,11 +90,10 @@ export default function Toast({ message, type = 'success', onClose }) {
 
   return (
     <div
-      className={`fixed bottom-6 right-6 z-50 flex max-w-sm items-start gap-3.5 overflow-hidden rounded-xl border border-l-4 p-4 shadow-xl backdrop-blur-md transition-all duration-300 ease-in-out ${
-        isExiting
+      className={`fixed bottom-6 right-6 z-50 flex max-w-sm items-start gap-3.5 overflow-hidden rounded-xl border border-l-4 p-4 shadow-xl backdrop-blur-md transition-all duration-300 ease-in-out ${isExiting
           ? 'opacity-0 translate-y-2 scale-95 pointer-events-none'
           : 'opacity-100 translate-y-0 scale-100 animate-fade-in-up'
-      } ${currentConfig.bgClass} ${currentConfig.borderClass} ${currentConfig.barClass}`}
+        } ${currentConfig.bgClass} ${currentConfig.borderClass} ${currentConfig.barClass}`}
       role="alert"
     >
       {/* Icon */}
