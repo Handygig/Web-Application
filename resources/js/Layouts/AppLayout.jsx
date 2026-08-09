@@ -6,63 +6,31 @@ import { getNavByRole } from '../config/navConfig';
 import Toast from '../Components/Other/Toast';
 import { useTranslation } from '../Hooks/useTranslation';
 
-function roleFromPath(pathname) {
-  if (pathname?.startsWith('/admin')) return 'admin';
-  if (pathname?.startsWith('/company')) return 'company';
-  return null;
-}
-
 export default function AppLayout({ children }) {
   const { auth, flash } = usePage().props;
   const { t } = useTranslation();
 
-  // Resolve the user's primary role
   const userRoles = auth?.user?.roles?.map((r) => r.name) ?? [];
-  const isAdmin = userRoles.includes('admin');
+  const role = userRoles.includes('admin') ? 'admin' : 'company';
 
-  const primaryRole = isAdmin ? 'admin' : 'company';
-  const availableRoles = useMemo(() => (isAdmin ? ['admin', 'company'] : ['company']), [isAdmin]);
+  const [theme, setTheme] = useState(() => localStorage.getItem('handygig-theme') || 'theme-earthy');
 
-  const [activeRole, setActiveRole] = useState(() => {
-    const pathRole = roleFromPath(window.location.pathname);
-    const storedRole = localStorage.getItem('handygig-active-role');
-
-    if (availableRoles.includes(pathRole)) return pathRole;
-    return availableRoles.includes(storedRole) ? storedRole : primaryRole;
-  });
-
-  // Derive a safe active role — if current value is no longer available, fall back to primary
-  const resolvedActiveRole = availableRoles.includes(activeRole) ? activeRole : primaryRole;
-
-  const [dismissedFlashKey, setDismissedFlashKey] = useState(null);
-
-  // Theme state
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('handygig-theme') || 'theme-blue';
-  });
-
-  // Update body class lists when theme changes
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove('theme-blue', 'theme-green', 'theme-darkblue');
+    root.classList.remove('theme-earthy', 'theme-green', 'theme-darkblue');
     root.classList.add(theme);
     localStorage.setItem('handygig-theme', theme);
   }, [theme]);
 
-  // Support theme toggling from child components via custom events
   useEffect(() => {
     const handleThemeToggle = () => {
-      setTheme((currentTheme) => {
-        if (currentTheme === 'theme-blue') return 'theme-green';
-        if (currentTheme === 'theme-green') return 'theme-darkblue';
-        return 'theme-blue';
+      setTheme((current) => {
+        if (current === 'theme-earthy') return 'theme-green';
+        if (current === 'theme-green') return 'theme-darkblue';
+        return 'theme-earthy';
       });
     };
-    const handleThemeSet = (e) => {
-      if (e.detail) {
-        setTheme(e.detail);
-      }
-    };
+    const handleThemeSet = (e) => { if (e.detail) setTheme(e.detail); };
     window.addEventListener('handygig-toggle-theme', handleThemeToggle);
     window.addEventListener('handygig-set-theme', handleThemeSet);
     return () => {
@@ -71,46 +39,31 @@ export default function AppLayout({ children }) {
     };
   }, []);
 
-  // Persist the active role to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('handygig-active-role', resolvedActiveRole);
-  }, [resolvedActiveRole]);
-
-  // Derive the flash to display from Inertia's flash prop
+  const [dismissedFlashKey, setDismissedFlashKey] = useState(null);
   const flashMessage = flash?.success || flash?.error;
   const flashKey = flashMessage ?? null;
+
   const visibleFlash = useMemo(() => {
     if (!flashMessage || flashKey === dismissedFlashKey) return null;
     return { message: flashMessage, type: flash?.success ? 'success' : 'error' };
   }, [flashMessage, flashKey, dismissedFlashKey, flash?.success]);
 
-  // Auto-dismiss after 4.5 s
   useEffect(() => {
     if (!visibleFlash) return;
     const timeout = window.setTimeout(() => setDismissedFlashKey(flashKey), 4500);
     return () => window.clearTimeout(timeout);
   }, [visibleFlash, flashKey]);
 
-  // Resolve nav items for the active role
-  const NAV_BY_ROLE = getNavByRole(t);
-  const rawNavItems = NAV_BY_ROLE[resolvedActiveRole] ?? NAV_BY_ROLE.company;
   const userPermissions = auth?.user?.permissions ?? {};
+  const rawNavItems = getNavByRole(t)[role] ?? [];
 
-  const filterNavItems = (items) => {
-    return items
-      .filter((item) => {
-        if (item.permission && !userPermissions[item.permission]) return false;
-        return true;
-      })
-      .map((item) => {
-        if (item.children) {
-          const filteredChildren = filterNavItems(item.children);
-          return { ...item, children: filteredChildren };
-        }
-        return item;
-      })
+  const filterNavItems = (items) =>
+    items
+      .filter((item) => !item.permission || userPermissions[item.permission])
+      .map((item) =>
+        item.children ? { ...item, children: filterNavItems(item.children) } : item,
+      )
       .filter((item) => !item.children || item.children.length > 0);
-  };
 
   const navItems = filterNavItems(rawNavItems);
 
@@ -118,23 +71,16 @@ export default function AppLayout({ children }) {
     <div className="relative isolate h-screen overflow-hidden bg-shell-gradient font-sans transition-colors duration-350">
       <div className="relative z-10 flex h-full flex-col">
         <Navbar
-          activeRole={resolvedActiveRole}
-          onRoleChange={setActiveRole}
           theme={theme}
           onThemeToggle={() =>
-            setTheme((currentTheme) =>
-              currentTheme === 'theme-blue'
-                ? 'theme-green'
-                : currentTheme === 'theme-green'
-                  ? 'theme-darkblue'
-                  : 'theme-blue'
+            setTheme((current) =>
+              current === 'theme-earthy' ? 'theme-green' : current === 'theme-green' ? 'theme-darkblue' : 'theme-earthy'
             )
           }
         />
 
         <div className="relative flex flex-1 overflow-hidden">
-          <Sidebar open={false} onClose={() => { }} navItems={navItems} />
-
+          <Sidebar open={false} onClose={() => {}} navItems={navItems} />
           <main className="scrollbar-none flex-1 overflow-y-auto p-6">{children}</main>
         </div>
       </div>

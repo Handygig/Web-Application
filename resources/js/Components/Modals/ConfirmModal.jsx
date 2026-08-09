@@ -1,8 +1,8 @@
 import React, { useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
-import ModalActionButton from '../buttons/ModalActionButton';
-import { useTranslation } from '../../../Hooks/useTranslation';
+import PrimaryButton from '../Buttons/PrimaryButton';
+import { useTranslation } from '../../Hooks/useTranslation';
 
 export default function ConfirmModal({
   open = false,

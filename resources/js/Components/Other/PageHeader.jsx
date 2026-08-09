@@ -28,7 +28,7 @@ export default function PageHeader({
 
         <div className="min-w-0">
           <h1 className="text-[32px] font-bold tracking-tight text-slate-800">{title}</h1>
-          {description ? <p className="mt-1 text-sm text-slate-500">{description}</p> : null}
+          {description ? <p className="text-sm text-slate-500">{description}</p> : null}
         </div>
       </div>
 

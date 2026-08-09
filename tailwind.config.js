@@ -13,7 +13,26 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Roboto', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                theme: {
+                    accent: 'var(--color-accent)',
+                    'accent-hover': 'var(--color-accent-hover)',
+                    'accent-soft': 'var(--color-accent-soft)',
+                    'bg-light': 'var(--color-bg-light)',
+                },
+            },
+            keyframes: {
+                jello: {
+                    '0%, 100%': { transform: 'scale(1, 1)' },
+                    '25%': { transform: 'scale(0.9, 1.15)' },
+                    '50%': { transform: 'scale(1.15, 0.85)' },
+                    '75%': { transform: 'scale(0.95, 1.05)' },
+                },
+            },
+            animation: {
+                jello: 'jello 0.8s ease-in-out both',
             },
         },
     },

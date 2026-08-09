@@ -22,6 +22,7 @@ export function getNavByRole(t) {
             label: t('Provider Management'),
             icon: Briefcase,
             children: [
+                { label: t('View Providers'), href: '/admin/providers' },
                 { label: t('KYC / KYB Approvals'), href: '/admin/providers/kyc' },
                 { label: t('Banned Accounts'), href: '/admin/providers/banned' },
             ],

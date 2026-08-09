@@ -4,16 +4,16 @@
 
 @layer base {
 
-    /* Blue Theme (Default) */
+    /* Earthy Theme (#636B2F) */
     :root,
-    .theme-blue {
-        --color-accent: #0090FF;
-        --color-accent-hover: #0080E5;
-        --color-accent-soft: rgba(0, 144, 255, 0.08);
-        --color-bg-light: #eaf4ff;
-        --color-grid-bg: #ebf3fc;
-        --color-grid-line: rgba(0, 144, 255, 0.07);
-        --color-accent-rgb: 0, 144, 255;
+    .theme-earthy {
+        --color-accent: #636B2F;
+        --color-accent-hover: #525927;
+        --color-accent-soft: rgba(99, 107, 47, 0.08);
+        --color-bg-light: #f7f8f2;
+        --color-grid-bg: #f3f5eb;
+        --color-grid-line: rgba(99, 107, 47, 0.07);
+        --color-accent-rgb: 99, 107, 47;
     }
 
     /* Green Theme */
@@ -27,7 +27,7 @@
         --color-accent-rgb: 0, 178, 122;
     }
 
-    /* Dark Blue Theme */
+    /* Dark Theme */
     .theme-darkblue {
         --color-accent: #18252F;
         --color-accent-hover: #121E26;
@@ -36,5 +36,54 @@
         --color-grid-bg: #e2e8f0;
         --color-grid-line: rgba(24, 37, 47, 0.07);
         --color-accent-rgb: 24, 37, 47;
+    }
+}
+
+@layer utilities {
+    .bg-view-card-gradient {
+        background:
+            linear-gradient(110deg, #F7F7F7 0%, rgba(247, 247, 247, 0.48) 100%),
+            linear-gradient(88.37deg, rgba(255, 255, 255, 0.2) 33.56%, rgba(var(--color-accent-rgb), 0.2) 99.73%);
+    }
+
+    .bg-shell-gradient {
+        background-color: #ffffff;
+        background-image: linear-gradient(244.08deg, rgba(var(--color-accent-rgb), 0.1) 9.44%, rgba(var(--color-accent-rgb), 0.15) 27.29%, rgba(var(--color-accent-rgb), 0.2) 45.58%, rgba(var(--color-accent-rgb), 0.08) 77.36%, rgba(255, 255, 255, 0.2) 100%);
+    }
+
+    .bg-shell-gradient-2 {
+        background-color: #ffffff;
+        background-image: linear-gradient(191deg, rgba(var(--color-accent-rgb), 0.1) 29.44%, rgba(var(--color-accent-rgb), 0.15) 47.29%, rgba(var(--color-accent-rgb), 0.2) 65.58%, rgba(var(--color-accent-rgb), 0.08) 97.36%, rgba(255, 255, 255, 0.2) 120%);
+    }
+
+    .bg-navbar-custom {
+        background-color: #FFFFFF66;
+        background: linear-gradient(184.08deg, rgba(255, 255, 255, 0.11) 9.44%, rgba(var(--color-accent-rgb), 0.066) 32.08%, rgba(var(--color-accent-rgb), 0.11) 63.86%, rgba(var(--color-accent-rgb), 0.088) 82.15%, rgba(var(--color-accent-rgb), 0.011) 100%);
+        transition: background 0.3s ease;
+    }
+
+    .shadow-navbar-custom {
+        box-shadow: 1px 1px 4px 0px #FFFFFF40, 0 10px 30px rgba(148, 163, 184, 0.12);
+    }
+
+    .bg-theme-accent-10 {
+        background-color: rgba(var(--color-accent-rgb), 0.1);
+    }
+
+    .bg-theme-accent-5 {
+        background-color: rgba(var(--color-accent-rgb), 0.05);
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .scrollbar-none {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
     }
 }
