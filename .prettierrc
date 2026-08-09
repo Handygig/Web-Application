@@ -1,0 +1,30 @@
+{
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "overrides": [
+    {
+      "files": "*.blade.php",
+      "options": {
+        "parser": "blade"
+      }
+    },
+    {
+      "files": ["**/*.js", "**/*.jsx"],
+      "options": {
+        "parser": "babel"
+      }
+    },
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "options": {
+        "parser": "babel-ts"
+      }
+    }
+  ]
+}

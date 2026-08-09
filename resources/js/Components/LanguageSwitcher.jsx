@@ -1,30 +1,34 @@
+import React from 'react';
 import { router, usePage } from '@inertiajs/react';
+import { Globe } from 'lucide-react';
 
 export default function LanguageSwitcher() {
-    const { locale = 'en', availableLocales = {} } = usePage().props;
+  const { locale, availableLocales } = usePage().props;
 
-    const changeLocale = (event) => {
-        router.post(
-            route('locale.update'),
-            { locale: event.target.value },
-            {
-                preserveScroll: true,
-            },
-        );
-    };
-
-    return (
-        <select
-            value={locale}
-            onChange={changeLocale}
-            className="rounded-md border-gray-300 bg-white py-1.5 pe-8 ps-3 text-sm font-medium text-gray-600 shadow-sm transition duration-150 ease-in-out focus:border-indigo-500 focus:ring-indigo-500"
-            aria-label="Language"
-        >
-            {Object.entries(availableLocales).map(([value, label]) => (
-                <option key={value} value={value}>
-                    {label}
-                </option>
-            ))}
-        </select>
+  function changeLocale(newLocale) {
+    router.post(
+      route('locale.change'),
+      { locale: newLocale },
+      {
+        preserveScroll: true,
+      }
     );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <Globe className="h-4 w-4 text-slate-500" />
+      <select
+        value={locale}
+        onChange={(event) => changeLocale(event.target.value)}
+        className="bg-transparent border-0 text-slate-700 text-sm focus:ring-0 focus:outline-none cursor-pointer py-1 pl-1 pr-8 rounded hover:bg-slate-50 transition-colors"
+      >
+        {Object.entries(availableLocales || {}).map(([code, name]) => (
+          <option key={code} value={code} className="bg-white text-slate-800">
+            {name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
 }

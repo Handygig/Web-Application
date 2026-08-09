@@ -1,9 +1,9 @@
 import React from 'react';
 
 export default function ConfirmPassword() {
-    return (
-        <div>
-            <h1>Confirm Password</h1>
-        </div>
-    );
+  return (
+    <div>
+      <h1>Confirm Password</h1>
+    </div>
+  );
 }

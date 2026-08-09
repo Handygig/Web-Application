@@ -1,26 +1,39 @@
 import React from 'react';
+import { Link } from '@inertiajs/react';
 
 export default function PrimaryButton({
-    children,
-    loading = false,
-    className = '',
-    disabled,
-    ...props
+  href,
+  as,
+  children,
+  icon: Icon,
+  native = false,
+  className = '',
+  ...props
 }) {
+  const baseClassName = `bg-theme-accent hover:bg-theme-accent-hover inline-flex items-center justify-center gap-2 rounded-[9px] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-theme-accent/15 transition-all hover:scale-[1.02] active:scale-[0.98] ${className}`;
+
+  if (as === 'button' || !href) {
     return (
-        <button
-            type="submit"
-            disabled={disabled || loading}
-            className={`w-full px-5 py-2.5 rounded-lg text-white font-semibold text-sm bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:from-indigo-700 active:to-violet-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 transition duration-150 ease-in-out shadow-md hover:shadow-lg flex items-center justify-center gap-2 ${className}`}
-            {...props}
-        >
-            {loading && (
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-            )}
-            {children}
-        </button>
+      <button className={baseClassName} {...props}>
+        {Icon ? <Icon className="h-4 w-4" /> : null}
+        <span>{children}</span>
+      </button>
     );
+  }
+
+  if (native) {
+    return (
+      <a href={href} className={baseClassName} {...props}>
+        {Icon ? <Icon className="h-4 w-4" /> : null}
+        <span>{children}</span>
+      </a>
+    );
+  }
+
+  return (
+    <Link href={href} className={baseClassName} {...props}>
+      {Icon ? <Icon className="h-4 w-4" /> : null}
+      <span>{children}</span>
+    </Link>
+  );
 }
