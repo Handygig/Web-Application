@@ -25,7 +25,7 @@ export default function AppLayout({ children }) {
 
   const [activeRole, setActiveRole] = useState(() => {
     const pathRole = roleFromPath(window.location.pathname);
-    const storedRole = localStorage.getItem('safora-active-role');
+    const storedRole = localStorage.getItem('handygig-active-role');
 
     if (availableRoles.includes(pathRole)) return pathRole;
     return availableRoles.includes(storedRole) ? storedRole : primaryRole;
@@ -38,7 +38,7 @@ export default function AppLayout({ children }) {
 
   // Theme state
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('safora-theme') || 'theme-blue';
+    return localStorage.getItem('handygig-theme') || 'theme-blue';
   });
 
   // Update body class lists when theme changes
@@ -46,7 +46,7 @@ export default function AppLayout({ children }) {
     const root = window.document.documentElement;
     root.classList.remove('theme-blue', 'theme-green', 'theme-darkblue');
     root.classList.add(theme);
-    localStorage.setItem('safora-theme', theme);
+    localStorage.setItem('handygig-theme', theme);
   }, [theme]);
 
   // Support theme toggling from child components via custom events
@@ -63,17 +63,17 @@ export default function AppLayout({ children }) {
         setTheme(e.detail);
       }
     };
-    window.addEventListener('safora-toggle-theme', handleThemeToggle);
-    window.addEventListener('safora-set-theme', handleThemeSet);
+    window.addEventListener('handygig-toggle-theme', handleThemeToggle);
+    window.addEventListener('handygig-set-theme', handleThemeSet);
     return () => {
-      window.removeEventListener('safora-toggle-theme', handleThemeToggle);
-      window.removeEventListener('safora-set-theme', handleThemeSet);
+      window.removeEventListener('handygig-toggle-theme', handleThemeToggle);
+      window.removeEventListener('handygig-set-theme', handleThemeSet);
     };
   }, []);
 
   // Persist the active role to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('safora-active-role', resolvedActiveRole);
+    localStorage.setItem('handygig-active-role', resolvedActiveRole);
   }, [resolvedActiveRole]);
 
   // Derive the flash to display from Inertia's flash prop
@@ -133,7 +133,7 @@ export default function AppLayout({ children }) {
         />
 
         <div className="relative flex flex-1 overflow-hidden">
-          <Sidebar open={false} onClose={() => {}} navItems={navItems} />
+          <Sidebar open={false} onClose={() => { }} navItems={navItems} />
 
           <main className="scrollbar-none flex-1 overflow-y-auto p-6">{children}</main>
         </div>

@@ -30,25 +30,21 @@ export default function Navbar({ onMenuToggle }) {
 
   function changeLocale(newLocale) {
     setLangOpen(false);
-    router.post(route('locale.change'), { locale: newLocale }, { preserveScroll: true });
+    router.post(route('locale.update'), { locale: newLocale }, { preserveScroll: true });
   }
-
-  const notificationBackUrl = url?.startsWith('/notifications')
-    ? '/dashboard'
-    : url || '/dashboard';
 
   return (
     <header className="sticky top-0 z-30 shrink-0 select-none px-4 pt-4">
       <div className="flex h-16 items-center justify-between rounded-[12px] border border-white/70 px-4 backdrop-blur-md sm:px-5 bg-navbar-custom shadow-navbar-custom">
         {/* Left cluster */}
         <div className="flex items-center gap-3">
-          <img src="/images/safora-logo.png" alt="Logo" className="h-12 w-auto" />
+          <img src="/images/handygig-logo.png" alt="Logo" className="h-12 w-auto" />
         </div>
 
         {/* Right cluster */}
         <div className="flex items-center gap-2.5">
           <Link
-            href={route('user.notifications.index', { back_url: notificationBackUrl })}
+            href={route('dashboard')}
             className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
             aria-label="Notifications"
           >
@@ -109,7 +105,7 @@ export default function Navbar({ onMenuToggle }) {
                 )}
 
                 <Link
-                  href={route('user.profile')}
+                  href={route('profile.edit')}
                   onClick={() => setProfileOpen(false)}
                   className="flex items-center gap-2 px-4 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
                 >
