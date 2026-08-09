@@ -7,6 +7,7 @@ export default function PrimaryButton({
   children,
   icon: Icon,
   native = false,
+  loading = false,
   className = '',
   ...props
 }) {
