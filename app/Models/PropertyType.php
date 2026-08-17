@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class PropertyType extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'code',
+        'description',
+        'icon',
+        'status',
+        'properties_count',
+    ];
+
+    protected $casts = [
+        'properties_count' => 'integer',
+    ];
+}
