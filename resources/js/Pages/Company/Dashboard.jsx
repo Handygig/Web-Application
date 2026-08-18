@@ -621,7 +621,81 @@ export default function Dashboard({ stats }) {
                 <div className="border-b border-slate-100" />
 
                 {healthTab === 'apis' ? (
-                  <div className="space-y-4">
+                  <div className="space-y-5">
+                    <div>
+                      <h4 className="text-xs font-semibold text-slate-700 mb-3">
+                        Aggregate API Latency - Last 24 Hours
+                      </h4>
+
+                      <div className="relative pt-1">
+                        <div className="flex items-stretch gap-2">
+                          <div className="flex flex-col justify-between text-[10px] font-semibold text-slate-400 text-right h-28 pr-1 select-none">
+                            <span>200</span>
+                            <span>150</span>
+                            <span>100</span>
+                            <span>50</span>
+                            <span>0</span>
+                          </div>
+
+                          <div className="flex-1 relative h-28 border-l border-b border-slate-200">
+                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                              <div className="border-b border-slate-100 w-full" />
+                              <div className="border-b border-slate-100 w-full" />
+                              <div className="border-b border-slate-100 w-full" />
+                              <div className="border-b border-slate-100 w-full" />
+                              <div className="w-full" />
+                            </div>
+
+                            <div className="absolute inset-0 flex justify-between pointer-events-none">
+                              <div className="border-r border-slate-100 h-full" />
+                              <div className="border-r border-slate-100 h-full" />
+                              <div className="border-r border-slate-100 h-full" />
+                              <div className="border-r border-slate-100 h-full" />
+                              <div className="border-r border-slate-100 h-full" />
+                              <div className="border-r border-slate-100 h-full" />
+                            </div>
+
+                            <svg
+                              className="absolute inset-0 w-full h-full overflow-hidden"
+                              viewBox="0 0 300 100"
+                              preserveAspectRatio="none"
+                            >
+                              <defs>
+                                <linearGradient id="latencyGradientCompany" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#10b981" stopOpacity="0.35" />
+                                  <stop offset="100%" stopColor="#10b981" stopOpacity="0.02" />
+                                </linearGradient>
+                              </defs>
+
+                              <path
+                                d="M 0,75 C 20,70 35,45 50,50 C 65,55 80,78 100,70 C 120,62 135,25 150,30 C 165,35 180,68 200,65 C 220,62 235,18 250,22 C 265,26 280,58 300,50 L 300,100 L 0,100 Z"
+                                fill="url(#latencyGradientCompany)"
+                              />
+
+                              <path
+                                d="M 0,75 C 20,70 35,45 50,50 C 65,55 80,78 100,70 C 120,62 135,25 150,30 C 165,35 180,68 200,65 C 220,62 235,18 250,22 C 265,26 280,58 300,50"
+                                fill="none"
+                                stroke="#10b981"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-between text-[10px] font-semibold text-slate-400 pl-8 pt-1.5">
+                          <span>00:00</span>
+                          <span>04:00</span>
+                          <span>08:00</span>
+                          <span>12:00</span>
+                          <span>16:00</span>
+                          <span>20:00</span>
+                          <span>00:00</span>
+                        </div>
+                        <div className="text-center text-[10px] font-semibold text-slate-400 mt-0.5">Time</div>
+                      </div>
+                    </div>
+
                     <div className="space-y-3">
                       {systemApis.map((api, idx) => (
                         <div
