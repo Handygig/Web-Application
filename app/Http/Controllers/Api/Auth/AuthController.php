@@ -36,6 +36,7 @@ class AuthController extends Controller
 
             $phone = $payload['phone_number'] ?? $payload['phone'] ?? null;
             $firebaseUid = $payload['sub'] ?? null;
+            $email = $payload['email'] ?? null;
 
             if (! $phone) {
                 return response()->json(['error' => 'Phone number missing from Firebase Token.'], 422);
@@ -44,15 +45,18 @@ class AuthController extends Controller
             $role = $request->input('role', 'customer');
 
             $user = User::where('phone', $phone)->first();
+            if (! $user && $email) {
+                $user = User::where('email', $email)->first();
+            }
 
             if (! $user) {
                 $email = $payload['email'] ?? ($phone.'@placeholder.com');
 
                 $user = User::create([
                     'role' => $role,
-                    'full_name' => $payload['name'] ?? 'User '.substr($phone, -4),
+                    'full_name' => $payload['name'] ?? 'User '.($phone ? substr($phone, -4) : rand(1000, 9999)),
                     'email' => $email,
-                    'phone' => $phone,
+                    'phone' => $phone ?? '',
                     'firebase_uid' => $firebaseUid,
                     'status' => 'active',
                 ]);
