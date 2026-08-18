@@ -696,47 +696,43 @@ export default function EmployeeIndex() {
         ) : viewMode === 'table' ? (
 
           /* --- TABLE VIEW --- */
-          <div className="bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-[#E2E4D9] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full text-left border-collapse table-fixed">
                 <thead>
-                  <tr className="bg-slate-50/80 border-b border-slate-200/80 text-xs font-bold uppercase tracking-wider text-slate-500">
-                    <th className="py-4 px-6">{t('Technician')}</th>
-                    <th className="py-4 px-6">{t('Specialization')}</th>
-                    <th className="py-4 px-6">{t('Status')}</th>
-                    <th className="py-4 px-6">{t('Active Job')}</th>
-                    <th className="py-4 px-6">{t('Rating & Jobs')}</th>
-                    <th className="py-4 px-6">{t('Hourly Rate')}</th>
-                    <th className="py-4 px-6 text-right">{t('Actions')}</th>
+                  <tr className="bg-[#F9FAF7] border-b border-[#E2E4D9] text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <th className="py-3.5 px-6 w-64">{t('Technician')}</th>
+                    <th className="py-3.5 px-6 w-44">{t('Specialization')}</th>
+                    <th className="py-3.5 px-6 w-48">{t('Status')}</th>
+                    <th className="py-3.5 px-6 w-40">{t('Active Job')}</th>
+                    <th className="py-3.5 px-6 w-36">{t('Rating & Jobs')}</th>
+                    <th className="py-3.5 px-6 w-32">{t('Hourly Rate')}</th>
+                    <th className="py-3.5 px-6 w-36 text-right">{t('Actions')}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-sm">
+                <tbody className="divide-y divide-[#F0F2EA] text-sm">
                   {filteredTechnicians.map((tech) => (
-                    <tr key={tech.id} className="hover:bg-slate-50/60 transition-colors">
+                    <tr key={tech.id} className="hover:bg-[#FAFBF7] transition-colors group">
                       
                       {/* Technician Info Column */}
-                      <td className="py-4 px-6">
+                      <td className="py-4 px-6 align-middle">
                         <div className="flex items-center gap-3">
                           <img
                             src={tech.avatar}
                             alt={tech.firstName}
-                            className="w-11 h-11 rounded-2xl object-cover border border-slate-200 shadow-xs"
+                            className="w-10 h-10 rounded-full object-cover border border-[#E2E4D9] shadow-2xs shrink-0"
                           />
-                          <div>
-                            <div className="font-bold text-slate-900 flex items-center gap-2">
-                              <span>{tech.firstName} {tech.lastName}</span>
-                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                          <div className="space-y-0.5 min-w-0">
+                            <div className="font-bold text-gray-900 flex items-center gap-2">
+                              <span className="truncate">{tech.firstName} {tech.lastName}</span>
+                              <span className="font-mono text-xs font-bold text-[#5E6933] bg-[#EBF5EC] px-2 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap shrink-0">
                                 {tech.id}
                               </span>
                             </div>
-                            <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
+                            <div className="flex items-center gap-3 text-xs text-gray-500 whitespace-nowrap">
                               <span className="flex items-center gap-1">
-                                <Phone className="w-3 h-3 text-slate-400" />
+                                <Phone className="w-3 h-3 text-gray-400" />
                                 {tech.phone}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Mail className="w-3 h-3 text-slate-400" />
-                                {tech.email}
                               </span>
                             </div>
                           </div>
@@ -744,18 +740,18 @@ export default function EmployeeIndex() {
                       </td>
 
                       {/* Specialization / Role Column */}
-                      <td className="py-4 px-6">
+                      <td className="py-4 px-6 align-middle">
                         <div className="space-y-1">
                           <div>{getSpecializationBadge(tech.specialization)}</div>
-                          <div className="text-xs font-medium text-slate-500">{tech.roleTitle}</div>
+                          <div className="text-xs font-medium text-gray-500 truncate">{tech.roleTitle}</div>
                         </div>
                       </td>
 
                       {/* Status Badge Column */}
-                      <td className="py-4 px-6 whitespace-nowrap">
+                      <td className="py-4 px-6 align-middle whitespace-nowrap">
                         <div className="space-y-1">
                           {getStatusBadge(tech.status)}
-                          <div className="text-[11px] font-medium text-slate-400 flex items-center gap-1">
+                          <div className="text-[11px] font-medium text-gray-400 flex items-center gap-1">
                             <Clock className="w-3 h-3" />
                             {tech.shiftAssignment}
                           </div>
@@ -763,80 +759,92 @@ export default function EmployeeIndex() {
                       </td>
 
                       {/* Active Assignment Column */}
-                      <td className="py-4 px-6 whitespace-nowrap">
+                      <td className="py-4 px-6 align-middle whitespace-nowrap">
                         {tech.activeAssignment ? (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
                             <Briefcase className="w-3.5 h-3.5 text-amber-600" />
                             {tech.activeAssignment}
                           </span>
                         ) : (
-                          <span className="text-xs font-medium text-slate-400 italic">
+                          <span className="text-xs font-medium text-gray-400 italic">
                             {t('Unassigned')}
                           </span>
                         )}
                       </td>
 
                       {/* Rating & Jobs Column */}
-                      <td className="py-4 px-6 whitespace-nowrap">
+                      <td className="py-4 px-6 align-middle whitespace-nowrap">
                         <div className="flex items-center gap-1.5">
                           <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                          <span className="font-extrabold text-slate-900">{tech.rating}</span>
-                          <span className="text-xs text-slate-400 font-medium">({tech.completedJobs} {t('jobs')})</span>
+                          <span className="font-extrabold text-gray-900">{tech.rating}</span>
+                          <span className="text-xs text-gray-400 font-medium">({tech.completedJobs} {t('jobs')})</span>
                         </div>
                       </td>
 
                       {/* Hourly Rate Column */}
-                      <td className="py-4 px-6 whitespace-nowrap">
-                        <span className="font-bold text-slate-800">${tech.hourlyRate}/hr</span>
+                      <td className="py-4 px-6 align-middle whitespace-nowrap">
+                        <span className="font-bold text-gray-900">${tech.hourlyRate}/hr</span>
                       </td>
 
                       {/* Actions Column */}
-                      <td className="py-4 px-6 text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-1.5">
+                      <td className="py-4 px-6 align-middle text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-1">
                           
                           {/* Schedule / History Button */}
                           <button
                             onClick={() => setSelectedTechForSchedule(tech)}
-                            className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all"
+                            className="p-1.5 text-gray-600 hover:text-gray-900 border border-[#E2E4D9] bg-white hover:bg-gray-50 rounded-lg transition-all shadow-2xs"
                             title={t('View Schedule & History')}
                           >
-                            <Calendar className="w-4 h-4" />
+                            <Calendar className="w-3.5 h-3.5" />
                           </button>
 
                           {/* Quick Shift Toggle Button */}
                           <button
                             onClick={() => handleToggleShiftStatus(tech.id)}
-                            className="p-2 text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition-all"
+                            className="p-1.5 text-gray-600 hover:text-emerald-700 border border-[#E2E4D9] bg-white hover:bg-emerald-50 rounded-lg transition-all shadow-2xs"
                             title={t('Toggle Shift Status')}
                           >
-                            <RefreshCw className="w-4 h-4" />
+                            <RefreshCw className="w-3.5 h-3.5" />
                           </button>
 
                           {/* Edit Button */}
                           <button
                             onClick={() => handleOpenEditModal(tech)}
-                            className="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
+                            className="p-1.5 text-gray-600 hover:text-blue-600 border border-[#E2E4D9] bg-white hover:bg-blue-50 rounded-lg transition-all shadow-2xs"
                             title={t('Edit Technician Details')}
                           >
-                            <Edit2 className="w-4 h-4" />
+                            <Edit2 className="w-3.5 h-3.5" />
                           </button>
 
                           {/* Delete Button */}
                           <button
-                            onClick={() => setDeletingTech(tech)}
-                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
-                            title={t('Delete Technician')}
+                            onClick={() => handleDeleteTech(tech.id)}
+                            className="p-1.5 text-gray-600 hover:text-rose-600 border border-[#E2E4D9] bg-white hover:bg-rose-50 rounded-lg transition-all shadow-2xs"
+                            title={t('Remove Technician')}
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5" />
                           </button>
-
                         </div>
                       </td>
-
                     </tr>
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* TABLE FOOTER / PAGINATION */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#F9FAF7] px-6 py-3.5 border-t border-[#E2E4D9] text-xs text-gray-600">
+              <div className="whitespace-nowrap">
+                {t('Showing')} <span className="font-bold text-gray-900">1</span>–
+                <span className="font-bold text-gray-900">{filteredTechnicians.length}</span> {t('of')}{' '}
+                <span className="font-bold text-gray-900">{filteredTechnicians.length}</span> {t('technicians')}
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="px-3 py-1 font-semibold text-gray-800">
+                  {t('Page 1 of 1')}
+                </span>
+              </div>
             </div>
           </div>
         ) : (
