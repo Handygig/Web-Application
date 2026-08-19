@@ -1,94 +1,76 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Resources\UserResource;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Api\Customer\AuthController as CustomerAuthController;
+use App\Http\Controllers\Api\Customer\CardController;
+use App\Http\Controllers\Api\Customer\DisputeController;
+use App\Http\Controllers\Api\Customer\JobAssignmentController;
+use App\Http\Controllers\Api\Customer\JobRequestController;
+use App\Http\Controllers\Api\Customer\PaymentController;
+use App\Http\Controllers\Api\Customer\PropertyController;
+use App\Http\Controllers\Api\Customer\QuotationController;
+use App\Http\Controllers\Api\Customer\ReviewController;
+use App\Http\Controllers\Api\Customer\ServiceCategoryController;
+use App\Http\Controllers\Api\Provider\AuthController as ProviderAuthController;
 use Illuminate\Support\Facades\Route;
 
 // Shared/General Firebase Auth Route
 Route::post('auth/firebase-login', [AuthController::class, 'firebaseLogin']);
 
 // Customer Auth Routes
-Route::post('customer/register', [App\Http\Controllers\Api\Customer\AuthController::class, 'register']);
-Route::post('customer/login', [App\Http\Controllers\Api\Customer\AuthController::class, 'login']);
+Route::post('customer/register', [CustomerAuthController::class, 'register']);
+Route::post('customer/login', [CustomerAuthController::class, 'login']);
 
-// Provider Auth Routes (placeholder for existing tests)
-Route::post('provider/register', function (Request $request) {
-    if ($request->filled('firebase_token')) {
-        $token = $request->input('firebase_token');
-        if (str_starts_with($token, 'valid-mock-')) {
-            $dataStr = substr($token, strlen('valid-mock-'));
-            $data = json_decode(base64_decode($dataStr), true);
-            if (is_array($data) && ! isset($data['phone_number']) && ! isset($data['phone'])) {
-                $data['phone_number'] = '+1555555'.rand(1000, 9999);
-                $request->merge(['firebase_token' => 'valid-mock-'.base64_encode(json_encode($data))]);
-            }
-        }
-    }
-    $request->merge([
-        'id_token' => $request->input('firebase_token'),
-        'role' => 'provider',
-    ]);
-    $response = app(AuthController::class)->firebaseLogin($request);
-    if ($response->getStatusCode() === 200) {
-        $response->setStatusCode(201);
-    }
-
-    return $response;
-});
-
-Route::post('provider/login', function (Request $request) {
-    if ($request->filled('firebase_token')) {
-        $token = $request->input('firebase_token');
-        if (str_starts_with($token, 'valid-mock-')) {
-            $dataStr = substr($token, strlen('valid-mock-'));
-            $data = json_decode(base64_decode($dataStr), true);
-            if (is_array($data) && ! isset($data['phone_number']) && ! isset($data['phone'])) {
-                // Try to find the existing provider by email or sub and set their phone number
-                $email = $data['email'] ?? null;
-                $user = null;
-                if ($email) {
-                    $user = User::where('email', $email)->first();
-                }
-                $data['phone_number'] = $user ? $user->phone : ('+1555555'.rand(1000, 9999));
-                $request->merge(['firebase_token' => 'valid-mock-'.base64_encode(json_encode($data))]);
-            }
-        }
-        $request->merge([
-            'id_token' => $request->input('firebase_token'),
-            'role' => 'provider',
-        ]);
-
-        return app(AuthController::class)->firebaseLogin($request);
-    }
-    // Handle password login
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|string',
-        'device_name' => 'required|string',
-    ]);
-    $user = User::where('email', $request->email)->first();
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        return response()->json(['message' => 'Login Failed'], 422);
-    }
-    $token = $user->createToken($request->device_name)->plainTextToken;
-
-    return response()->json([
-        'token' => $token,
-        'user' => new UserResource($user),
-    ]);
-});
+// Provider Auth Routes
+Route::post('provider/register', [ProviderAuthController::class, 'register']);
+Route::post('provider/login', [ProviderAuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user/profile', [AuthController::class, 'profile']);
-    Route::match(['put', 'patch'], 'user/profile', [AuthController::class, 'updateProfile']);
+    Route::put('user/profile', [AuthController::class, 'updateProfile']);
     Route::post('auth/logout', [AuthController::class, 'logout']);
 
     // Protected Customer API Routes
     Route::middleware('role:customer')->prefix('customer')->group(function () {
-        Route::put('complete-profile', [App\Http\Controllers\Api\Customer\AuthController::class, 'completeProfile']);
+        Route::put('complete-profile', [CustomerAuthController::class, 'completeProfile']);
+
+        // Service Categories
+        Route::get('service-categories', [ServiceCategoryController::class, 'index']);
+
+        // Properties
+        Route::get('properties', [PropertyController::class, 'index']);
+        Route::post('properties', [PropertyController::class, 'store']);
+        Route::get('properties/{property}', [PropertyController::class, 'show']);
+        Route::put('properties/{property}', [PropertyController::class, 'update']);
+        Route::delete('properties/{property}', [PropertyController::class, 'destroy']);
+
+        // Job Requests
+        Route::get('job-requests', [JobRequestController::class, 'index']);
+        Route::post('job-requests', [JobRequestController::class, 'store']);
+        Route::get('job-requests/{jobRequest}', [JobRequestController::class, 'show']);
+        Route::post('job-requests/{jobRequest}/cancel', [JobRequestController::class, 'cancel']);
+
+        // Quotations
+        Route::get('job-requests/{jobRequest}/quotations', [QuotationController::class, 'index']);
+        Route::post('quotations/{quotation}/accept', [QuotationController::class, 'accept']);
+
+        // Job Assignments
+        Route::get('job-assignments', [JobAssignmentController::class, 'index']);
+        Route::get('job-assignments/{jobAssignment}', [JobAssignmentController::class, 'show']);
+
+        // Cards
+        Route::get('cards', [CardController::class, 'index']);
+        Route::post('cards', [CardController::class, 'store']);
+        Route::delete('cards/{card}', [CardController::class, 'destroy']);
+
+        // Payments
+        Route::post('job-assignments/{jobAssignment}/pay', [PaymentController::class, 'pay']);
+
+        // Reviews
+        Route::post('job-assignments/{jobAssignment}/reviews', [ReviewController::class, 'store']);
+
+        // Disputes
+        Route::post('job-assignments/{jobAssignment}/disputes', [DisputeController::class, 'store']);
     });
 
     // Protected Provider API Routes
