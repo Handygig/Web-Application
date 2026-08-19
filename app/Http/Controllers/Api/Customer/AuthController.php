@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Customer\CompleteProfileRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Resources\UserResource;
@@ -11,6 +12,7 @@ use App\Models\User;
 use App\Services\FirebaseTokenVerifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -27,9 +29,17 @@ class AuthController extends Controller
         if ($request->filled('firebase_token')) {
             $payload = $this->tokenVerifier->verify($request->firebase_token);
             $firebaseUid = $payload['sub'];
+            $phone = $payload['phone_number'] ?? $payload['phone'] ?? null;
             $email = $payload['email'] ?? null;
 
             $user = User::where('firebase_uid', $firebaseUid)->first();
+
+            if (! $user && $phone) {
+                $user = User::where('phone', $phone)->first();
+                if ($user) {
+                    $user->update(['firebase_uid' => $firebaseUid]);
+                }
+            }
 
             if (! $user && $email) {
                 $user = User::where('email', $email)->first();
@@ -64,6 +74,8 @@ class AuthController extends Controller
         return response()->json([
             'token' => $token,
             'user' => new UserResource($user),
+            'is_new_user' => false,
+            'is_profile_complete' => $user->is_profile_complete,
         ]);
     }
 
@@ -72,30 +84,37 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request): JsonResponse
     {
+        $isNewUser = false;
+
         if ($request->filled('firebase_token')) {
             $payload = $this->tokenVerifier->verify($request->firebase_token);
             $firebaseUid = $payload['sub'];
+            $phone = $payload['phone_number'] ?? $payload['phone'] ?? $request->phone;
             $email = $payload['email'] ?? $request->email;
 
-            if (! $email) {
+            if (! $phone) {
                 throw ValidationException::withMessages([
-                    'firebase_token' => [__('Email address is missing from the Firebase token.')],
+                    'firebase_token' => [__('Phone number is missing from the Firebase token.')],
                 ]);
             }
 
             $user = User::where('firebase_uid', $firebaseUid)->first();
 
             if (! $user) {
-                $user = User::where('email', $email)->first();
+                $user = User::where('phone', $phone)->first();
 
                 if ($user) {
                     $user->update(['firebase_uid' => $firebaseUid]);
                 } else {
+                    $isNewUser = true;
+                    // Provide a default placeholder email if not in token or request
+                    $finalEmail = $email ?? ($phone.'@placeholder.com');
+
                     $user = User::create([
                         'role' => 'customer',
-                        'full_name' => $payload['name'] ?? $request->full_name ?? 'Customer',
-                        'email' => $email,
-                        'phone' => $payload['phone_number'] ?? $request->phone ?? '',
+                        'full_name' => $payload['name'] ?? $request->full_name ?? ('User '.substr($phone, -4)),
+                        'email' => $finalEmail,
+                        'phone' => $phone,
                         'password' => null,
                         'firebase_uid' => $firebaseUid,
                         'status' => 'active',
@@ -113,20 +132,34 @@ class AuthController extends Controller
                 ]);
             }
         } else {
-            $user = User::create([
-                'role' => 'customer',
-                'full_name' => $request->full_name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'password' => Hash::make($request->password),
-                'status' => 'active',
-            ]);
+            $user = User::where('phone', $request->phone)->first();
+            if ($user) {
+                $user->update([
+                    'full_name' => $request->full_name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+            } else {
+                $isNewUser = true;
+                $user = User::create([
+                    'role' => 'customer',
+                    'full_name' => $request->full_name,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'password' => Hash::make($request->password),
+                    'status' => 'active',
+                ]);
+            }
 
-            $user->assignRole('customer');
+            if (! $user->hasRole('customer')) {
+                $user->assignRole('customer');
+            }
 
-            Customer::create([
-                'user_id' => $user->id,
-            ]);
+            if (! $user->customer()->exists()) {
+                Customer::create([
+                    'user_id' => $user->id,
+                ]);
+            }
         }
 
         $token = $user->createToken($request->device_name)->plainTextToken;
@@ -134,6 +167,44 @@ class AuthController extends Controller
         return response()->json([
             'token' => $token,
             'user' => new UserResource($user),
+            'is_new_user' => $isNewUser,
+            'is_profile_complete' => $user->is_profile_complete,
         ], 201);
+    }
+
+    /**
+     * Complete the customer profile.
+     */
+    public function completeProfile(CompleteProfileRequest $request): JsonResponse
+    {
+        $user = $request->user();
+
+        // Update User fields
+        $user->full_name = $request->input('full_name');
+        $user->email = $request->input('email');
+
+        if ($request->hasFile('profile_image')) {
+            // Delete old image if it exists
+            if ($user->profile_image) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+            $path = $request->file('profile_image')->store('profile-images', 'public');
+            $user->profile_image = $path;
+        }
+
+        $user->save();
+
+        // Update Customer gender field
+        $customer = $user->customer;
+        if (! $customer) {
+            $customer = Customer::create(['user_id' => $user->id]);
+        }
+        $customer->gender = $request->input('gender');
+        $customer->save();
+
+        return response()->json([
+            'status' => 'success',
+            'user' => new UserResource($user),
+        ]);
     }
 }

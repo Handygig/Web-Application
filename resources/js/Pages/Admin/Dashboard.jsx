@@ -435,7 +435,7 @@ export default function Dashboard({ stats }) {
 
                             {/* SVG Curved Latency Wave */}
                             <svg
-                              className="absolute inset-0 w-full h-full overflow-visible"
+                              className="absolute inset-0 w-full h-full overflow-hidden"
                               viewBox="0 0 300 100"
                               preserveAspectRatio="none"
                             >
@@ -447,12 +447,12 @@ export default function Dashboard({ stats }) {
                               </defs>
 
                               <path
-                                d="M 0,65 Q 15,30 28,60 T 55,75 T 80,35 T 105,70 T 130,30 T 155,80 T 185,55 T 215,75 T 245,60 T 275,55 T 300,75 L 300,100 L 0,100 Z"
+                                d="M 0,75 C 20,70 35,45 50,50 C 65,55 80,78 100,70 C 120,62 135,25 150,30 C 165,35 180,68 200,65 C 220,62 235,18 250,22 C 265,26 280,58 300,50 L 300,100 L 0,100 Z"
                                 fill="url(#latencyGradientAdmin)"
                               />
 
                               <path
-                                d="M 0,65 Q 15,30 28,60 T 55,75 T 80,35 T 105,70 T 130,30 T 155,80 T 185,55 T 215,75 T 245,60 T 275,55 T 300,75"
+                                d="M 0,75 C 20,70 35,45 50,50 C 65,55 80,78 100,70 C 120,62 135,25 150,30 C 165,35 180,68 200,65 C 220,62 235,18 250,22 C 265,26 280,58 300,50"
                                 fill="none"
                                 stroke="#10b981"
                                 strokeWidth="2.5"
