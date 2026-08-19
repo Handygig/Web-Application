@@ -216,7 +216,7 @@ export default function BookingIndex() {
               style={{ backgroundColor: 'var(--color-accent, #5E6933)' }}
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>{t('+ Create Manual Booking')}</span>
+              <span>{t('Create Manual Booking')}</span>
             </button>
           </div>
         </div>
