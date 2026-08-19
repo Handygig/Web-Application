@@ -359,7 +359,7 @@ export default function ProviderIndex({ providers: serverProviders, categories: 
               className="bg-theme-accent hover:bg-theme-accent-hover inline-flex items-center gap-2 rounded-[12px] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-theme-accent/15 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               <Plus className="h-4 w-4" />
-              {t('+ Add Provider')}
+              {t('Add Provider')}
             </button>
           }
         />
