@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Firebase Auth Routes
@@ -13,10 +12,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('auth/logout', [AuthController::class, 'logout']);
 
     // Protected Customer API Routes
-    Route::middleware('role:customer')->prefix('customer')->group(function () {
-    });
+    Route::middleware('role:customer')->prefix('customer')->group(function () {});
 
     // Protected Provider API Routes
-    Route::middleware('role:provider')->prefix('provider')->group(function () {
-    });
+    Route::middleware('role:provider')->prefix('provider')->group(function () {});
 });

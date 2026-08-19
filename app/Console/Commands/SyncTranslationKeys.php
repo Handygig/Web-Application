@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 class SyncTranslationKeys extends Command
 {
     protected $signature = 'translations:sync';
+
     protected $description = 'Scan project files and sync missing translation keys into JSON language files';
 
     public function handle(): int
@@ -30,7 +31,7 @@ class SyncTranslationKeys extends Command
 
         $this->syncBaseLocale($baseLocale, $scannedKeys);
 
-        $baseTranslations = $this->readJsonFile(lang_path($baseLocale . '.json'));
+        $baseTranslations = $this->readJsonFile(lang_path($baseLocale.'.json'));
 
         $allBaseKeys = collect(array_keys($baseTranslations))
             ->filter()
@@ -44,8 +45,8 @@ class SyncTranslationKeys extends Command
 
         $this->newLine();
         $this->info('Translation sync completed successfully.');
-        $this->info('Scanned keys found: ' . $scannedKeys->count());
-        $this->info('Total English keys synced to other languages: ' . $allBaseKeys->count());
+        $this->info('Scanned keys found: '.$scannedKeys->count());
+        $this->info('Total English keys synced to other languages: '.$allBaseKeys->count());
 
         return self::SUCCESS;
     }
@@ -132,7 +133,7 @@ class SyncTranslationKeys extends Command
 
     private function syncBaseLocale(string $locale, $keys): void
     {
-        $path = lang_path($locale . '.json');
+        $path = lang_path($locale.'.json');
 
         $translations = $this->readJsonFile($path);
 
@@ -154,7 +155,7 @@ class SyncTranslationKeys extends Command
 
     private function syncTargetLocale(string $locale, $keys): void
     {
-        $path = lang_path($locale . '.json');
+        $path = lang_path($locale.'.json');
 
         $translations = $this->readJsonFile($path);
 
@@ -190,6 +191,7 @@ class SyncTranslationKeys extends Command
 
         if (! is_array($decoded)) {
             $this->warn("Invalid JSON detected in {$path}. File was treated as empty.");
+
             return [];
         }
 
@@ -205,7 +207,7 @@ class SyncTranslationKeys extends Command
             json_encode(
                 $translations,
                 JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-            ) . PHP_EOL
+            ).PHP_EOL
         );
     }
 }
