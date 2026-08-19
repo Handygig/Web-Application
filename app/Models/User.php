@@ -15,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['role', 'full_name', 'email', 'phone', 'password', 'firebase_uid', 'status'])]
+#[Fillable(['role', 'full_name', 'email', 'phone', 'password', 'firebase_uid', 'status', 'profile_image'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -40,6 +40,17 @@ class User extends Authenticatable
         return Attribute::make(
             get: fn () => $this->full_name,
             set: fn ($value) => ['full_name' => $value],
+        );
+    }
+
+    /**
+     * Determine whether the user has completed their profile.
+     * A profile is complete when full_name and email are present.
+     */
+    protected function isProfileComplete(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => ! empty($this->full_name) && ! empty($this->email) && ! str_ends_with($this->email, '@placeholder.com'),
         );
     }
 
