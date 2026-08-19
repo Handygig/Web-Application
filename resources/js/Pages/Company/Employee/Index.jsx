@@ -498,7 +498,7 @@ export default function EmployeeIndex() {
               style={{ backgroundColor: 'var(--color-accent)' }}
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>{t('+ Add New Technician')}</span>
+              <span>{t('Add New Technician')}</span>
             </button>
           </div>
         </div>

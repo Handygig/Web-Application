@@ -19,6 +19,7 @@ import {
   UserCheck,
   Plus,
   Radio,
+  Calendar,
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
@@ -28,16 +29,16 @@ export default function Dashboard({ stats }) {
 
   const companyName = auth?.user?.name || t('Apex Home & Repair Services');
 
-  const [healthTab, setHealthTab] = useState('apis');
   const [bookingFilter, setBookingFilter] = useState('all');
   const [isAcceptingJobs, setIsAcceptingJobs] = useState(true);
   const [showDispatchModal, setShowDispatchModal] = useState(false);
 
-  const totalRevenue = stats?.totalRevenue ?? 32450.00;
+  const totalRevenue = stats?.totalRevenue ?? 32450.0;
   const totalCustomers = stats?.totalCustomers ?? 142;
-  const pendingPayoutsAmount = stats?.pendingPayoutsAmount ?? 2150.00;
+  const pendingPayoutsAmount = stats?.pendingPayoutsAmount ?? 2150.0;
   const totalEmployees = stats?.totalEmployees ?? 16;
   const activeBookingsCount = stats?.activeBookings ?? 8;
+  const customerRating = stats?.customerRating ?? '4.9';
 
   const formattedCurrency = (val) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
@@ -102,27 +103,13 @@ export default function Dashboard({ stats }) {
   });
 
   const analyticsDays = [
-    { day: t('Mon'), height: '55%', amount: '$3,400' },
-    { day: t('Tue'), height: '75%', amount: '$4,800' },
-    { day: t('Wed'), height: '65%', amount: '$4,200', highlight: '$5,100' },
-    { day: t('Thu'), height: '90%', amount: '$6,300' },
-    { day: t('Fri'), height: '70%', amount: '$4,900' },
-    { day: t('Sat'), height: '80%', amount: '$5,400' },
-    { day: t('Sun'), height: '60%', amount: '$3,850' },
-  ];
-
-  const systemApis = [
-    { name: t('Stripe Payout Gateway'), uptime: '99.98%', status: t('Operational'), latency: '45ms' },
-    { name: t('Twilio SMS Dispatch'), uptime: '100.0%', status: t('Operational'), latency: '110ms' },
-    { name: t('Google Maps Route Matrix'), uptime: '99.9%', status: t('Operational'), latency: '32ms' },
-    { name: t('Redis Service Queue'), uptime: '100.0%', status: t('Healthy'), latency: '2ms' },
-  ];
-
-  const systemLogs = [
-    { time: '22:05:12', type: 'INFO', text: 'DISPATCH_SMS: Technician #12 assigned to JOB-4089' },
-    { time: '21:48:04', type: 'SUCCESS', text: 'STRIPE_PAYOUT: Clearance #py_982 completed ($2,150.00)' },
-    { time: '21:12:30', type: 'INFO', text: 'GEOCODE_API: Route optimized for 4 active field units' },
-    { time: '20:30:15', type: 'INFO', text: 'JOB_STATUS: JOB-4084 updated to IN_PROGRESS' },
+    { day: t('Mon'), height: '55%', amount: '$3,400', jobs: '12 jobs' },
+    { day: t('Tue'), height: '75%', amount: '$4,800', jobs: '18 jobs' },
+    { day: t('Wed'), height: '65%', amount: '$4,200', jobs: '15 jobs', highlight: '$5,100' },
+    { day: t('Thu'), height: '90%', amount: '$6,300', jobs: '24 jobs' },
+    { day: t('Fri'), height: '70%', amount: '$4,900', jobs: '19 jobs' },
+    { day: t('Sat'), height: '80%', amount: '$5,400', jobs: '21 jobs' },
+    { day: t('Sun'), height: '60%', amount: '$3,850', jobs: '14 jobs' },
   ];
 
   const recentReviews = [
@@ -185,14 +172,14 @@ export default function Dashboard({ stats }) {
       <div className="provider-dashboard-root mx-auto max-w-[1400px] space-y-6 pb-8">
         
         {/* PROVIDER COMPANY HEADER & QUICK DISPATCH CONTROLS */}
-        <div className="bg-white/80 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white/80 backdrop-blur-md p-6 rounded-3xl border border-[#E2E4D9] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2.5">
               <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                 {t('Provider Dashboard')}
               </h1>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100/80 text-emerald-900 border border-emerald-300">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#EBF5EC] text-[#2F4F2F] border border-[#C6E2CB]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#4CAF50]" />
                 {t('Verified Company')}
               </span>
             </div>
@@ -218,8 +205,8 @@ export default function Dashboard({ stats }) {
             {/* Quick Dispatch Modal Button */}
             <button
               onClick={() => setShowDispatchModal(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-white font-bold text-xs transition-all shadow-md hover:opacity-90"
-              style={{ backgroundColor: 'var(--color-accent)' }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-white font-bold text-xs transition-all shadow-md hover:opacity-90 active:scale-98"
+              style={{ backgroundColor: 'var(--color-accent, #5E6933)' }}
             >
               <Plus className="w-4 h-4" />
               <span>{t('Dispatch Job')}</span>
@@ -227,115 +214,161 @@ export default function Dashboard({ stats }) {
           </div>
         </div>
 
-        {/* METRICS CARDS GRID (THEME-ACCENT STYLED) */}
+        {/* 1. TOP METRIC CARDS (ROW 1 - FULL WIDTH 4-CARD GRID) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
-          {/* Revenue Card */}
+          {/* Card 1 (Olive Green Accent): Total Revenue */}
           <div
-            className="p-5 rounded-2xl shadow-sm text-white flex flex-col justify-between space-y-4"
-            style={{ backgroundColor: 'var(--color-accent)' }}
+            className="p-6 rounded-2xl border border-[#E2E4D9] shadow-sm text-white flex flex-col justify-between space-y-4"
+            style={{ backgroundColor: 'var(--color-accent, #5E6933)' }}
           >
             <div className="flex items-start justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-white/80">{t('Total Revenue')}</span>
-              <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center text-white backdrop-blur-xs">
-                <DollarSign className="w-4 h-4" />
+              <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center text-white backdrop-blur-xs">
+                <DollarSign className="w-5 h-5" />
               </div>
             </div>
             <div className="text-3xl sm:text-4xl font-extrabold tracking-tight">
               {formattedCurrency(totalRevenue)}
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-xs">
-                <TrendingUp className="w-3 h-3" />
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-xs">
+                <TrendingUp className="w-3.5 h-3.5" />
                 {t('+12.5% Gross Earnings')}
               </span>
             </div>
           </div>
 
-          {/* Served Clients */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4">
+          {/* Card 2: Active Bookings */}
+          <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm flex flex-col justify-between space-y-4">
             <div className="flex items-start justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Total Customers')}</span>
-              <div className="w-8 h-8 rounded-full border border-slate-200 bg-emerald-50 text-emerald-700 flex items-center justify-center">
-                <Users className="w-4 h-4" />
-              </div>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Active Bookings')}</span>
+              <Link
+                href={route('company.bookings.index')}
+                className="w-9 h-9 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-700 transition-colors"
+              >
+                <ArrowUpRight className="w-5 h-5" />
+              </Link>
             </div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {totalCustomers}
-            </div>
+            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{activeBookingsCount}</div>
             <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                <UserCheck className="w-3 h-3 text-emerald-600" />
-                {t('Client Service Network')}
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                <Activity className="w-3.5 h-3.5 text-emerald-600" />
+                {t('In Active Repair & Dispatch')}
               </span>
             </div>
           </div>
 
-          {/* Active Field Technicians */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4">
+          {/* Card 3: Field Technicians */}
+          <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm flex flex-col justify-between space-y-4">
             <div className="flex items-start justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Field Technicians')}</span>
               <Link
                 href={route('company.employees.index')}
-                className="w-8 h-8 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-700 transition-colors"
+                className="w-9 h-9 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-700 transition-colors"
               >
-                <ArrowUpRight className="w-4 h-4" />
+                <ArrowUpRight className="w-5 h-5" />
               </Link>
             </div>
             <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{totalEmployees}</div>
             <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                <Wrench className="w-3 h-3 text-slate-500" />
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                <Wrench className="w-3.5 h-3.5 text-slate-500" />
                 {t('12 Active On Shift')}
               </span>
             </div>
           </div>
 
-          {/* Active Service Bookings */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4">
+          {/* Card 4: Customer Satisfaction */}
+          <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm flex flex-col justify-between space-y-4">
             <div className="flex items-start justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Active Bookings')}</span>
-              <Link
-                href={route('company.bookings.index')}
-                className="w-8 h-8 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-700 transition-colors"
-              >
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Customer Satisfaction')}</span>
+              <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
+                <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+              </div>
             </div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{activeBookingsCount}</div>
+            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight flex items-baseline gap-2">
+              {customerRating}
+              <span className="text-sm font-semibold text-slate-400">/ 5.0</span>
+            </div>
             <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                <Activity className="w-3 h-3 text-emerald-600" />
-                {t('In Active Repair & Dispatch')}
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                <UserCheck className="w-3.5 h-3.5 text-amber-600" />
+                {totalCustomers} {t('Total Reviews')}
               </span>
             </div>
           </div>
+
         </div>
 
-        {/* MAIN TWO-COLUMN DASHBOARD LAYOUT */}
+        {/* 2. MAIN CONTENT GRID (2 COLUMNS: 8 COLS LEFT / 4 COLS RIGHT) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
-          {/* LEFT 8 COLUMNS: DISPATCH QUEUE & ANALYTICS */}
+          {/* --- LEFT COLUMN (65–70% WIDTH / 8 COLUMNS) --- */}
           <div className="lg:col-span-8 space-y-6">
             
-            {/* LIVE SERVICE REQUESTS & DISPATCH TRACKER */}
-            <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+            {/* A. WEEKLY PERFORMANCE CHART CARD */}
+            <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                <div>
+                  <h3 className="text-lg font-extrabold text-slate-900 tracking-tight">{t('Weekly Revenue & Job Volume')}</h3>
+                  <p className="text-xs font-medium text-slate-500 mt-0.5">
+                    {t('Mon–Sun performance trends for completed repairs & billing')}
+                  </p>
+                </div>
+                <span className="px-3 py-1 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                  {t('This Week')}
+                </span>
+              </div>
+
+              <div className="h-52 flex items-end justify-between gap-3 px-2 pt-4 pb-2">
+                {analyticsDays.map((item, idx) => (
+                  <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group relative">
+                    {item.highlight && (
+                      <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md z-10 whitespace-nowrap">
+                        {item.highlight}
+                      </div>
+                    )}
+                    <div className="text-[11px] font-bold text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {item.amount}
+                    </div>
+                    <div
+                      style={{
+                        height: item.height,
+                        backgroundColor: idx === 3 ? 'var(--color-accent, #5E6933)' : undefined,
+                      }}
+                      className={`w-full max-w-[32px] rounded-t-xl transition-all duration-300 group-hover:opacity-90 ${
+                        idx === 3
+                          ? 'shadow-xs'
+                          : idx % 2 === 0
+                          ? 'bg-[#8A9A4A]'
+                          : 'bg-slate-200'
+                      }`}
+                    />
+                    <span className="text-xs font-bold text-slate-600">{item.day}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* B. LIVE SERVICE BOOKINGS & ACTIVE DISPATCH TABLE CARD */}
+            <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-100">
                 <div>
                   <h3 className="text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
                     <Zap className="w-5 h-5 text-amber-500 fill-amber-500" />
-                    {t('Live Service Bookings & Dispatch')}
+                    {t('Live Service Bookings & Active Dispatch')}
                   </h3>
                   <p className="text-xs font-medium text-slate-500 mt-0.5">
-                    {t('Active customer service requests and field technician assignments')}
+                    {t('Real-time queue of customer bookings, technician assignments, and job status')}
                   </p>
                 </div>
 
-                {/* Filter Tabs */}
+                {/* Filter Pills */}
                 <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold text-slate-600">
                   <button
                     onClick={() => setBookingFilter('all')}
-                    className={`px-2.5 py-1 rounded-lg transition-all ${
+                    className={`px-3 py-1 rounded-lg transition-all ${
                       bookingFilter === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'hover:text-slate-900'
                     }`}
                   >
@@ -343,7 +376,7 @@ export default function Dashboard({ stats }) {
                   </button>
                   <button
                     onClick={() => setBookingFilter('urgent')}
-                    className={`px-2.5 py-1 rounded-lg transition-all ${
+                    className={`px-3 py-1 rounded-lg transition-all ${
                       bookingFilter === 'urgent' ? 'bg-white text-rose-700 shadow-xs' : 'hover:text-slate-900'
                     }`}
                   >
@@ -351,7 +384,7 @@ export default function Dashboard({ stats }) {
                   </button>
                   <button
                     onClick={() => setBookingFilter('in_progress')}
-                    className={`px-2.5 py-1 rounded-lg transition-all ${
+                    className={`px-3 py-1 rounded-lg transition-all ${
                       bookingFilter === 'in_progress' ? 'bg-white text-emerald-800 shadow-xs' : 'hover:text-slate-900'
                     }`}
                   >
@@ -359,7 +392,7 @@ export default function Dashboard({ stats }) {
                   </button>
                   <button
                     onClick={() => setBookingFilter('scheduled')}
-                    className={`px-2.5 py-1 rounded-lg transition-all ${
+                    className={`px-3 py-1 rounded-lg transition-all ${
                       bookingFilter === 'scheduled' ? 'bg-white text-blue-700 shadow-xs' : 'hover:text-slate-900'
                     }`}
                   >
@@ -368,7 +401,7 @@ export default function Dashboard({ stats }) {
                 </div>
               </div>
 
-              {/* Bookings List */}
+              {/* Bookings List / Table */}
               <div className="space-y-3">
                 {filteredBookings.map((job) => (
                   <div
@@ -377,7 +410,7 @@ export default function Dashboard({ stats }) {
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5">
-                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-slate-200 text-slate-800 font-mono">
+                        <span className="text-xs font-bold px-2.5 py-0.5 rounded-md bg-slate-200 text-slate-800 font-mono">
                           {job.id}
                         </span>
                         <h4 className="text-sm font-bold text-slate-900">{job.service}</h4>
@@ -408,7 +441,7 @@ export default function Dashboard({ stats }) {
                       <Link
                         href={route('company.bookings.index')}
                         className="font-bold flex items-center gap-1 hover:underline"
-                        style={{ color: 'var(--color-accent)' }}
+                        style={{ color: 'var(--color-accent, #5E6933)' }}
                       >
                         <span>{t('Manage Service')}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -419,205 +452,114 @@ export default function Dashboard({ stats }) {
               </div>
             </div>
 
-            {/* REVENUE & BOOKING ANALYTICS CHART */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-              
-              {/* Earnings Graph */}
-              <div className="md:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-base font-bold text-slate-900">{t('Weekly Revenue & Job Volume')}</h3>
-                  <span className="text-xs font-bold text-slate-400">{t('This Week')}</span>
-                </div>
-
-                <div className="h-44 flex items-end justify-between gap-2 px-2 pb-2">
-                  {analyticsDays.map((item, idx) => (
-                    <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group relative">
-                      {item.highlight && (
-                        <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md z-10">
-                          {item.highlight}
-                        </div>
-                      )}
-                      <div
-                        style={{
-                          height: item.height,
-                          backgroundColor: idx === 3 ? 'var(--color-accent)' : undefined,
-                        }}
-                        className={`w-full max-w-[28px] rounded-full transition-all duration-300 group-hover:opacity-90 ${
-                          idx === 3
-                            ? ''
-                            : idx % 2 === 0
-                            ? 'bg-emerald-600'
-                            : 'bg-slate-200 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:6px_6px]'
-                        }`}
-                      />
-                      <span className="text-xs font-semibold text-slate-400">{item.day}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Emergency Dispatch Alert Card */}
-              <div className="md:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4">
-                <div>
-                  <div className="flex items-center gap-2 text-rose-700 bg-rose-50 px-3 py-1 rounded-xl text-xs font-extrabold border border-rose-200 w-fit mb-3">
-                    <AlertTriangle className="w-4 h-4" />
-                    <span>{t('Emergency Priority')}</span>
-                  </div>
-                  <h4 className="text-base font-extrabold text-slate-900 leading-snug">
-                    {t('Burst Water Pipe Emergency')}
-                  </h4>
-                  <p className="text-xs font-medium text-slate-500 mt-1">
-                    {t('742 Evergreen Terrace • Customer waiting for immediate dispatch.')}
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-slate-100">
-                  <button
-                    onClick={() => setShowDispatchModal(true)}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-white font-bold text-xs transition-all shadow-md hover:opacity-90"
-                    style={{ backgroundColor: 'var(--color-accent)' }}
-                  >
-                    <Wrench className="w-4 h-4" />
-                    <span>{t('Assign Emergency Tech')}</span>
-                  </button>
-                </div>
-              </div>
-
-            </div>
-
-            {/* RECENT REVIEWS & PENDING PAYOUTS */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-              
-              {/* Customer Reviews Feed */}
-              <div className="md:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold text-slate-900">{t('Recent Customer Reviews')}</h3>
-                    <span className="flex items-center gap-1 text-xs font-extrabold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                      <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                      4.9 / 5.0
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  {recentReviews.map((rev) => (
-                    <div key={rev.id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors text-left border border-slate-100">
-                      <img
-                        src={rev.avatar}
-                        alt={rev.name}
-                        className="w-9 h-9 rounded-full object-cover shrink-0 mt-0.5 border border-slate-200"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <h5 className="text-xs font-bold text-slate-900 truncate">{rev.name}</h5>
-                          <div className="flex items-center gap-0.5 shrink-0">
-                            {[...Array(rev.rating)].map((_, i) => (
-                              <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                            ))}
-                          </div>
-                        </div>
-                        <p className="text-xs font-medium text-slate-600 line-clamp-2 mt-0.5">{rev.comment}</p>
-                        <span className="inline-block text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded mt-1.5 border border-emerald-200">
-                          {rev.service}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Pending Employee Payouts Card */}
-              <div className="md:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-base font-bold text-slate-900">{t('Technician Payouts')}</h3>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                      {t('Scheduled')}
-                    </span>
-                  </div>
-
-                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/70 space-y-2 mb-4">
-                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
-                      {t('Owed to Field Staff')}
-                    </span>
-                    <div className="text-2xl font-extrabold text-slate-900 tracking-tight">
-                      {formattedCurrency(pendingPayoutsAmount)}
-                    </div>
-                    <p className="text-[11px] text-slate-500">
-                      {t('Automated bi-weekly payroll deposit')}
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                      <span>{t('Clearance Rate')}</span>
-                      <span className="text-emerald-700">88% {t('Cleared')}</span>
-                    </div>
-                    <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden flex">
-                      <div className="h-full bg-emerald-600" style={{ width: '88%' }} />
-                      <div className="h-full bg-amber-400" style={{ width: '12%' }} />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>{t('Stripe Connect Active')}</span>
-                  </div>
-                  <Link
-                    href={route('company.payments.index')}
-                    className="flex items-center gap-1 text-xs font-bold hover:underline"
-                    style={{ color: 'var(--color-accent)' }}
-                  >
-                    <span>{t('View Payments')}</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-
-            </div>
-
           </div>
 
-          {/* RIGHT 4 COLUMNS: SYSTEM DIAGNOSTICS & LOGS */}
-          <div className="lg:col-span-4 flex flex-col justify-between">
-            <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex-1 flex flex-col justify-between">
-              <div className="space-y-5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-lg font-extrabold text-slate-900 tracking-tight">{t('Service Integrations')}</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-xs font-bold text-emerald-700">{t('All Systems Operational')}</span>
-                    </div>
-                  </div>
+          {/* --- RIGHT COLUMN (30–35% WIDTH / 4 COLUMNS) --- */}
+          <div className="lg:col-span-4 space-y-6">
+            
+            {/* A. EMERGENCY ACTION CARD */}
+            <div className="p-6 rounded-2xl border border-rose-200 bg-rose-50/40 shadow-sm flex flex-col justify-between space-y-4">
+              <div>
+                <div className="flex items-center gap-2 text-rose-700 bg-rose-100 px-3 py-1 rounded-xl text-xs font-extrabold border border-rose-200 w-fit mb-3">
+                  <AlertTriangle className="w-4 h-4 text-rose-600" />
+                  <span>{t('Emergency Priority')}</span>
+                </div>
+                <h4 className="text-base font-extrabold text-slate-900 leading-snug">
+                  {t('Burst Water Pipe Emergency')}
+                </h4>
+                <p className="text-xs font-medium text-slate-600 mt-1">
+                  {t('742 Evergreen Terrace • Customer waiting for immediate dispatch.')}
+                </p>
+              </div>
 
-                  <div className="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-semibold text-slate-600">
-                    <button
-                      onClick={() => setHealthTab('apis')}
-                      className={`px-3 py-1 rounded-lg transition-all ${
-                        healthTab === 'apis'
-                          ? 'bg-white text-slate-900 font-bold shadow-xs'
-                          : 'hover:text-slate-900'
-                      }`}
-                    >
-                      {t('APIs')}
-                    </button>
-                    <button
-                      onClick={() => setHealthTab('logs')}
-                      className={`px-3 py-1 rounded-lg transition-all ${
-                        healthTab === 'logs'
-                          ? 'bg-white text-slate-900 font-bold shadow-xs'
-                          : 'hover:text-slate-900'
-                      }`}
-                    >
-                      {t('Logs')}
-                    </button>
+              <div className="pt-2 border-t border-rose-200/60">
+                <button
+                  onClick={() => setShowDispatchModal(true)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-white font-bold text-xs transition-all shadow-md hover:opacity-90 active:scale-98"
+                  style={{ backgroundColor: 'var(--color-accent, #5E6933)' }}
+                >
+                  <Wrench className="w-4 h-4" />
+                  <span>{t('Assign Emergency Tech')}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* B. UPCOMING TECHNICIAN PAYOUT CARD */}
+            <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm flex flex-col justify-between space-y-4">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-base font-bold text-slate-900">{t('Technician Payouts')}</h3>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                    {t('Scheduled')}
+                  </span>
+                </div>
+
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/70 space-y-2 mb-4">
+                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
+                    {t('Owed to Field Staff')}
+                  </span>
+                  <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                    {formattedCurrency(pendingPayoutsAmount)}
+                  </div>
+                  <div className="flex items-center gap-1 text-[11px] text-slate-500 font-medium pt-1">
+                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                    <span>{t('Scheduled Payout')}: <strong>Aug 25, 2026</strong></span>
                   </div>
                 </div>
 
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>{t('Clearance Rate')}</span>
+                    <span className="text-emerald-700">88% {t('Cleared')}</span>
+                  </div>
+                  <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden flex">
+                    <div className="h-full bg-[#5E6933]" style={{ width: '88%' }} />
+                    <div className="h-full bg-amber-400" style={{ width: '12%' }} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>{t('Stripe Connect Active')}</span>
+                </div>
+                <Link
+                  href={route('company.payments.index')}
+                  className="flex items-center gap-1 text-xs font-bold hover:underline"
+                  style={{ color: 'var(--color-accent, #5E6933)' }}
+                >
+                  <span>{t('View Payments')}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* C. RECENT CUSTOMER REVIEWS WIDGET */}
+            <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                <h3 className="text-base font-bold text-slate-900">{t('Recent Customer Reviews')}</h3>
+                <span className="flex items-center gap-1 text-xs font-extrabold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                  4.9 / 5.0
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                {recentReviews.map((rev) => (
+                  <div key={rev.id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors text-left border border-slate-100">
+                    <img
+                      src={rev.avatar}
+                      alt={rev.name}
+                      className="w-9 h-9 rounded-full object-cover shrink-0 mt-0.5 border border-slate-200"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <h5 className="text-xs font-bold text-slate-900 truncate">{rev.name}</h5>
+                        <div className="flex items-center gap-0.5 shrink-0">
+                          {[...Array(rev.rating)].map((_, i) => (
+                            <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                          ))}
                 <div className="border-b border-slate-100" />
 
                 {healthTab === 'apis' ? (
@@ -734,11 +676,14 @@ export default function Dashboard({ stats }) {
                             {log.type}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-300 leading-snug break-all">{log.text}</p>
                       </div>
-                    ))}
+                      <p className="text-xs font-medium text-slate-600 line-clamp-2 mt-0.5">{rev.comment}</p>
+                      <span className="inline-block text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded mt-1.5 border border-emerald-200">
+                        {rev.service}
+                      </span>
+                    </div>
                   </div>
-                )}
+                ))}
               </div>
             </div>
 
@@ -790,7 +735,7 @@ export default function Dashboard({ stats }) {
                 <button
                   onClick={() => setShowDispatchModal(false)}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-white shadow-sm"
-                  style={{ backgroundColor: 'var(--color-accent)' }}
+                  style={{ backgroundColor: 'var(--color-accent, #5E6933)' }}
                 >
                   {t('Confirm & Dispatch')}
                 </button>
