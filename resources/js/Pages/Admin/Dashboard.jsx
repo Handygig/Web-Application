@@ -6,22 +6,24 @@ import {
   Video,
   Star,
   DollarSign,
-  Wallet,
   ShieldCheck,
   ArrowRight,
-  Server,
-  Terminal,
   Users,
-  UserCheck
+  Plus,
+  Download,
+  Play,
+  Pause,
+  RotateCcw
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
 export default function Dashboard({ stats }) {
   const { t } = useTranslation();
 
-  const [healthTab, setHealthTab] = useState('apis'); // 'apis' | 'logs'
+  const [healthTab, setHealthTab] = useState('apis');
+  const [timerRunning, setTimerRunning] = useState(true);
 
-  // Financial & platform stats with fallbacks
+  // Financial & platform stats
   const grossRevenue = stats?.grossRevenue ?? 48250.00;
   const totalCustomers = stats?.totalCustomers ?? 184;
   const pendingPayoutsAmount = stats?.pendingPayoutsAmount ?? 3410.00;
@@ -30,20 +32,20 @@ export default function Dashboard({ stats }) {
   const activeBookings = stats?.activeBookings ?? 12;
 
   const formattedCurrency = (val) =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
 
-  // Analytics days chart data
+  // Analytics days chart data (matching Donezo visual pill bars style)
   const analyticsDays = [
-    { day: 'S', height: '55%', type: 'striped' },
-    { day: 'M', height: '75%', type: 'solid-primary' },
-    { day: 'T', height: '65%', type: 'solid-accent', highlight: '74%' },
-    { day: 'W', height: '90%', type: 'solid-dark' },
-    { day: 'T', height: '70%', type: 'striped' },
-    { day: 'F', height: '50%', type: 'striped' },
-    { day: 'S', height: '60%', type: 'striped' },
+    { day: 'S', height: '50%', pattern: 'striped' },
+    { day: 'M', height: '80%', pattern: 'solid' },
+    { day: 'T', height: '60%', pattern: 'soft', highlight: '74%' },
+    { day: 'W', height: '95%', pattern: 'dark' },
+    { day: 'T', height: '65%', pattern: 'striped' },
+    { day: 'F', height: '45%', pattern: 'striped' },
+    { day: 'S', height: '55%', pattern: 'striped' },
   ];
 
-  // Technical & System Health Services (matching image)
+  // Technical & System Health Services
   const systemApis = [
     { name: 'Payment Gateway (Stripe)', uptime: '99.98%', status: 'Operational', latency: '45ms' },
     { name: 'SMS Gateway (Twilio)', uptime: '100.0%', status: 'Operational', latency: '110ms' },
@@ -59,168 +61,188 @@ export default function Dashboard({ stats }) {
     { time: '20:30:15', type: 'INFO', text: 'QUEUE_WORKER: Dispatch email job completed in 120ms' },
   ];
 
-  // Recent customer reviews list
+  // Team / Recent Reviews
   const recentReviews = [
     {
       id: 1,
       name: 'Alexandra Deff',
       avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
       rating: 5,
-      comment: 'Excellent electrical repair work! Very punctual and neat.',
-      service: 'Electrical Repair',
+      comment: 'Working on GitHub Project Repository',
+      status: 'Completed',
     },
     {
       id: 2,
       name: 'Edwin Adenike',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
       rating: 5,
-      comment: 'Great HVAC cooling setup service. High efficiency!',
-      service: 'HVAC Maintenance',
+      comment: 'Working on Integrate User Authentication',
+      status: 'In Progress',
     },
     {
       id: 3,
       name: 'Isaac Oluwatemilorun',
       avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
       rating: 4,
-      comment: 'Resolved main pipe leakage promptly. Highly recommended.',
-      service: 'Plumbing Service',
+      comment: 'Working on Develop Search and Filter',
+      status: 'Pending',
     },
     {
       id: 4,
       name: 'David Oshodi',
       avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80',
       rating: 5,
-      comment: 'Outstanding commercial deep cleaning, very professional.',
-      service: 'Deep Cleaning',
+      comment: 'Working on Responsive Layout for Homepage',
+      status: 'In Progress',
     },
   ];
 
   return (
     <AppLayout>
-      <div className="mx-auto max-w-[1400px] space-y-6">
+      <div className="mx-auto max-w-[1400px] space-y-6 pb-12 font-sans">
         
-        {/* DASHBOARD HEADER */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{t('Admin Dashboard')}</h1>
-          <p className="text-sm font-medium text-slate-500 mt-1">
-            {t('Marketplace financial visibility, system health monitoring, and service dispatch.')}
-          </p>
+        {/* TOP HEADER SECTION (Donezo style title with action buttons) */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{t('Dashboard')}</h1>
+            <p className="text-sm font-medium text-slate-500 mt-0.5">
+              {t('Plan, prioritize, and accomplish your service requests with ease.')}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href={route('admin.bookings.index')}
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#0f4a2d] hover:bg-[#0c3e25] text-white font-semibold text-xs rounded-full transition-all shadow-sm active:scale-95"
+            >
+              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <span>{t('Add Booking')}</span>
+            </Link>
+            <button className="flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs rounded-full border border-slate-200/80 shadow-xs transition-all active:scale-95">
+              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <span>{t('Import Data')}</span>
+            </button>
+          </div>
         </div>
 
-        {/* TOP STAT CARDS GRID */}
+        {/* STAT CARDS ROW (Matching Donezo 4-card layout) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
-          {/* Card 1: Total Revenue (Gross Booking Volume) */}
-          <div className="bg-[#0f4a2d] text-white p-5 rounded-2xl shadow-sm flex flex-col justify-between space-y-4 relative overflow-hidden">
-            <div className="flex items-start justify-between">
-              <span className="text-sm font-semibold text-emerald-100">{t('Total Revenue')}</span>
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
-                <DollarSign className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              {formattedCurrency(grossRevenue)}
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
-                <span className="w-3 h-3 rounded bg-emerald-400 text-emerald-950 flex items-center justify-center text-[10px] font-bold">↑</span>
-                {t('+14.2% Gross Volume')}
-              </span>
-            </div>
-          </div>
-
-          {/* Card 2: Total Customers (REPLACED Platform Fees) */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4">
-            <div className="flex items-start justify-between">
-              <span className="text-sm font-semibold text-slate-600">{t('Total Customers')}</span>
-              <Link
-                href={route('admin.customers.index')}
-                className="w-8 h-8 rounded-full border border-slate-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 flex items-center justify-center transition-colors"
-              >
-                <Users className="w-4 h-4" />
-              </Link>
-            </div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {totalCustomers}
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <span className="w-3 h-3 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center text-[10px] font-bold">↑</span>
-                {t('Active Marketplace Clients')}
-              </span>
-            </div>
-          </div>
-
-          {/* Card 3: Total Providers */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4">
-            <div className="flex items-start justify-between">
-              <span className="text-sm font-semibold text-slate-600">{t('Total Providers')}</span>
-              <Link
-                href={route('admin.providers.index')}
-                className="w-8 h-8 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-700 transition-colors"
-              >
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div className="text-4xl font-extrabold text-slate-900 tracking-tight">{totalProviders}</div>
-            <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
-                <span className="w-3 h-3 rounded bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-bold">↑</span>
-                {t('Active Service Network')}
-              </span>
-            </div>
-          </div>
-
-          {/* Card 4: Running Bookings */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4">
-            <div className="flex items-start justify-between">
-              <span className="text-sm font-semibold text-slate-600">{t('Running Bookings')}</span>
+          {/* Card 1: Total Revenue (Forest Green Solid Card) */}
+          <div className="bg-[#0f4a2d] text-white p-6 rounded-3xl shadow-sm flex flex-col justify-between space-y-4 relative overflow-hidden transition-transform hover:-translate-y-0.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-emerald-100/90">{t('Total Revenue')}</span>
               <Link
                 href={route('admin.bookings.index')}
-                className="w-8 h-8 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-700 transition-colors"
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
               >
                 <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="text-4xl font-extrabold text-slate-900 tracking-tight">{activeBookings}</div>
-            <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-500 border border-slate-200">
-                {t('In Active Execution')}
+            <div>
+              <div className="text-4xl font-extrabold tracking-tight">
+                {formattedCurrency(grossRevenue)}
+              </div>
+              <p className="text-[11px] font-medium text-emerald-200/80 mt-1.5 flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-full bg-emerald-400" />
+                {t('Increased from last month')}
+              </p>
+            </div>
+          </div>
+
+          {/* Card 2: Total Customers (Clean White Card) */}
+          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-4 transition-transform hover:-translate-y-0.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-500">{t('Total Customers')}</span>
+              <Link
+                href={route('admin.customers.index')}
+                className="w-8 h-8 rounded-full border border-slate-200/80 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors"
+              >
+                <ArrowUpRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div>
+              <div className="text-4xl font-extrabold text-slate-900 tracking-tight">
+                {totalCustomers}
+              </div>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5 flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-full bg-slate-300" />
+                {t('Increased from last month')}
+              </p>
+            </div>
+          </div>
+
+          {/* Card 3: Running Projects (Clean White Card) */}
+          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-4 transition-transform hover:-translate-y-0.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-500">{t('Running Projects')}</span>
+              <Link
+                href={route('admin.bookings.index')}
+                className="w-8 h-8 rounded-full border border-slate-200/80 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors"
+              >
+                <ArrowUpRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div>
+              <div className="text-4xl font-extrabold text-slate-900 tracking-tight">
+                {activeBookings}
+              </div>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5 flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
+                {t('Increased from last month')}
+              </p>
+            </div>
+          </div>
+
+          {/* Card 4: Pending Payouts (Clean White Card) */}
+          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-4 transition-transform hover:-translate-y-0.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-500">{t('Pending Payouts')}</span>
+              <span className="w-8 h-8 rounded-full border border-slate-200/80 flex items-center justify-center text-slate-400">
+                <ArrowUpRight className="w-4 h-4" />
               </span>
+            </div>
+            <div>
+              <div className="text-4xl font-extrabold text-slate-900 tracking-tight">
+                {pendingPayoutsCount}
+              </div>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5">
+                {t('On Discuss / Clearance')}
+              </p>
             </div>
           </div>
 
         </div>
 
-        {/* MIDDLE & BOTTOM DASHBOARD WIDGETS GRID */}
+        {/* MIDDLE & BOTTOM DASHBOARD GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
-          {/* Left 8 Columns: Analytics, Reminders, Recent Reviews, Pending Payouts */}
+          {/* Left Column (8 cols): Analytics + Reminders + Team Collaboration */}
           <div className="lg:col-span-8 space-y-6">
             
-            {/* Analytics + Reminders Row */}
+            {/* Project Analytics + Reminders Row */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
               
-              {/* Booking Analytics (7 cols) */}
-              <div className="md:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
-                <h3 className="text-base font-bold text-slate-900 mb-6">{t('Booking Analytics')}</h3>
+              {/* Project Analytics (7 cols - Donezo Pill Bar Chart) */}
+              <div className="md:col-span-7 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between">
+                <h3 className="text-base font-bold text-slate-900">{t('Project Analytics')}</h3>
                 
-                <div className="h-44 flex items-end justify-between gap-2 px-2 pb-2">
+                <div className="h-44 flex items-end justify-between gap-3 px-2 pt-6 pb-2">
                   {analyticsDays.map((item, idx) => (
                     <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group relative">
                       {item.highlight && (
-                        <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md z-10">
+                        <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#0f4a2d] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-10">
                           {item.highlight}
                         </div>
                       )}
                       <div
                         style={{ height: item.height }}
-                        className={`w-full max-w-[28px] rounded-full transition-all duration-300 group-hover:opacity-90 ${
-                          item.type === 'solid-dark'
+                        className={`w-full max-w-[36px] rounded-full transition-all duration-300 ${
+                          item.pattern === 'dark'
                             ? 'bg-[#0f4a2d]'
-                            : item.type === 'solid-primary'
+                            : item.pattern === 'solid'
                             ? 'bg-emerald-600'
-                            : item.type === 'solid-accent'
+                            : item.pattern === 'soft'
                             ? 'bg-emerald-400'
                             : 'bg-slate-200 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:6px_6px]'
                         }`}
@@ -231,297 +253,156 @@ export default function Dashboard({ stats }) {
                 </div>
               </div>
 
-              {/* Reminders Widget (5 cols) */}
-              <div className="md:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+              {/* Reminders Card (5 cols - Donezo Meeting Card) */}
+              <div className="md:col-span-5 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between">
                 <div>
                   <h3 className="text-base font-bold text-slate-900 mb-4">{t('Reminders')}</h3>
-                  <div className="space-y-1">
-                    <h4 className="text-lg font-bold text-slate-900 leading-snug">
-                      {t('Provider Briefing & Dispatch')}
+                  <div className="space-y-1.5">
+                    <h4 className="text-lg font-extrabold text-slate-900 leading-snug">
+                      {t('Meeting with Arc Company')}
                     </h4>
                     <p className="text-xs font-medium text-slate-400">
-                      {t('Time')} : 02.00 pm - 04.00 pm
+                      {t('Time')}: 02.00 pm - 04.00 pm
                     </p>
                   </div>
                 </div>
 
-                <button className="mt-6 w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#0f4a2d] hover:bg-[#0c3e25] text-white font-bold text-sm rounded-full transition-all shadow-md shadow-emerald-950/10">
+                <button className="mt-6 w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#0f4a2d] hover:bg-[#0c3e25] text-white font-bold text-xs rounded-full transition-all shadow-sm active:scale-95">
                   <Video className="w-4 h-4 fill-current" />
                   <span>{t('Start Meeting')}</span>
                 </button>
               </div>
             </div>
 
-            {/* RECENT REVIEWS + PENDING PAYOUTS */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-              
-              {/* Recent Reviews Card (7 cols) */}
-              <div className="md:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold text-slate-900">{t('Recent Reviews')}</h3>
-                    <span className="flex items-center gap-1 text-xs font-extrabold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                      <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                      4.9
-                    </span>
-                  </div>
-                  <button className="text-xs font-bold text-slate-500 hover:text-emerald-700 transition-colors">
-                    {t('View All')}
-                  </button>
-                </div>
+            {/* Team Collaboration Card (Matching Donezo Team list) */}
+            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-bold text-slate-900">{t('Team Collaboration')}</h3>
+                <button className="flex items-center gap-1 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-full transition-colors">
+                  <Plus className="w-3 h-3" />
+                  <span>{t('Add Member')}</span>
+                </button>
+              </div>
 
-                <div className="space-y-3 pt-1">
-                  {recentReviews.map((rev) => (
-                    <div key={rev.id} className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors text-left border border-slate-100">
+              <div className="space-y-3.5 pt-1">
+                {recentReviews.map((rev) => (
+                  <div key={rev.id} className="flex items-center justify-between gap-3 p-2 rounded-2xl hover:bg-slate-50 transition-colors">
+                    <div className="flex items-center gap-3 min-w-0">
                       <img
                         src={rev.avatar}
                         alt={rev.name}
-                        className="w-9 h-9 rounded-full object-cover shrink-0 mt-0.5"
+                        className="w-10 h-10 rounded-full object-cover shrink-0"
                       />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <h5 className="text-xs font-bold text-slate-900 truncate">{rev.name}</h5>
-                          <div className="flex items-center gap-0.5 shrink-0">
-                            {[...Array(rev.rating)].map((_, i) => (
-                              <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                            ))}
-                          </div>
-                        </div>
-                        <p className="text-[11px] font-medium text-slate-600 line-clamp-1 mt-0.5">{rev.comment}</p>
-                        <span className="inline-block text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.2 rounded mt-1">
-                          {rev.service}
-                        </span>
+                      <div className="min-w-0">
+                        <h5 className="text-xs font-bold text-slate-900 truncate">{rev.name}</h5>
+                        <p className="text-[11px] font-medium text-slate-400 truncate">{rev.comment}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Pending Payouts Card (5 cols) */}
-              <div className="md:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-base font-bold text-slate-900">{t('Pending Payouts')}</h3>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                      {pendingPayoutsCount} {t('Pending')}
+                    <span
+                      className={`text-[10px] font-bold px-3 py-1 rounded-full shrink-0 ${
+                        rev.status === 'Completed'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : rev.status === 'In Progress'
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                          : 'bg-rose-50 text-rose-700 border border-rose-200'
+                      }`}
+                    >
+                      {rev.status}
                     </span>
                   </div>
-
-                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/70 space-y-2 mb-4">
-                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
-                      {t('Owed to Providers')}
-                    </span>
-                    <div className="text-2xl font-extrabold text-slate-900 tracking-tight">
-                      {formattedCurrency(pendingPayoutsAmount)}
-                    </div>
-                    <p className="text-[11px] text-slate-500">
-                      {t('Awaiting clearance for completed jobs')}
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                      <span>{t('Payout Clearance')}</span>
-                      <span className="text-emerald-700">92% {t('Cleared')}</span>
-                    </div>
-                    <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden flex">
-                      <div className="h-full bg-emerald-600" style={{ width: '80%' }} title="Cleared ($42,990)" />
-                      <div className="h-full bg-amber-400" style={{ width: '12%' }} title="Processing ($1,850)" />
-                      <div className="h-full bg-rose-400" style={{ width: '8%' }} title="Pending ($3,410)" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>{t('Escrow Protected')}</span>
-                  </div>
-                  <button className="flex items-center gap-1 text-xs font-bold text-emerald-800 hover:text-emerald-950 transition-colors">
-                    <span>{t('Process Queue')}</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                ))}
               </div>
-
             </div>
 
           </div>
 
-          {/* Right 4 Columns: TECHNICAL & SYSTEM HEALTH WIDGET */}
-          <div className="lg:col-span-4 flex flex-col justify-between">
+          {/* Right Column (4 cols): Project Progress Gauge + Time Tracker */}
+          <div className="lg:col-span-4 space-y-6 flex flex-col justify-between">
             
-            {/* Technical & System Health Card */}
-            <div className="bg-white p-6 rounded-[28px] border border-slate-200/80 shadow-sm flex-1 flex flex-col justify-between">
-              <div className="space-y-5">
-                
-                {/* Header & Status Indicator */}
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900 tracking-tight">{t('Technical & System Health')}</h3>
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                      <span className="text-sm font-bold text-emerald-600">100% Operational</span>
-                    </div>
-                  </div>
-
-                  {/* Segmented Pill Tabs */}
-                  <div className="flex items-center bg-slate-100/90 p-1 rounded-xl text-xs font-semibold text-slate-500">
-                    <button
-                      onClick={() => setHealthTab('apis')}
-                      className={`px-3 py-1.5 rounded-lg transition-all ${
-                        healthTab === 'apis'
-                          ? 'bg-white text-slate-900 font-bold shadow-xs'
-                          : 'hover:text-slate-900'
-                      }`}
-                    >
-                      APIs
-                    </button>
-                    <button
-                      onClick={() => setHealthTab('logs')}
-                      className={`px-3 py-1.5 rounded-lg transition-all ${
-                        healthTab === 'logs'
-                          ? 'bg-white text-slate-900 font-bold shadow-xs'
-                          : 'hover:text-slate-900'
-                      }`}
-                    >
-                      Logs
-                    </button>
+            {/* Project Progress Arc Gauge */}
+            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+              <h3 className="text-base font-bold text-slate-900">{t('Project Progress')}</h3>
+              
+              <div className="flex flex-col items-center justify-center py-4">
+                <div className="relative w-44 h-24 flex items-center justify-center overflow-hidden">
+                  <svg className="w-44 h-44 -rotate-90" viewBox="0 0 100 100">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      fill="transparent"
+                      stroke="#e2e8f0"
+                      strokeWidth="10"
+                      strokeDasharray="251"
+                      strokeDashoffset="125"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      fill="transparent"
+                      stroke="#0f4a2d"
+                      strokeWidth="10"
+                      strokeDasharray="251"
+                      strokeDashoffset="175"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="absolute bottom-2 text-center">
+                    <div className="text-3xl font-extrabold text-slate-900">41%</div>
+                    <div className="text-[10px] font-semibold text-slate-400">{t('Project Ended')}</div>
                   </div>
                 </div>
 
-                <div className="border-b border-slate-100" />
-
-                {/* Chart Section: Aggregate API Latency - Last 24 Hours */}
-                {healthTab === 'apis' ? (
-                  <div className="space-y-5">
-                    <div>
-                      <h4 className="text-xs font-semibold text-slate-700 mb-3">
-                        Aggregate API Latency - Last 24 Hours
-                      </h4>
-
-                      {/* Line Chart Container */}
-                      <div className="relative pt-1">
-                        <div className="flex items-stretch gap-2">
-                          {/* Y-axis labels */}
-                          <div className="flex flex-col justify-between text-[10px] font-semibold text-slate-400 text-right h-28 pr-1 select-none">
-                            <span>200</span>
-                            <span>150</span>
-                            <span>100</span>
-                            <span>50</span>
-                            <span>0</span>
-                          </div>
-
-                          {/* SVG Canvas & Gridlines */}
-                          <div className="flex-1 relative h-28 border-l border-b border-slate-200">
-                            {/* Horizontal Gridlines */}
-                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-                              <div className="border-b border-slate-100 w-full" />
-                              <div className="border-b border-slate-100 w-full" />
-                              <div className="border-b border-slate-100 w-full" />
-                              <div className="border-b border-slate-100 w-full" />
-                              <div className="w-full" />
-                            </div>
-
-                            {/* Vertical Gridlines */}
-                            <div className="absolute inset-0 flex justify-between pointer-events-none">
-                              <div className="border-r border-slate-100 h-full" />
-                              <div className="border-r border-slate-100 h-full" />
-                              <div className="border-r border-slate-100 h-full" />
-                              <div className="border-r border-slate-100 h-full" />
-                              <div className="border-r border-slate-100 h-full" />
-                              <div className="border-r border-slate-100 h-full" />
-                            </div>
-
-                            {/* SVG Curved Latency Wave */}
-                            <svg
-                              className="absolute inset-0 w-full h-full overflow-hidden"
-                              viewBox="0 0 300 100"
-                              preserveAspectRatio="none"
-                            >
-                              <defs>
-                                <linearGradient id="latencyGradientAdmin" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor="#10b981" stopOpacity="0.35" />
-                                  <stop offset="100%" stopColor="#10b981" stopOpacity="0.02" />
-                                </linearGradient>
-                              </defs>
-
-                              <path
-                                d="M 0,75 C 20,70 35,45 50,50 C 65,55 80,78 100,70 C 120,62 135,25 150,30 C 165,35 180,68 200,65 C 220,62 235,18 250,22 C 265,26 280,58 300,50 L 300,100 L 0,100 Z"
-                                fill="url(#latencyGradientAdmin)"
-                              />
-
-                              <path
-                                d="M 0,75 C 20,70 35,45 50,50 C 65,55 80,78 100,70 C 120,62 135,25 150,30 C 165,35 180,68 200,65 C 220,62 235,18 250,22 C 265,26 280,58 300,50"
-                                fill="none"
-                                stroke="#10b981"
-                                strokeWidth="2.5"
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-
-                        {/* X-axis time labels */}
-                        <div className="flex justify-between text-[10px] font-semibold text-slate-400 pl-8 pt-1.5">
-                          <span>00:00</span>
-                          <span>04:00</span>
-                          <span>08:00</span>
-                          <span>12:00</span>
-                          <span>16:00</span>
-                          <span>20:00</span>
-                          <span>00:00</span>
-                        </div>
-                        <div className="text-center text-[10px] font-semibold text-slate-400 mt-0.5">Time</div>
-                      </div>
-                    </div>
-
-                    {/* API Services Cards Stack */}
-                    <div className="space-y-3">
-                      {systemApis.map((api, idx) => (
-                        <div
-                          key={idx}
-                          className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-100 hover:border-slate-200 transition-colors space-y-2"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
-                              <h5 className="text-sm font-bold text-slate-900">{api.name}</h5>
-                            </div>
-                            <span className="text-xs font-semibold px-3 py-0.5 rounded-full bg-emerald-100/80 text-emerald-800">
-                              {api.status}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center justify-between text-xs font-medium text-slate-600 pt-0.5">
-                            <span>
-                              Uptime: <strong className="text-slate-900 font-bold">{api.uptime}</strong>
-                            </span>
-                            <span>
-                              Latency: <strong className="text-slate-900 font-bold">{api.latency}</strong>
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  /* TAB 2: SYSTEM LOGS */
-                  <div className="space-y-2.5 pt-1">
-                    {systemLogs.map((log, idx) => (
-                      <div key={idx} className="p-3 rounded-xl bg-slate-950 text-slate-200 font-mono text-xs space-y-1 border border-slate-800">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-slate-400">[{log.time}]</span>
-                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
-                            {log.type}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-300 leading-snug break-all">{log.text}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div className="flex items-center justify-center gap-4 text-[10px] font-semibold text-slate-500 mt-3">
+                  <span className="flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-[#0f4a2d]" />
+                    {t('Completed')}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    {t('In Progress')}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-slate-300" />
+                    {t('Pending')}
+                  </span>
+                </div>
               </div>
+            </div>
+
+            {/* Time Tracker Card (Donezo Dark Forest Green Block) */}
+            <div className="bg-[#0f4a2d] text-white p-6 rounded-3xl shadow-sm flex flex-col justify-between space-y-4">
+              <div>
+                <span className="text-xs font-semibold text-emerald-100/90">{t('Time Tracker')}</span>
+                <div className="text-4xl font-extrabold tracking-tight mt-3 font-mono">
+                  01:24:08
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  onClick={() => setTimerRunning((v) => !v)}
+                  className="w-10 h-10 rounded-full bg-white text-[#0f4a2d] hover:bg-slate-100 flex items-center justify-center transition-colors shadow-sm"
+                >
+                  {timerRunning ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
+                </button>
+                <button className="w-10 h-10 rounded-full bg-rose-500 text-white hover:bg-rose-600 flex items-center justify-center transition-colors shadow-sm">
+                  <div className="w-3.5 h-3.5 bg-white rounded-xs" />
+                </button>
+              </div>
+            </div>
+
+            {/* Technical & System Health Toggle */}
+            <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-xs font-bold text-slate-800">{t('System Health')}</span>
+              </div>
+              <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                100% {t('Operational')}
+              </span>
             </div>
 
           </div>
