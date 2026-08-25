@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
+use App\Models\BannedAccount;
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -41,6 +43,7 @@ class CustomerController extends Controller
             'total' => User::where('role', 'customer')->count(),
             'active' => User::where('role', 'customer')->where('status', 'active')->count(),
             'inactive' => User::where('role', 'customer')->where('status', 'inactive')->count(),
+            'suspended' => User::where('role', 'customer')->where('status', 'suspended')->count(),
             'new' => User::where('role', 'customer')->where('created_at', '>=', now()->startOfMonth())->count(),
             'banned' => User::where('role', 'customer')->where('status', 'banned')->count(),
         ];
@@ -57,7 +60,11 @@ class CustomerController extends Controller
 
     public function show(int $customer): Response
     {
-        return Inertia::render('Admin/Customer/Show', compact('customer'));
+        $customerModel = Customer::with(['user', 'properties', 'jobRequests'])->findOrFail($customer);
+
+        return Inertia::render('Admin/Customer/Show', [
+            'customer' => $customerModel,
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -82,6 +89,8 @@ class CustomerController extends Controller
             Customer::create([
                 'user_id' => $user->id,
             ]);
+
+            AuditLog::log(auth()->id(), 'Customer created', 'Customer', $user->id, "Created customer: {$user->full_name}");
         });
 
         return redirect()->back()->with('success', 'Customer created successfully.');
@@ -105,7 +114,55 @@ class CustomerController extends Controller
             ]);
         }
 
+        AuditLog::log(auth()->id(), 'Customer updated', 'Customer', $customer->id, "Updated customer: {$customer->user->full_name}");
+
         return redirect()->back()->with('success', 'Customer updated successfully.');
+    }
+
+    public function suspend(Customer $customer): RedirectResponse
+    {
+        if ($customer->user) {
+            $customer->user->update(['status' => 'suspended']);
+            AuditLog::log(auth()->id(), 'Customer suspended', 'Customer', $customer->id, "Suspended customer #{$customer->id}");
+        }
+
+        return redirect()->back()->with('success', 'Customer suspended successfully.');
+    }
+
+    public function activate(Customer $customer): RedirectResponse
+    {
+        if ($customer->user) {
+            $customer->user->update(['status' => 'active']);
+            AuditLog::log(auth()->id(), 'Customer activated', 'Customer', $customer->id, "Activated customer #{$customer->id}");
+        }
+
+        return redirect()->back()->with('success', 'Customer activated successfully.');
+    }
+
+    public function ban(Request $request, Customer $customer): RedirectResponse
+    {
+        $validated = $request->validate([
+            'reason' => 'required|string',
+            'ban_type' => 'nullable|string|in:TEMPORARY,PERMANENT',
+        ]);
+
+        if ($customer->user) {
+            $customer->user->update(['status' => 'banned']);
+
+            BannedAccount::create([
+                'user_id' => $customer->user_id,
+                'account_type' => 'CUSTOMER',
+                'ban_type' => $validated['ban_type'] ?? 'PERMANENT',
+                'reason' => $validated['reason'],
+                'banned_by' => auth()->id(),
+                'banned_at' => now(),
+                'status' => 'ACTIVE',
+            ]);
+
+            AuditLog::log(auth()->id(), 'Customer banned', 'Customer', $customer->id, "Banned customer #{$customer->id}. Reason: {$validated['reason']}");
+        }
+
+        return redirect()->back()->with('success', 'Customer banned successfully.');
     }
 
     public function destroy(Customer $customer): RedirectResponse
@@ -117,6 +174,8 @@ class CustomerController extends Controller
                 $user->delete();
             }
         });
+
+        AuditLog::log(auth()->id(), 'Customer deleted', 'Customer', $customer->id, "Deleted customer #{$customer->id}");
 
         return redirect()->back()->with('success', 'Customer deleted successfully.');
     }

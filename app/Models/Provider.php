@@ -55,4 +55,9 @@ class Provider extends Model
     {
         return $this->hasMany(Dispute::class);
     }
+
+    public function kycVerifications(): HasMany
+    {
+        return $this->hasMany(KycVerification::class);
+    }
 }

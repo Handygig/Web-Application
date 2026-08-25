@@ -61,8 +61,13 @@ Route::middleware('auth')->group(function () {
 
         // Providers
         Route::get('providers', [AdminProviderController::class, 'index'])->name('providers.index');
-        Route::get('providers/kyc', [AdminProviderController::class, 'kyc'])->name('providers.kyc');
-        Route::get('providers/banned', [AdminProviderController::class, 'banned'])->name('providers.banned');
+        Route::get('providers/kyc', [\App\Http\Controllers\Admin\KycController::class, 'index'])->name('providers.kyc');
+        Route::patch('providers/kyc/{kycVerification}/approve', [\App\Http\Controllers\Admin\KycController::class, 'approve'])->name('providers.kyc.approve');
+        Route::patch('providers/kyc/{kycVerification}/reject', [\App\Http\Controllers\Admin\KycController::class, 'reject'])->name('providers.kyc.reject');
+
+        Route::get('providers/banned', [\App\Http\Controllers\Admin\BannedAccountController::class, 'index'])->name('providers.banned');
+        Route::patch('providers/banned/{bannedAccount}/unban', [\App\Http\Controllers\Admin\BannedAccountController::class, 'unban'])->name('providers.banned.unban');
+
         Route::get('providers/create', [AdminProviderController::class, 'create'])->name('providers.create');
         Route::post('providers', [AdminProviderController::class, 'store'])->name('providers.store');
         Route::get('providers/{provider}', [AdminProviderController::class, 'show'])->name('providers.show');
@@ -78,6 +83,9 @@ Route::middleware('auth')->group(function () {
         Route::get('customers/{customer}', [AdminCustomerController::class, 'show'])->name('customers.show');
         Route::get('customers/{customer}/edit', [AdminCustomerController::class, 'edit'])->name('customers.edit');
         Route::put('customers/{customer}', [AdminCustomerController::class, 'update'])->name('customers.update');
+        Route::patch('customers/{customer}/suspend', [AdminCustomerController::class, 'suspend'])->name('customers.suspend');
+        Route::patch('customers/{customer}/activate', [AdminCustomerController::class, 'activate'])->name('customers.activate');
+        Route::patch('customers/{customer}/ban', [AdminCustomerController::class, 'ban'])->name('customers.ban');
         Route::delete('customers/{customer}', [AdminCustomerController::class, 'destroy'])->name('customers.destroy');
         Route::put('customers/{customer}/toggle-active', [AdminCustomerController::class, 'toggleActive'])->name('customers.toggle-active');
 
@@ -106,11 +114,19 @@ Route::middleware('auth')->group(function () {
         Route::get('bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
         Route::get('bookings/{booking}/edit', [AdminBookingController::class, 'edit'])->name('bookings.edit');
         Route::put('bookings/{booking}', [AdminBookingController::class, 'update'])->name('bookings.update');
+        Route::patch('bookings/{booking}/status', [AdminBookingController::class, 'updateStatus'])->name('bookings.update-status');
+        Route::patch('bookings/{booking}/cancel', [AdminBookingController::class, 'cancel'])->name('bookings.cancel');
         Route::delete('bookings/{booking}', [AdminBookingController::class, 'destroy'])->name('bookings.destroy');
         Route::put('bookings/{booking}/toggle-active', [AdminBookingController::class, 'toggleActive'])->name('bookings.toggle-active');
 
         // Profile
         Route::get('profile', [AdminProfileController::class, 'index'])->name('profile.index');
+        Route::put('profile', [AdminProfileController::class, 'update'])->name('profile.update');
+        Route::put('profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('profile/avatar', [AdminProfileController::class, 'updateAvatar'])->name('profile.avatar');
+
+        // Audit Logs
+        Route::get('audit-logs', [\App\Http\Controllers\Admin\AuditLogController::class, 'index'])->name('audit-logs.index');
     });
 
     // Company Routes

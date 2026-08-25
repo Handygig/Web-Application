@@ -11,14 +11,12 @@ class PropertyType extends Model
 
     protected $fillable = [
         'name',
-        'code',
         'description',
-        'icon',
         'status',
-        'properties_count',
     ];
 
-    protected $casts = [
-        'properties_count' => 'integer',
-    ];
+    public function properties()
+    {
+        return $this->hasMany(Property::class);
+    }
 }

@@ -5,37 +5,18 @@
 @layer base {
 
     /* Earthy Theme (#636B2F) */
+    /* Clean White & Forest Green Palette (Donezo Minimalist Design) */
     :root,
-    .theme-earthy {
-        --color-accent: #636B2F;
-        --color-accent-hover: #525927;
-        --color-accent-soft: rgba(99, 107, 47, 0.08);
-        --color-bg-light: #f7f8f2;
-        --color-grid-bg: #f3f5eb;
-        --color-grid-line: rgba(99, 107, 47, 0.07);
-        --color-accent-rgb: 99, 107, 47;
-    }
-
-    /* Green Theme */
-    .theme-green {
-        --color-accent: #4CAF70;
-        --color-accent-hover: #00A06E;
-        --color-accent-soft: rgba(0, 178, 122, 0.08);
-        --color-bg-light: #e6f7f2;
-        --color-grid-bg: #e6f7f2;
-        --color-grid-line: rgba(0, 178, 122, 0.07);
-        --color-accent-rgb: 0, 178, 122;
-    }
-
-    /* Dark Theme */
+    .theme-earthy,
+    .theme-green,
     .theme-darkblue {
-        --color-accent: #18252F;
-        --color-accent-hover: #121E26;
-        --color-accent-soft: rgba(24, 37, 47, 0.08);
-        --color-bg-light: #f0f3f5;
-        --color-grid-bg: #e2e8f0;
-        --color-grid-line: rgba(24, 37, 47, 0.07);
-        --color-accent-rgb: 24, 37, 47;
+        --color-accent: #0f4a2d;
+        --color-accent-hover: #0c3e25;
+        --color-accent-soft: rgba(15, 74, 45, 0.08);
+        --color-bg-light: #f7f9f8;
+        --color-grid-bg: #ffffff;
+        --color-grid-line: rgba(15, 74, 45, 0.05);
+        --color-accent-rgb: 15, 74, 45;
     }
 }
 
@@ -47,18 +28,16 @@
     }
 
     .bg-shell-gradient {
-        background-color: #ffffff;
-        background-image: linear-gradient(244.08deg, rgba(var(--color-accent-rgb), 0.1) 9.44%, rgba(var(--color-accent-rgb), 0.15) 27.29%, rgba(var(--color-accent-rgb), 0.2) 45.58%, rgba(var(--color-accent-rgb), 0.08) 77.36%, rgba(255, 255, 255, 0.2) 100%);
+        background-color: #f7f9f8;
+        background-image: radial-gradient(at 0% 0%, rgba(15, 74, 45, 0.03) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(15, 74, 45, 0.02) 0px, transparent 50%);
     }
 
     .bg-shell-gradient-2 {
-        background-color: #ffffff;
-        background-image: linear-gradient(191deg, rgba(var(--color-accent-rgb), 0.1) 29.44%, rgba(var(--color-accent-rgb), 0.15) 47.29%, rgba(var(--color-accent-rgb), 0.2) 65.58%, rgba(var(--color-accent-rgb), 0.08) 97.36%, rgba(255, 255, 255, 0.2) 120%);
+        background-color: #f7f9f8;
     }
 
     .bg-navbar-custom {
-        background-color: #FFFFFF66;
-        background: linear-gradient(184.08deg, rgba(255, 255, 255, 0.11) 9.44%, rgba(var(--color-accent-rgb), 0.066) 32.08%, rgba(var(--color-accent-rgb), 0.11) 63.86%, rgba(var(--color-accent-rgb), 0.088) 82.15%, rgba(var(--color-accent-rgb), 0.011) 100%);
+        background-color: rgba(255, 255, 255, 0.95);
         transition: background 0.3s ease;
     }
 
