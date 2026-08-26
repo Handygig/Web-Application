@@ -167,16 +167,34 @@ class CustomerController extends Controller
 
     public function destroy(Customer $customer): RedirectResponse
     {
-        DB::transaction(function () use ($customer) {
-            $user = $customer->user;
-            $customer->delete();
-            if ($user) {
-                $user->delete();
-            }
-        });
+        try {
+            DB::transaction(function () use ($customer) {
+                $user = $customer->user;
 
-        AuditLog::log(auth()->id(), 'Customer deleted', 'Customer', $customer->id, "Deleted customer #{$customer->id}");
+                // Delete child relationships to avoid foreign key violations
+                DB::table('customer_cards')->where('customer_id', $customer->id)->delete();
+                DB::table('disputes')->where('customer_id', $customer->id)->delete();
+                DB::table('reviews')->where('customer_id', $customer->id)->delete();
+                DB::table('payments')->where('customer_id', $customer->id)->delete();
+                DB::table('job_requests')->where('customer_id', $customer->id)->delete();
+                DB::table('properties')->where('customer_id', $customer->id)->delete();
 
-        return redirect()->back()->with('success', 'Customer deleted successfully.');
+                if ($user) {
+                    DB::table('banned_accounts')->where('user_id', $user->id)->delete();
+                    DB::table('audit_logs')->where('user_id', $user->id)->delete();
+                }
+
+                $customer->delete();
+                if ($user) {
+                    $user->delete();
+                }
+            });
+
+            AuditLog::log(auth()->id(), 'Customer deleted', 'Customer', $customer->id, "Deleted customer #{$customer->id}");
+
+            return redirect()->route('admin.customers.index')->with('success', 'Customer deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.customers.index')->with('error', 'Unable to delete customer: '.$e->getMessage());
+        }
     }
 }

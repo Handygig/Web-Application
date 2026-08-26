@@ -1,8 +1,31 @@
 import React, { useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
-import PrimaryButton from '../Buttons/PrimaryButton';
 import { useTranslation } from '../../Hooks/useTranslation';
+
+function ModalActionButton({ variant = 'neutral', onClick, disabled, children, className = '' }) {
+  const baseClasses =
+    'inline-flex items-center justify-center rounded-xl font-semibold text-sm transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed';
+
+  const variantClasses =
+    {
+      danger: 'bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/20 active:scale-95',
+      warning: 'bg-amber-600 hover:bg-amber-700 text-white shadow-md shadow-amber-600/20 active:scale-95',
+      primary: 'bg-theme-accent hover:bg-theme-accent-hover text-white shadow-md active:scale-95',
+      neutral: 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50',
+    }[variant] || 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50';
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`${baseClasses} ${variantClasses} ${className}`}
+    >
+      {children}
+    </button>
+  );
+}
 
 export default function ConfirmModal({
   open = false,
