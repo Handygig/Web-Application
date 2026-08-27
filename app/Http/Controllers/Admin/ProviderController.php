@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreProviderRequest;
+use App\Http\Requests\Admin\UpdateProviderRequest;
+use App\Http\Resources\Admin\ProviderResource;
+use App\Http\Resources\Admin\UserResource;
 use App\Models\Provider;
 use App\Models\ServiceCategory;
 use App\Models\User;
@@ -56,8 +60,17 @@ class ProviderController extends Controller
         $categories = ServiceCategory::where('is_active', true)->pluck('service_name')->toArray();
 
         return Inertia::render('Admin/Provider/Index', [
-            'providers' => $providers,
+            'providers' => ProviderResource::collection($providers),
             'categories' => $categories,
+            'stats' => [
+                'total' => Provider::count(),
+                'active' => Provider::whereHas('user', function ($q) {
+                    $q->where('status', 'active');
+                })->count(),
+                'inactive' => Provider::whereHas('user', function ($q) {
+                    $q->where('status', 'inactive');
+                })->count(),
+            ],
             'filters' => [
                 'search' => $search ?? '',
                 'status' => $status ?? 'all',
@@ -67,12 +80,21 @@ class ProviderController extends Controller
         ]);
     }
 
+    public function show(Provider $provider): Response
+    {
+        $providerModel = Provider::with(['user', 'serviceCategories', 'company', 'kycVerifications'])->findOrFail($provider->id);
+
+        return Inertia::render('Admin/Provider/Show', [
+            'provider' => new ProviderResource($providerModel),
+        ]);
+    }
+
     public function kyc(Request $request): Response
     {
         $providers = Provider::with(['user', 'serviceCategories', 'company'])->latest()->get();
 
         return Inertia::render('Admin/Provider/Kyc', [
-            'dbProviders' => $providers,
+            'dbProviders' => ProviderResource::collection($providers),
         ]);
     }
 
@@ -81,21 +103,13 @@ class ProviderController extends Controller
         $bannedUsers = User::where('status', 'banned')->latest()->get();
 
         return Inertia::render('Admin/Provider/Banned', [
-            'bannedUsers' => $bannedUsers,
+            'bannedUsers' => UserResource::collection($bannedUsers),
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreProviderRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:50',
-            'service_category' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'bio' => 'nullable|string',
-            'status' => 'required|string|in:active,inactive',
-        ]);
+        $validated = $request->validated();
 
         DB::transaction(function () use ($validated) {
             $user = User::create([
@@ -107,7 +121,7 @@ class ProviderController extends Controller
                 'status' => $validated['status'],
             ]);
 
-            $provider = Provider::create([
+            $prov = Provider::create([
                 'user_id' => $user->id,
                 'provider_type' => 'individual',
                 'bio' => $validated['bio'] ?? null,
@@ -119,24 +133,16 @@ class ProviderController extends Controller
                     ['service_name' => $validated['service_category']],
                     ['is_active' => true]
                 );
-                $provider->serviceCategories()->sync([$category->id]);
+                $prov->serviceCategories()->sync([$category->id]);
             }
         });
 
-        return redirect()->back()->with('success', 'Provider created successfully.');
+        return redirect()->back()->with('success', __('Provider created successfully.'));
     }
 
-    public function update(Request $request, Provider $provider): RedirectResponse
+    public function update(UpdateProviderRequest $request, Provider $provider): RedirectResponse
     {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$provider->user_id,
-            'phone' => 'nullable|string|max:50',
-            'service_category' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'bio' => 'nullable|string',
-            'status' => 'required|string|in:active,inactive',
-        ]);
+        $validated = $request->validated();
 
         DB::transaction(function () use ($provider, $validated) {
             $provider->user->update([
@@ -159,20 +165,45 @@ class ProviderController extends Controller
             }
         });
 
-        return redirect()->back()->with('success', 'Provider updated successfully.');
+        return redirect()->back()->with('success', __('Provider updated successfully.'));
     }
 
     public function destroy(Provider $provider): RedirectResponse
     {
-        DB::transaction(function () use ($provider) {
-            $user = $provider->user;
-            $provider->delete();
-            if ($user) {
-                $user->delete();
-            }
-        });
+        try {
+            DB::transaction(function () use ($provider) {
+                if (method_exists($provider, 'serviceCategories')) {
+                    $provider->serviceCategories()->detach();
+                }
 
-        return redirect()->back()->with('success', 'Provider deleted successfully.');
+                $user = $provider->user;
+
+                // Delete child relationships to avoid foreign key violations
+                DB::table('provider_services')->where('provider_id', $provider->id)->delete();
+                DB::table('job_assignments')->where('provider_id', $provider->id)->delete();
+                DB::table('quotations')->where('provider_id', $provider->id)->delete();
+                DB::table('payout_accounts')->where('provider_id', $provider->id)->delete();
+                DB::table('payouts')->where('provider_id', $provider->id)->delete();
+                DB::table('kyc_verifications')->where('provider_id', $provider->id)->delete();
+                DB::table('reviews')->where('provider_id', $provider->id)->delete();
+                DB::table('disputes')->where('provider_id', $provider->id)->delete();
+                DB::table('payments')->where('provider_id', $provider->id)->delete();
+
+                if ($user) {
+                    DB::table('banned_accounts')->where('user_id', $user->id)->delete();
+                    DB::table('audit_logs')->where('user_id', $user->id)->delete();
+                }
+
+                $provider->delete();
+                if ($user) {
+                    $user->delete();
+                }
+            });
+
+            return redirect()->route('admin.providers.index')->with('success', __('Provider deleted successfully.'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.providers.index')->with('error', __('Unable to delete provider: :message', ['message' => $e->getMessage()]));
+        }
     }
 
     public function toggleActive(Provider $provider): RedirectResponse
@@ -182,6 +213,6 @@ class ProviderController extends Controller
             $provider->user->update(['status' => $newStatus]);
         }
 
-        return redirect()->back()->with('success', 'Provider status updated.');
+        return redirect()->back()->with('success', __('Provider status updated.'));
     }
 }

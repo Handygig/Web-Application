@@ -9,6 +9,7 @@ import { useTranslation } from '../Hooks/useTranslation';
 export default function AppLayout({ children }) {
   const { auth, flash } = usePage().props;
   const { t } = useTranslation();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const userRoles = auth?.user?.roles?.map((r) => r.name) ?? [];
   const role = userRoles.includes('admin') ? 'admin' : 'company';
@@ -55,7 +56,7 @@ export default function AppLayout({ children }) {
   }, [visibleFlash, flashKey]);
 
   const userPermissions = auth?.user?.permissions ?? {};
-  const rawNavItems = getNavByRole(t)[role] ?? [];
+  const rawNavCategories = getNavByRole(t)[role] ?? [];
 
   const filterNavItems = (items) =>
     items
@@ -65,12 +66,16 @@ export default function AppLayout({ children }) {
       )
       .filter((item) => !item.children || item.children.length > 0);
 
-  const navItems = filterNavItems(rawNavItems);
+  const navCategories = rawNavCategories.map((group) => ({
+    category: group.category,
+    items: filterNavItems(group.items || []),
+  })).filter((group) => group.items.length > 0);
 
   return (
     <div className="relative isolate h-screen overflow-hidden bg-shell-gradient font-sans transition-colors duration-350">
       <div className="relative z-10 flex h-full flex-col">
         <Navbar
+          onMenuToggle={() => setMobileOpen(true)}
           theme={theme}
           onThemeToggle={() =>
             setTheme((current) =>
@@ -80,7 +85,7 @@ export default function AppLayout({ children }) {
         />
 
         <div className="relative flex flex-1 overflow-hidden">
-          <Sidebar open={false} onClose={() => {}} navItems={navItems} />
+          <Sidebar open={mobileOpen} onClose={() => setMobileOpen(false)} navCategories={navCategories} />
           <main className="scrollbar-none flex-1 overflow-y-auto p-6">{children}</main>
         </div>
       </div>

@@ -76,13 +76,30 @@ export default function BookingDetailModal({
         {/* Top Summary Banner */}
         <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5 p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-indigo-50/40 border border-slate-100 mb-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-theme-accent font-mono font-bold text-white text-lg shadow-md ring-4 ring-white">
-              {booking.id || 'BK-001'}
+            {/* Clean & Clear Service / Property Logo */}
+            <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-theme-accent text-white shadow-md ring-4 ring-white overflow-hidden">
+              {booking.logo || booking.image || booking.serviceLogo || booking.providerLogo ? (
+                <img
+                  src={booking.logo || booking.image || booking.serviceLogo || booking.providerLogo}
+                  alt={booking.propertyName || 'Service Logo'}
+                  className="h-full w-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <Building className="h-8 w-8 text-white stroke-[2]" />
+              )}
             </div>
 
             <div className="text-center sm:text-left">
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
                 <h2 className="text-2xl font-bold text-slate-900">{booking.propertyName}</h2>
+                {booking.id && (
+                  <span className="font-mono text-xs font-semibold text-slate-600 bg-slate-200/80 border border-slate-300/60 px-2 py-0.5 rounded-md">
+                    {booking.id}
+                  </span>
+                )}
                 <span
                   className={`inline-flex items-center gap-1 rounded-full px-3 py-0.5 text-xs font-bold ${
                     isPending
