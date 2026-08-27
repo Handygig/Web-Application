@@ -442,45 +442,59 @@ export default function PropertyTypeIndex({ dbPropertyTypes, stats: serverStats,
         />
 
         {/* 2. Summary Statistics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="flex items-center gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-theme-accent ring-4 ring-indigo-50/50">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {/* Total Property Types */}
+          <div className="group relative flex items-center gap-4 rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm hover:shadow-md hover:border-theme-accent/40 transition-all duration-200">
+            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-theme-accent/10 text-theme-accent ring-4 ring-theme-accent/5 group-hover:scale-105 transition-transform duration-200">
               <Layers className="h-6 w-6" />
             </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{t('Total Property Types')}</p>
-              <p className="text-2xl font-bold text-slate-900 mt-0.5">{stats.total.toLocaleString()}</p>
+            <div className="min-w-0">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('Total Property Types')}</p>
+              <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-0.5">
+                {stats.total.toLocaleString()}
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 ring-4 ring-emerald-50/50">
+          {/* Active Types */}
+          <div className="group relative flex items-center gap-4 rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all duration-200">
+            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 ring-4 ring-emerald-50/60 group-hover:scale-105 transition-transform duration-200">
               <CheckCircle2 className="h-6 w-6" />
             </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{t('Active Types')}</p>
-              <p className="text-2xl font-bold text-slate-900 mt-0.5">{stats.active.toLocaleString()}</p>
+            <div className="min-w-0">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('Active Types')}</p>
+              <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-0.5">
+                {stats.active.toLocaleString()}
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 ring-4 ring-slate-100/50">
+          {/* Inactive Types */}
+          <div className="group relative flex items-center gap-4 rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200">
+            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-slate-500 ring-4 ring-slate-100/60 group-hover:scale-105 transition-transform duration-200">
               <XCircle className="h-6 w-6" />
             </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{t('Inactive Types')}</p>
-              <p className="text-2xl font-bold text-slate-900 mt-0.5">{stats.inactive.toLocaleString()}</p>
+            <div className="min-w-0">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('Inactive Types')}</p>
+              <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-0.5">
+                {stats.inactive.toLocaleString()}
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 ring-4 ring-amber-50/50">
+          {/* Most Used Property Type */}
+          <div className="group relative flex items-center gap-4 rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm hover:shadow-md hover:border-amber-300 transition-all duration-200">
+            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 ring-4 ring-amber-50/60 group-hover:scale-105 transition-transform duration-200">
               <TrendingUp className="h-6 w-6" />
             </div>
-            <div className="min-w-0">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{t('Most Used Property Type')}</p>
-              <p className="text-base font-bold text-slate-900 mt-0.5 truncate">{stats.mostUsed.name}</p>
-              <span className="text-xs font-semibold text-emerald-600">{stats.mostUsed.count} {t('Properties')}</span>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('Most Used Property Type')}</p>
+              <p className="text-base font-bold text-slate-900 truncate mt-0.5" title={stats.mostUsed.name}>
+                {stats.mostUsed.name}
+              </p>
+              <span className="inline-flex items-center gap-1 mt-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/70 px-2 py-0.5 rounded-md">
+                {stats.mostUsed.count} {t('Properties')}
+              </span>
             </div>
           </div>
         </div>
