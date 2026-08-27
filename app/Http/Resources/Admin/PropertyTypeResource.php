@@ -11,10 +11,14 @@ class PropertyTypeResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'code' => $this->code ?? sprintf('PT-%03d', $this->id),
             'name' => $this->name,
-            'description' => $this->description,
-            'status' => $this->status,
-            'created_at' => $this->created_at,
+            'description' => $this->description ?? '',
+            'icon' => $this->icon ?? 'Apartment',
+            'properties_count' => $this->properties_count ?? 0,
+            'status' => $this->status ? ucfirst(strtolower($this->status)) : 'Active',
+            'created_at' => $this->created_at ? $this->created_at->format('M d, Y') : '',
+            'updated_at' => $this->updated_at ? $this->updated_at->format('M d, Y') : '',
         ];
     }
 }

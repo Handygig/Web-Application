@@ -35,7 +35,13 @@ class PropertyTypeController extends Controller
         $propertyTypes = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/PropertyType/Index', [
-            'propertyTypes' => PropertyTypeResource::collection($propertyTypes),
+            'dbPropertyTypes' => PropertyTypeResource::collection($propertyTypes),
+            'stats' => [
+                'total' => PropertyType::count(),
+                'active' => PropertyType::where('status', 'ACTIVE')->count(),
+                'inactive' => PropertyType::where('status', 'INACTIVE')->count(),
+                'mostUsed' => ['name' => 'Apartment', 'count' => 0],
+            ],
             'filters' => [
                 'search' => $search ?? '',
                 'status' => $status ?? 'all',

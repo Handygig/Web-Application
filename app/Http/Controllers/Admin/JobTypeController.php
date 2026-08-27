@@ -35,6 +35,11 @@ class JobTypeController extends Controller
 
         return Inertia::render('Admin/JobType/Index', [
             'jobTypes' => JobTypeResource::collection($jobTypes),
+            'stats' => [
+                'total' => JobType::count(),
+                'active' => JobType::where('status', 'ACTIVE')->count(),
+                'inactive' => JobType::where('status', 'INACTIVE')->count(),
+            ],
             'filters' => [
                 'search' => $search ?? '',
                 'status' => $status ?? 'all',

@@ -62,6 +62,15 @@ class ProviderController extends Controller
         return Inertia::render('Admin/Provider/Index', [
             'providers' => ProviderResource::collection($providers),
             'categories' => $categories,
+            'stats' => [
+                'total' => Provider::count(),
+                'active' => Provider::whereHas('user', function ($q) {
+                    $q->where('status', 'active');
+                })->count(),
+                'inactive' => Provider::whereHas('user', function ($q) {
+                    $q->where('status', 'inactive');
+                })->count(),
+            ],
             'filters' => [
                 'search' => $search ?? '',
                 'status' => $status ?? 'all',
