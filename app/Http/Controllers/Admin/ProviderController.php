@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreProviderRequest;
+use App\Http\Requests\Admin\UpdateProviderRequest;
+use App\Http\Resources\Admin\ProviderResource;
+use App\Http\Resources\Admin\UserResource;
 use App\Models\Provider;
 use App\Models\ServiceCategory;
 use App\Models\User;
@@ -56,7 +60,7 @@ class ProviderController extends Controller
         $categories = ServiceCategory::where('is_active', true)->pluck('service_name')->toArray();
 
         return Inertia::render('Admin/Provider/Index', [
-            'providers' => $providers,
+            'providers' => ProviderResource::collection($providers),
             'categories' => $categories,
             'filters' => [
                 'search' => $search ?? '',
@@ -72,7 +76,7 @@ class ProviderController extends Controller
         $providerModel = Provider::with(['user', 'serviceCategories', 'company', 'kycVerifications'])->findOrFail($provider->id);
 
         return Inertia::render('Admin/Provider/Show', [
-            'provider' => $providerModel,
+            'provider' => new ProviderResource($providerModel),
         ]);
     }
 
@@ -81,7 +85,7 @@ class ProviderController extends Controller
         $providers = Provider::with(['user', 'serviceCategories', 'company'])->latest()->get();
 
         return Inertia::render('Admin/Provider/Kyc', [
-            'dbProviders' => $providers,
+            'dbProviders' => ProviderResource::collection($providers),
         ]);
     }
 
@@ -90,21 +94,13 @@ class ProviderController extends Controller
         $bannedUsers = User::where('status', 'banned')->latest()->get();
 
         return Inertia::render('Admin/Provider/Banned', [
-            'bannedUsers' => $bannedUsers,
+            'bannedUsers' => UserResource::collection($bannedUsers),
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreProviderRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:50',
-            'service_category' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'bio' => 'nullable|string',
-            'status' => 'required|string|in:active,inactive',
-        ]);
+        $validated = $request->validated();
 
         DB::transaction(function () use ($validated) {
             $user = User::create([
@@ -132,20 +128,12 @@ class ProviderController extends Controller
             }
         });
 
-        return redirect()->back()->with('success', 'Provider created successfully.');
+        return redirect()->back()->with('success', __('Provider created successfully.'));
     }
 
-    public function update(Request $request, Provider $provider): RedirectResponse
+    public function update(UpdateProviderRequest $request, Provider $provider): RedirectResponse
     {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$provider->user_id,
-            'phone' => 'nullable|string|max:50',
-            'service_category' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'bio' => 'nullable|string',
-            'status' => 'required|string|in:active,inactive',
-        ]);
+        $validated = $request->validated();
 
         DB::transaction(function () use ($provider, $validated) {
             $provider->user->update([
@@ -168,7 +156,7 @@ class ProviderController extends Controller
             }
         });
 
-        return redirect()->back()->with('success', 'Provider updated successfully.');
+        return redirect()->back()->with('success', __('Provider updated successfully.'));
     }
 
     public function destroy(Provider $provider): RedirectResponse
@@ -203,9 +191,9 @@ class ProviderController extends Controller
                 }
             });
 
-            return redirect()->route('admin.providers.index')->with('success', 'Provider deleted successfully.');
+            return redirect()->route('admin.providers.index')->with('success', __('Provider deleted successfully.'));
         } catch (\Exception $e) {
-            return redirect()->route('admin.providers.index')->with('error', 'Unable to delete provider: '.$e->getMessage());
+            return redirect()->route('admin.providers.index')->with('error', __('Unable to delete provider: :message', ['message' => $e->getMessage()]));
         }
     }
 
@@ -216,6 +204,6 @@ class ProviderController extends Controller
             $provider->user->update(['status' => $newStatus]);
         }
 
-        return redirect()->back()->with('success', 'Provider status updated.');
+        return redirect()->back()->with('success', __('Provider status updated.'));
     }
 }

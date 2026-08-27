@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StorePropertyTypeRequest;
+use App\Http\Requests\Admin\UpdatePropertyTypeRequest;
+use App\Http\Resources\Admin\PropertyTypeResource;
 use App\Models\AuditLog;
 use App\Models\Property;
 use App\Models\PropertyType;
@@ -32,7 +35,7 @@ class PropertyTypeController extends Controller
         $propertyTypes = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/PropertyType/Index', [
-            'propertyTypes' => $propertyTypes,
+            'propertyTypes' => PropertyTypeResource::collection($propertyTypes),
             'filters' => [
                 'search' => $search ?? '',
                 'status' => $status ?? 'all',
@@ -43,38 +46,42 @@ class PropertyTypeController extends Controller
     public function show(PropertyType $propertyType): Response
     {
         return Inertia::render('Admin/PropertyType/Show', [
-            'propertyType' => $propertyType,
+            'propertyType' => new PropertyTypeResource($propertyType),
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StorePropertyTypeRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:property_types,name',
-            'description' => 'nullable|string',
-            'status' => 'required|string|in:ACTIVE,INACTIVE',
-        ]);
+        $validated = $request->validated();
 
         $propertyType = PropertyType::create($validated);
 
-        AuditLog::log(auth()->id(), 'Property type created', 'PropertyType', $propertyType->id, "Created property type: {$propertyType->name}");
+        AuditLog::log(
+            auth()->id(),
+            'Property type created',
+            'PropertyType',
+            $propertyType->id,
+            "Created property type: {$propertyType->name}"
+        );
 
-        return redirect()->back()->with('success', 'Property type created successfully.');
+        return redirect()->back()->with('success', __('Property type created successfully.'));
     }
 
-    public function update(Request $request, PropertyType $propertyType): RedirectResponse
+    public function update(UpdatePropertyTypeRequest $request, PropertyType $propertyType): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:property_types,name,'.$propertyType->id,
-            'description' => 'nullable|string',
-            'status' => 'required|string|in:ACTIVE,INACTIVE',
-        ]);
+        $validated = $request->validated();
 
         $propertyType->update($validated);
 
-        AuditLog::log(auth()->id(), 'Property type updated', 'PropertyType', $propertyType->id, "Updated property type: {$propertyType->name}");
+        AuditLog::log(
+            auth()->id(),
+            'Property type updated',
+            'PropertyType',
+            $propertyType->id,
+            "Updated property type: {$propertyType->name}"
+        );
 
-        return redirect()->back()->with('success', 'Property type updated successfully.');
+        return redirect()->back()->with('success', __('Property type updated successfully.'));
     }
 
     public function toggleActive(PropertyType $propertyType): RedirectResponse
@@ -82,7 +89,7 @@ class PropertyTypeController extends Controller
         $newStatus = $propertyType->status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
         $propertyType->update(['status' => $newStatus]);
 
-        return redirect()->back()->with('success', 'Property type status toggled successfully.');
+        return redirect()->back()->with('success', __('Property type status toggled successfully.'));
     }
 
     public function destroy(PropertyType $propertyType): RedirectResponse
@@ -91,7 +98,7 @@ class PropertyTypeController extends Controller
 
         if ($isUsed) {
             return redirect()->back()->withErrors([
-                'error' => 'Property type is currently being used by existing properties. Consider deactivating it instead.',
+                'error' => __('Property type is currently being used by existing properties. Consider deactivating it instead.'),
             ]);
         }
 
@@ -99,8 +106,14 @@ class PropertyTypeController extends Controller
         $id = $propertyType->id;
         $propertyType->delete();
 
-        AuditLog::log(auth()->id(), 'Property type deleted', 'PropertyType', $id, "Deleted property type: {$name}");
+        AuditLog::log(
+            auth()->id(),
+            'Property type deleted',
+            'PropertyType',
+            $id,
+            "Deleted property type: {$name}"
+        );
 
-        return redirect()->back()->with('success', 'Property type deleted successfully.');
+        return redirect()->back()->with('success', __('Property type deleted successfully.'));
     }
 }

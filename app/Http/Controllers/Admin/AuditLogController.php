@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\AuditLogResource;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -29,7 +30,7 @@ class AuditLogController extends Controller
         $logs = $query->latest()->paginate(15)->withQueryString();
 
         return Inertia::render('Admin/AuditLog/Index', [
-            'logs' => $logs,
+            'logs' => AuditLogResource::collection($logs),
             'filters' => [
                 'search' => $search ?? '',
                 'action' => $action ?? 'all',

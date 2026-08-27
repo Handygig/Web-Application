@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\BannedAccountResource;
 use App\Models\AuditLog;
 use App\Models\BannedAccount;
 use Illuminate\Http\RedirectResponse;
@@ -38,7 +39,7 @@ class BannedAccountController extends Controller
         $bannedAccounts = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Provider/Banned', [
-            'bannedAccounts' => $bannedAccounts,
+            'bannedAccounts' => BannedAccountResource::collection($bannedAccounts),
             'filters' => [
                 'search' => $search ?? '',
                 'accountType' => $accountType ?? 'all',
@@ -52,7 +53,7 @@ class BannedAccountController extends Controller
         $ban = BannedAccount::with('user')->findOrFail($bannedAccount->id);
 
         return Inertia::render('Admin/Provider/BannedShow', [
-            'ban' => $ban,
+            'ban' => new BannedAccountResource($ban),
         ]);
     }
 
@@ -76,6 +77,6 @@ class BannedAccountController extends Controller
             "Unbanned user #{$bannedAccount->user_id}"
         );
 
-        return redirect()->back()->with('success', 'Account unbanned successfully.');
+        return redirect()->back()->with('success', __('Account unbanned successfully.'));
     }
 }

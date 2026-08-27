@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateAvatarRequest;
+use App\Http\Requests\Admin\UpdatePasswordRequest;
+use App\Http\Requests\Admin\UpdateProfileRequest;
+use App\Http\Resources\Admin\UserResource;
 use App\Models\Admin;
 use App\Models\AuditLog;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,24 +22,14 @@ class ProfileController extends Controller
         $user = auth()->user()->load('admin');
 
         return Inertia::render('Admin/Profile/Index', [
-            'user' => $user,
+            'user' => new UserResource($user),
         ]);
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(UpdateProfileRequest $request): RedirectResponse
     {
         $user = auth()->user();
-
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$user->id,
-            'phone' => 'nullable|string|max:50',
-            'address' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:100',
-            'province' => 'nullable|string|max:100',
-            'postal_code' => 'nullable|string|max:20',
-            'country' => 'nullable|string|max:100',
-        ]);
+        $validated = $request->validated();
 
         $user->update([
             'full_name' => $validated['full_name'],
@@ -54,32 +46,39 @@ class ProfileController extends Controller
             'country' => $validated['country'] ?? null,
         ]);
 
-        AuditLog::log(auth()->id(), 'Profile updated', 'User', $user->id, 'Updated profile details');
+        AuditLog::log(
+            auth()->id(),
+            'Profile updated',
+            'User',
+            $user->id,
+            'Updated profile details'
+        );
 
-        return redirect()->back()->with('success', 'Profile updated successfully.');
+        return redirect()->back()->with('success', __('Profile updated successfully.'));
     }
 
-    public function updatePassword(Request $request): RedirectResponse
+    public function updatePassword(UpdatePasswordRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'new_password' => ['required', Password::defaults(), 'confirmed'],
-        ]);
+        $validated = $request->validated();
 
         $request->user()->update([
             'password' => Hash::make($validated['new_password']),
         ]);
 
-        AuditLog::log(auth()->id(), 'Password updated', 'User', auth()->id(), 'Changed account password');
+        AuditLog::log(
+            auth()->id(),
+            'Password updated',
+            'User',
+            auth()->id(),
+            'Changed account password'
+        );
 
-        return redirect()->back()->with('success', 'Password updated successfully.');
+        return redirect()->back()->with('success', __('Password updated successfully.'));
     }
 
-    public function updateAvatar(Request $request): RedirectResponse
+    public function updateAvatar(UpdateAvatarRequest $request): RedirectResponse
     {
-        $request->validate([
-            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $request->validated();
 
         $user = auth()->user();
 
@@ -93,8 +92,14 @@ class ProfileController extends Controller
             'profile_image' => $path,
         ]);
 
-        AuditLog::log(auth()->id(), 'Profile image updated', 'User', $user->id, 'Uploaded new avatar');
+        AuditLog::log(
+            auth()->id(),
+            'Profile image updated',
+            'User',
+            $user->id,
+            'Uploaded new avatar'
+        );
 
-        return redirect()->back()->with('success', 'Profile image updated successfully.');
+        return redirect()->back()->with('success', __('Profile image updated successfully.'));
     }
 }

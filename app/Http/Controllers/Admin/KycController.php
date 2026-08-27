@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\RejectKycRequest;
+use App\Http\Resources\Admin\KycVerificationResource;
 use App\Models\AuditLog;
 use App\Models\KycVerification;
 use Illuminate\Http\RedirectResponse;
@@ -38,7 +40,7 @@ class KycController extends Controller
         $verifications = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Provider/Kyc', [
-            'verifications' => $verifications,
+            'verifications' => KycVerificationResource::collection($verifications),
             'filters' => [
                 'search' => $search ?? '',
                 'status' => $status ?? 'all',
@@ -52,7 +54,7 @@ class KycController extends Controller
         $verification = KycVerification::with(['provider.user', 'provider.company', 'reviewer'])->findOrFail($kycVerification->id);
 
         return Inertia::render('Admin/Provider/KycShow', [
-            'verification' => $verification,
+            'verification' => new KycVerificationResource($verification),
         ]);
     }
 
@@ -77,14 +79,12 @@ class KycController extends Controller
             "Approved KYC/KYB for provider #{$kycVerification->provider_id}"
         );
 
-        return redirect()->back()->with('success', 'Verification approved successfully.');
+        return redirect()->back()->with('success', __('Verification approved successfully.'));
     }
 
-    public function reject(Request $request, KycVerification $kycVerification): RedirectResponse
+    public function reject(RejectKycRequest $request, KycVerification $kycVerification): RedirectResponse
     {
-        $validated = $request->validate([
-            'reason' => 'required|string|max:1000',
-        ]);
+        $validated = $request->validated();
 
         $kycVerification->update([
             'status' => 'REJECTED',
@@ -105,6 +105,6 @@ class KycController extends Controller
             "Rejected KYC/KYB for provider #{$kycVerification->provider_id}. Reason: {$validated['reason']}"
         );
 
-        return redirect()->back()->with('success', 'Verification rejected.');
+        return redirect()->back()->with('success', __('Verification rejected.'));
     }
 }
