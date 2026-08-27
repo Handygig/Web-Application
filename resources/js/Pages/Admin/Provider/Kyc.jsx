@@ -24,181 +24,7 @@ import ConfirmModal from '@/Components/Modals/ConfirmModal';
 import KycRejectModal from '@/Components/Modals/KycRejectModal';
 import KycReviewWorkspace from '@/Components/Provider/KycReviewWorkspace';
 
-const INITIAL_MOCK_KYC = [
-  {
-    id: 1,
-    applicationId: 'APP-9081',
-    providerName: 'Marcus Vance',
-    businessName: 'Vance Master Plumbing LLC',
-    email: 'marcus.vance@servicepro.com',
-    phone: '+1 555-0147',
-    address: '142 Market Street, Suite 400',
-    country: 'United States',
-    registrationDate: 'Jan 10, 2025',
-    verificationType: 'KYB',
-    submittedDate: 'Aug 14, 2026 09:30 AM',
-    documentsCount: 5,
-    status: 'Pending',
-    reviewer: 'Not reviewed',
-    history: [
-      {
-        date: 'Aug 14, 2026 09:30 AM',
-        action: 'Initial Submission',
-        status: 'Pending',
-        reviewer: '—',
-        reason: 'Submitted 5 KYB corporate verification documents.',
-      },
-    ],
-    documents: [
-      { name: 'Business Registration Certificate', fileType: 'PDF', fileSize: '2.4 MB', uploadDate: 'Aug 14, 2026' },
-      { name: 'State Trade License', fileType: 'PDF', fileSize: '1.8 MB', uploadDate: 'Aug 14, 2026' },
-      { name: 'Tax Identification Form (W-9)', fileType: 'PDF', fileSize: '1.1 MB', uploadDate: 'Aug 14, 2026' },
-      { name: 'Commercial Proof of Address', fileType: 'PNG', fileSize: '3.5 MB', uploadDate: 'Aug 14, 2026' },
-      { name: 'Owner Government ID / Passport', fileType: 'JPG', fileSize: '2.9 MB', uploadDate: 'Aug 14, 2026' },
-    ],
-  },
-  {
-    id: 2,
-    applicationId: 'APP-9082',
-    providerName: 'Elena Rostova',
-    businessName: 'BrightSpark Electrical Solutions',
-    email: 'elena.rostova@brightspark.io',
-    phone: '+1 555-0284',
-    address: '88 Tech Boulevard',
-    country: 'United States',
-    registrationDate: 'Feb 02, 2025',
-    verificationType: 'KYC',
-    submittedDate: 'Aug 13, 2026 02:15 PM',
-    documentsCount: 3,
-    status: 'Pending',
-    reviewer: 'Not reviewed',
-    history: [
-      {
-        date: 'Aug 13, 2026 02:15 PM',
-        action: 'Initial Submission',
-        status: 'Pending',
-        reviewer: '—',
-        reason: 'Submitted 3 individual KYC identity verification documents.',
-      },
-    ],
-    documents: [
-      { name: 'Government Issued Driver License', fileType: 'PNG', fileSize: '2.1 MB', uploadDate: 'Aug 13, 2026' },
-      { name: 'Residential Utility Bill', fileType: 'PDF', fileSize: '1.4 MB', uploadDate: 'Aug 13, 2026' },
-      { name: 'Selfie Identity Verification', fileType: 'JPG', fileSize: '1.9 MB', uploadDate: 'Aug 13, 2026' },
-    ],
-  },
-  {
-    id: 3,
-    applicationId: 'APP-9079',
-    providerName: 'Sarah Jenkins',
-    businessName: 'GreenHouse Eco Clean Services',
-    email: 'sarah.j@greenhouseclean.com',
-    phone: '+1 555-0482',
-    address: '500 Sunset Drive',
-    country: 'United States',
-    registrationDate: 'Mar 01, 2025',
-    verificationType: 'KYB',
-    submittedDate: 'Aug 11, 2026 11:00 AM',
-    documentsCount: 4,
-    status: 'Approved',
-    reviewer: 'Admin Alex',
-    approvedAt: 'Aug 12, 2026 10:15 AM',
-    history: [
-      {
-        date: 'Aug 11, 2026 11:00 AM',
-        action: 'Submission',
-        status: 'Pending',
-        reviewer: '—',
-        reason: 'Documents resubmitted with valid business tax code.',
-      },
-      {
-        date: 'Aug 12, 2026 10:15 AM',
-        action: 'Review Completed',
-        status: 'Approved',
-        reviewer: 'Admin Alex',
-        reason: 'All corporate verification documents verified.',
-      },
-    ],
-    documents: [
-      { name: 'Articles of Incorporation', fileType: 'PDF', fileSize: '3.1 MB', uploadDate: 'Aug 11, 2026' },
-      { name: 'State Business License', fileType: 'PDF', fileSize: '1.6 MB', uploadDate: 'Aug 11, 2026' },
-      { name: 'Tax Registration Proof', fileType: 'PDF', fileSize: '1.2 MB', uploadDate: 'Aug 11, 2026' },
-      { name: 'Bank Statement Proof of Address', fileType: 'PDF', fileSize: '2.0 MB', uploadDate: 'Aug 11, 2026' },
-    ],
-  },
-  {
-    id: 4,
-    applicationId: 'APP-9075',
-    providerName: 'David Sterling',
-    businessName: 'Sterling Climate Control',
-    email: 'david.sterling@hvacexperts.com',
-    phone: '+1 555-0391',
-    address: '120 Industrial Parkway',
-    country: 'United States',
-    registrationDate: 'Feb 15, 2025',
-    verificationType: 'KYC',
-    submittedDate: 'Aug 08, 2026 04:45 PM',
-    documentsCount: 3,
-    status: 'Rejected',
-    reviewer: 'Admin Sarah',
-    rejectionReason: 'Expired document: State ID expired on July 2026.',
-    history: [
-      {
-        date: 'Aug 08, 2026 04:45 PM',
-        action: 'Submission',
-        status: 'Pending',
-        reviewer: '—',
-        reason: 'Submitted initial identity documents.',
-      },
-      {
-        date: 'Aug 09, 2026 09:00 AM',
-        action: 'Review Completed',
-        status: 'Rejected',
-        reviewer: 'Admin Sarah',
-        reason: 'Expired document: State ID expired on July 2026.',
-      },
-    ],
-    documents: [
-      { name: 'Expired State Driving License', fileType: 'JPG', fileSize: '1.7 MB', uploadDate: 'Aug 08, 2026' },
-      { name: 'Utility Bill Proof of Address', fileType: 'PDF', fileSize: '1.3 MB', uploadDate: 'Aug 08, 2026' },
-      { name: 'Selfie Photo', fileType: 'PNG', fileSize: '2.2 MB', uploadDate: 'Aug 08, 2026' },
-    ],
-  },
-  {
-    id: 5,
-    applicationId: 'APP-9083',
-    providerName: 'Amina Al-Mansoor',
-    businessName: 'SolarFit Energy Solutions',
-    email: 'amina@solarfit.org',
-    phone: '+1 555-0619',
-    address: '900 Cascade Way',
-    country: 'United States',
-    registrationDate: 'Apr 04, 2025',
-    verificationType: 'KYB',
-    submittedDate: 'Aug 15, 2026 08:10 AM',
-    documentsCount: 5,
-    status: 'Pending',
-    reviewer: 'Not reviewed',
-    history: [
-      {
-        date: 'Aug 15, 2026 08:10 AM',
-        action: 'Initial Submission',
-        status: 'Pending',
-        reviewer: '—',
-        reason: 'Submitted 5 renewable energy trade licenses & tax permits.',
-      },
-    ],
-    documents: [
-      { name: 'Solar Contractor License', fileType: 'PDF', fileSize: '2.8 MB', uploadDate: 'Aug 15, 2026' },
-      { name: 'Commercial Liability Insurance', fileType: 'PDF', fileSize: '3.4 MB', uploadDate: 'Aug 15, 2026' },
-      { name: 'Business Tax Registration', fileType: 'PDF', fileSize: '1.5 MB', uploadDate: 'Aug 15, 2026' },
-      { name: 'Company Utility Bill', fileType: 'PDF', fileSize: '1.9 MB', uploadDate: 'Aug 15, 2026' },
-      { name: 'Managing Director Passport', fileType: 'PNG', fileSize: '2.5 MB', uploadDate: 'Aug 15, 2026' },
-    ],
-  },
-];
-
-export default function ProviderKyc({ dbProviders }) {
+export default function ProviderKyc({ verifications, dbProviders }) {
   const { t } = useTranslation();
 
   // State management
@@ -215,8 +41,44 @@ export default function ProviderKyc({ dbProviders }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortOption, setSortOption] = useState('newest');
 
+  const getInitialRequestsList = () => {
+    const sourceData = verifications?.data || dbProviders;
+    if (sourceData && sourceData.length > 0) {
+      return sourceData.map((item) => {
+        const isVerification = !!item.verification_type;
+        const provider = isVerification ? item.provider : item;
+        const lastKyc = isVerification ? item : (item.kyc_verifications?.[0] || {});
+        
+        return {
+          id: lastKyc.id || item.id,
+          applicationId: `APP-${9000 + (lastKyc.id || item.id)}`,
+          providerName: provider?.user?.full_name || 'Provider Name',
+          businessName: provider?.company?.business_name || provider?.user?.full_name || 'Business Name',
+          email: provider?.user?.email || '',
+          phone: provider?.user?.phone || '',
+          address: provider?.location || 'New York, NY',
+          country: 'United States',
+          registrationDate: provider?.created_at ? new Date(provider.created_at).toLocaleDateString() : 'Jan 2025',
+          verificationType: lastKyc.verification_type || (provider?.provider_type === 'company' ? 'KYB' : 'KYC'),
+          submittedDate: lastKyc.created_at ? new Date(lastKyc.created_at).toLocaleString() : (item.created_at ? new Date(item.created_at).toLocaleString() : 'Jan 2025'),
+          documentsCount: lastKyc.documents?.length || 0,
+          status: lastKyc.status ? (lastKyc.status.charAt(0).toUpperCase() + lastKyc.status.slice(1).toLowerCase()) : 'Pending',
+          reviewer: lastKyc.reviewer?.full_name || 'Admin',
+          rejectionReason: lastKyc.rejection_reason || '',
+          history: lastKyc.history || [],
+          documents: lastKyc.documents || [],
+        };
+      });
+    }
+    return [];
+  };
+
   // Request list dataset
-  const [requestList, setRequestList] = useState(INITIAL_MOCK_KYC);
+  const [requestList, setRequestList] = useState(getInitialRequestsList);
+
+  useEffect(() => {
+    setRequestList(getInitialRequestsList());
+  }, [verifications, dbProviders]);
 
   // Review Workspace Active Request
   const [activeReviewRequest, setActiveReviewRequest] = useState(null);

@@ -24,113 +24,6 @@ import ConfirmModal from '@/Components/Modals/ConfirmModal';
 import ProviderDetailModal from '@/Components/Modals/ProviderDetailModal';
 import ProviderFormModal from '@/Components/Modals/ProviderFormModal';
 
-const INITIAL_MOCK_PROVIDERS = [
-  {
-    id: 1,
-    full_name: 'Marcus Vance',
-    email: 'marcus.vance@servicepro.com',
-    phone: '+1 555-0147',
-    service: 'Plumbing & Pipefitting',
-    location: 'New York, NY',
-    status: 'Active',
-    joined: 'Jan 10, 2025',
-    bio: 'Licensed master plumber with 12+ years of residential and commercial experience.',
-    rating: '4.9',
-    reviews_count: 28,
-  },
-  {
-    id: 2,
-    full_name: 'Elena Rostova',
-    email: 'elena.rostova@brightspark.io',
-    phone: '+1 555-0284',
-    service: 'Electrical & Automation',
-    location: 'Chicago, IL',
-    status: 'Active',
-    joined: 'Feb 02, 2025',
-    bio: 'Certified electrical technician specializing in modern smart home & EV charger installs.',
-    rating: '4.8',
-    reviews_count: 19,
-  },
-  {
-    id: 3,
-    full_name: 'David Sterling',
-    email: 'david.sterling@hvacexperts.com',
-    phone: '+1 555-0391',
-    service: 'HVAC & Climate Control',
-    location: 'Austin, TX',
-    status: 'Inactive',
-    joined: 'Feb 15, 2025',
-    bio: 'Heating and cooling system installer specializing in energy efficient heat pumps.',
-    rating: '4.6',
-    reviews_count: 14,
-  },
-  {
-    id: 4,
-    full_name: 'Sarah Jenkins',
-    email: 'sarah.j@greenhouseclean.com',
-    phone: '+1 555-0482',
-    service: 'Deep Cleaning & Sanitization',
-    location: 'Los Angeles, CA',
-    status: 'Active',
-    joined: 'Mar 01, 2025',
-    bio: 'Eco-friendly cleaning specialist providing eco-certified home and office sanitization.',
-    rating: '5.0',
-    reviews_count: 34,
-  },
-  {
-    id: 5,
-    full_name: 'Carlos Ruiz',
-    email: 'carlos.ruiz@handymanpro.net',
-    phone: '+1 555-0573',
-    service: 'General Carpentry & Repairs',
-    location: 'Miami, FL',
-    status: 'Active',
-    joined: 'Mar 18, 2025',
-    bio: 'Skilled handyman with expertise in custom cabinetry, drywalls, and general home repair.',
-    rating: '4.7',
-    reviews_count: 22,
-  },
-  {
-    id: 6,
-    full_name: 'Amina Al-Mansoor',
-    email: 'amina@solarfit.org',
-    phone: '+1 555-0619',
-    service: 'Solar & Renewable Energy',
-    location: 'Seattle, WA',
-    status: 'Active',
-    joined: 'Apr 04, 2025',
-    bio: 'Renewable energy contractor providing rooftop solar panel installation and battery backup systems.',
-    rating: '4.9',
-    reviews_count: 17,
-  },
-  {
-    id: 7,
-    full_name: 'Kenneth Thorne',
-    email: 'k.thorne@pestshield.com',
-    phone: '+1 555-0728',
-    service: 'Pest Control & Prevention',
-    location: 'Dallas, TX',
-    status: 'Inactive',
-    joined: 'Apr 20, 2025',
-    bio: 'Professional pest control inspector providing organic and traditional pest elimination.',
-    rating: '4.5',
-    reviews_count: 11,
-  },
-  {
-    id: 8,
-    full_name: 'Olivia Chen',
-    email: 'olivia.chen@landscapes.co',
-    phone: '+1 555-0835',
-    service: 'Lawn Care & Landscaping',
-    location: 'Denver, CO',
-    status: 'Active',
-    joined: 'May 02, 2025',
-    bio: 'Landscape architect and lawn maintenance contractor for luxury residential properties.',
-    rating: '4.8',
-    reviews_count: 30,
-  },
-];
-
 export default function ProviderIndex({ providers: serverProviders, categories: serverCategories, filters: serverFilters }) {
   const { t } = useTranslation();
 
@@ -146,7 +39,7 @@ export default function ProviderIndex({ providers: serverProviders, categories: 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  // Local dataset initialized with server data or fallback mock dataset
+  // Local dataset initialized with server data
   const [providerList, setProviderList] = useState(() => {
     if (serverProviders?.data && serverProviders.data.length > 0) {
       return serverProviders.data.map((p) => ({
@@ -162,7 +55,7 @@ export default function ProviderIndex({ providers: serverProviders, categories: 
         bio: p.bio || 'Registered service provider.',
       }));
     }
-    return INITIAL_MOCK_PROVIDERS.map((p) => ({ ...p, isRealDb: false }));
+    return [];
   });
 
   // Sync providerList when serverProviders prop updates

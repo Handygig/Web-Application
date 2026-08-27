@@ -47,7 +47,16 @@ class KycController extends Controller
         ]);
     }
 
-    public function approve(Request $request, KycVerification $kycVerification): RedirectResponse
+    public function show(KycVerification $kycVerification): Response
+    {
+        $verification = KycVerification::with(['provider.user', 'provider.company', 'reviewer'])->findOrFail($kycVerification->id);
+
+        return Inertia::render('Admin/Provider/KycShow', [
+            'verification' => $verification,
+        ]);
+    }
+
+    public function approve(KycVerification $kycVerification): RedirectResponse
     {
         $kycVerification->update([
             'status' => 'APPROVED',

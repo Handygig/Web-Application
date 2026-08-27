@@ -58,9 +58,9 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function show(int $customer): Response
+    public function show(Customer $customer): Response
     {
-        $customerModel = Customer::with(['user', 'properties', 'jobRequests'])->findOrFail($customer);
+        $customerModel = Customer::with(['user', 'properties', 'jobRequests'])->findOrFail($customer->id);
 
         return Inertia::render('Admin/Customer/Show', [
             'customer' => $customerModel,

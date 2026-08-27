@@ -40,6 +40,13 @@ class PropertyTypeController extends Controller
         ]);
     }
 
+    public function show(PropertyType $propertyType): Response
+    {
+        return Inertia::render('Admin/PropertyType/Show', [
+            'propertyType' => $propertyType,
+        ]);
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([

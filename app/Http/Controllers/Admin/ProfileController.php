@@ -15,7 +15,7 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(): Response
     {
         $user = auth()->user()->load('admin');
 

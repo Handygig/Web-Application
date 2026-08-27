@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Menu } from '@headlessui/react';
 import {
   Tag,
@@ -28,214 +28,49 @@ import ConfirmModal from '@/Components/Modals/ConfirmModal';
 import BookingDetailModal from '@/Components/Modals/BookingDetailModal';
 import QuickViewModal from '@/Components/Modals/QuickViewModal';
 
-const INITIAL_MOCK_BOOKINGS = [
-  {
-    id: 'BK-001245',
-    propertyName: 'Deluxe Apartment',
-    category: 'Luxury Accommodation',
-    location: 'Colombo, Sri Lanka',
-    customerName: 'Kasun Perera',
-    customerEmail: 'kasun.perera@email.com',
-    customerPhone: '+94 77 123 4567',
-    customerId: 'CUST-1001',
-    providerName: 'ABC Properties Ltd',
-    providerBusiness: 'ABC Real Estate Group',
-    providerEmail: 'contact@abcproperties.com',
-    providerPhone: '+94 11 234 5678',
-    providerId: 'PRV-2001',
-    bookingDate: 'Aug 18, 2026',
-    timeSlot: '10:00 AM – 12:00 PM',
-    amount: 'LKR 15,000',
-    rawAmount: 15000,
-    status: 'Confirmed',
-    createdDate: 'Aug 15, 2026 – 10:30 AM',
-    history: [
-      { date: 'Aug 15, 2026 – 10:30 AM', title: 'Booking created by customer' },
-      { date: 'Aug 15, 2026 – 11:10 AM', title: 'Booking confirmed by provider' },
-    ],
-  },
-  {
-    id: 'BK-001246',
-    propertyName: 'Master Plumbing Repair',
-    category: 'Home Maintenance',
-    location: 'Kandy, Sri Lanka',
-    customerName: 'Nimali Fernando',
-    customerEmail: 'nimali.f@email.com',
-    customerPhone: '+94 71 987 6543',
-    customerId: 'CUST-1002',
-    providerName: 'Vance Plumbing Solutions',
-    providerBusiness: 'Vance Plumbing',
-    providerEmail: 'vance@plumbing.com',
-    providerPhone: '+94 81 555 0192',
-    providerId: 'PRV-2002',
-    bookingDate: 'Aug 19, 2026',
-    timeSlot: '02:00 PM – 04:00 PM',
-    amount: 'LKR 8,500',
-    rawAmount: 8500,
-    status: 'Pending',
-    createdDate: 'Aug 15, 2026 – 12:45 PM',
-    history: [
-      { date: 'Aug 15, 2026 – 12:45 PM', title: 'Booking created by customer' },
-    ],
-  },
-  {
-    id: 'BK-001247',
-    propertyName: 'Oceanfront Villa Resort',
-    category: 'Villas & Resorts',
-    location: 'Galle, Sri Lanka',
-    customerName: 'Ruwan Jayasinghe',
-    customerEmail: 'ruwan.j@email.com',
-    customerPhone: '+94 76 543 2109',
-    customerId: 'CUST-1003',
-    providerName: 'Southern Palms Resorts',
-    providerBusiness: 'Southern Palms Hospitality',
-    providerEmail: 'reservations@southernpalms.lk',
-    providerPhone: '+94 91 222 3344',
-    providerId: 'PRV-2003',
-    bookingDate: 'Aug 22, 2026',
-    timeSlot: 'Full Day (Check-in 2:00 PM)',
-    amount: 'LKR 45,000',
-    rawAmount: 45000,
-    status: 'Completed',
-    createdDate: 'Aug 10, 2026 – 09:15 AM',
-    history: [
-      { date: 'Aug 10, 2026 – 09:15 AM', title: 'Booking created by customer' },
-      { date: 'Aug 10, 2026 – 10:00 AM', title: 'Booking confirmed' },
-      { date: 'Aug 14, 2026 – 05:00 PM', title: 'Booking completed successfully' },
-    ],
-  },
-  {
-    id: 'BK-001248',
-    propertyName: 'BrightSpark Electrical Maintenance',
-    category: 'Electrical Services',
-    location: 'Negombo, Sri Lanka',
-    customerName: 'Dinesh Cooray',
-    customerEmail: 'dinesh.cooray@email.com',
-    customerPhone: '+94 70 333 4455',
-    customerId: 'CUST-1004',
-    providerName: 'BrightSpark Tech Services',
-    providerBusiness: 'BrightSpark Inc.',
-    providerEmail: 'support@brightspark.lk',
-    providerPhone: '+94 31 777 8899',
-    providerId: 'PRV-2004',
-    bookingDate: 'Aug 16, 2026',
-    timeSlot: '09:00 AM – 11:00 AM',
-    amount: 'LKR 12,000',
-    rawAmount: 12000,
-    status: 'Cancelled',
-    createdDate: 'Aug 12, 2026 – 03:20 PM',
-    history: [
-      { date: 'Aug 12, 2026 – 03:20 PM', title: 'Booking created by customer' },
-      { date: 'Aug 13, 2026 – 01:15 PM', title: 'Booking cancelled by admin' },
-    ],
-  },
-  {
-    id: 'BK-001249',
-    propertyName: 'GreenHouse Eco Deep Cleaning',
-    category: 'Cleaning Services',
-    location: 'Colombo, Sri Lanka',
-    customerName: 'Priya Nair',
-    customerEmail: 'priya.nair@email.com',
-    customerPhone: '+94 77 888 9900',
-    customerId: 'CUST-1005',
-    providerName: 'Eco Clean Sri Lanka',
-    providerBusiness: 'EcoClean Ltd',
-    providerEmail: 'contact@ecoclean.lk',
-    providerPhone: '+94 11 444 5566',
-    providerId: 'PRV-2005',
-    bookingDate: 'Aug 20, 2026',
-    timeSlot: '08:00 AM – 12:00 PM',
-    amount: 'LKR 18,500',
-    rawAmount: 18500,
-    status: 'Confirmed',
-    createdDate: 'Aug 14, 2026 – 11:00 AM',
-    history: [
-      { date: 'Aug 14, 2026 – 11:00 AM', title: 'Booking created by customer' },
-      { date: 'Aug 14, 2026 – 11:30 AM', title: 'Booking confirmed by provider' },
-    ],
-  },
-  {
-    id: 'BK-001250',
-    propertyName: 'Executive Business Suite',
-    category: 'Commercial Spaces',
-    location: 'Colombo, Sri Lanka',
-    customerName: 'Amelia Foster',
-    customerEmail: 'amelia.foster@email.com',
-    customerPhone: '+94 75 111 2233',
-    customerId: 'CUST-1006',
-    providerName: 'City Center Workspaces',
-    providerBusiness: 'CityCenter Workspaces',
-    providerEmail: 'info@citycenterwork.com',
-    providerPhone: '+94 11 999 0011',
-    providerId: 'PRV-2006',
-    bookingDate: 'Aug 25, 2026',
-    timeSlot: '09:00 AM – 05:00 PM',
-    amount: 'LKR 35,000',
-    rawAmount: 35000,
-    status: 'Pending',
-    createdDate: 'Aug 15, 2026 – 08:30 AM',
-    history: [
-      { date: 'Aug 15, 2026 – 08:30 AM', title: 'Booking created by customer' },
-    ],
-  },
-  {
-    id: 'BK-001251',
-    propertyName: 'Sterling Climate Control HVAC',
-    category: 'AC & Climate',
-    location: 'Kurunegala, Sri Lanka',
-    customerName: 'Yuki Tanaka',
-    customerEmail: 'yuki.tanaka@email.com',
-    customerPhone: '+94 78 444 1122',
-    customerId: 'CUST-1007',
-    providerName: 'Sterling Air HVAC',
-    providerBusiness: 'Sterling HVAC',
-    providerEmail: 'service@sterlinghvac.com',
-    providerPhone: '+94 37 222 1100',
-    providerId: 'PRV-2007',
-    bookingDate: 'Aug 21, 2026',
-    timeSlot: '11:00 AM – 01:00 PM',
-    amount: 'LKR 9,800',
-    rawAmount: 9800,
-    status: 'Confirmed',
-    createdDate: 'Aug 13, 2026 – 04:50 PM',
-    history: [
-      { date: 'Aug 13, 2026 – 04:50 PM', title: 'Booking created by customer' },
-      { date: 'Aug 14, 2026 – 09:00 AM', title: 'Booking confirmed' },
-    ],
-  },
-  {
-    id: 'BK-001252',
-    propertyName: 'Royal Palms Luxury Cottage',
-    category: 'Villas & Cottages',
-    location: 'Nuwara Eliya, Sri Lanka',
-    customerName: 'Sofia Eriksson',
-    customerEmail: 'sofia.e@email.com',
-    customerPhone: '+94 72 888 1111',
-    customerId: 'CUST-1008',
-    providerName: 'Highland Luxury Stays',
-    providerBusiness: 'Highland Hospitality',
-    providerEmail: 'stay@highlandcottages.lk',
-    providerPhone: '+94 52 333 4455',
-    providerId: 'PRV-2008',
-    bookingDate: 'Aug 28, 2026',
-    timeSlot: 'Full Day',
-    amount: 'LKR 52,000',
-    rawAmount: 52000,
-    status: 'Completed',
-    createdDate: 'Aug 05, 2026 – 02:10 PM',
-    history: [
-      { date: 'Aug 05, 2026 – 02:10 PM', title: 'Booking created by customer' },
-      { date: 'Aug 05, 2026 – 03:00 PM', title: 'Booking confirmed' },
-      { date: 'Aug 09, 2026 – 12:00 PM', title: 'Booking completed successfully' },
-    ],
-  },
-];
-
-export default function BookingIndex() {
+export default function BookingIndex({ bookings }) {
   const { t } = useTranslation();
 
-  // Pure Frontend Local State Management
-  const [bookingList, setBookingList] = useState(INITIAL_MOCK_BOOKINGS);
+  const getMappedBookings = () => {
+    if (bookings && bookings.length > 0) {
+      return bookings.map((b) => {
+        const custUser = b.customer?.user || {};
+        const provUser = b.provider?.user || {};
+        const serviceCat = b.service_category || {};
+        
+        return {
+          id: `BK-${100000 + b.id}`,
+          realId: b.id,
+          propertyName: b.title || serviceCat.service_name || 'Job Request',
+          category: serviceCat.service_name || 'Services',
+          location: b.location || 'Colombo, Sri Lanka',
+          customerName: custUser.full_name || 'Customer User',
+          customerEmail: custUser.email || '',
+          customerPhone: custUser.phone || '',
+          customerId: `CUST-${1000 + (b.customer?.id || 0)}`,
+          providerName: provUser.full_name || 'Not Assigned',
+          providerBusiness: b.provider?.company?.business_name || provUser.full_name || 'Not Assigned',
+          providerEmail: provUser.email || '',
+          providerPhone: provUser.phone || '',
+          providerId: b.provider?.id ? `PRV-${1000 + b.provider.id}` : '',
+          bookingDate: b.preferred_date ? new Date(b.preferred_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '',
+          timeSlot: 'Flexible',
+          amount: 'Flexible',
+          rawAmount: 0,
+          status: b.status ? (b.status.charAt(0).toUpperCase() + b.status.slice(1).toLowerCase()) : 'Pending',
+          createdDate: b.created_at ? new Date(b.created_at).toLocaleString() : '',
+          history: b.history || [],
+        };
+      });
+    }
+    return [];
+  };
+
+  const [bookingList, setBookingList] = useState(getMappedBookings);
+
+  useEffect(() => {
+    setBookingList(getMappedBookings());
+  }, [bookings]);
 
   // Search & Filter state
   const [activeTab, setActiveTab] = useState('all'); // all, pending, confirmed, completed, cancelled
@@ -416,35 +251,13 @@ export default function BookingIndex() {
   };
 
   const handleStatusChange = (b, newStatus) => {
-    const nowFormatted = new Date().toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    router.patch(route('admin.bookings.status', b.realId), { status: newStatus.toLowerCase() }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        setToastMessage(t('Booking status updated successfully.'));
+        setTimeout(() => setToastMessage(''), 4000);
+      }
     });
-
-    const updatedHistory = [
-      ...(b.history || []),
-      { date: nowFormatted, title: `Booking status changed to ${newStatus}` },
-    ];
-
-    setBookingList((prev) =>
-      prev.map((item) =>
-        item.id === b.id ? { ...item, status: newStatus, history: updatedHistory } : item
-      )
-    );
-
-    if (selectedBooking && selectedBooking.id === b.id) {
-      setSelectedBooking({
-        ...selectedBooking,
-        status: newStatus,
-        history: updatedHistory,
-      });
-    }
-
-    setToastMessage(t('Booking status updated successfully.'));
-    setTimeout(() => setToastMessage(''), 4000);
   };
 
   const handlePromptCancel = (b) => {
@@ -454,29 +267,15 @@ export default function BookingIndex() {
 
   const confirmCancel = () => {
     if (!cancellingBooking) return;
-    const nowFormatted = new Date().toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    router.patch(route('admin.bookings.status', cancellingBooking.realId), { status: 'cancelled' }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        setIsCancelModalOpen(false);
+        setCancellingBooking(null);
+        setToastMessage(t('Booking cancelled successfully.'));
+        setTimeout(() => setToastMessage(''), 4000);
+      }
     });
-
-    const updatedHistory = [
-      ...(cancellingBooking.history || []),
-      { date: nowFormatted, title: 'Booking cancelled by admin' },
-    ];
-
-    setBookingList((prev) =>
-      prev.map((b) =>
-        b.id === cancellingBooking.id ? { ...b, status: 'Cancelled', history: updatedHistory } : b
-      )
-    );
-
-    setIsCancelModalOpen(false);
-    setCancellingBooking(null);
-    setToastMessage(t('Booking cancelled successfully.'));
-    setTimeout(() => setToastMessage(''), 4000);
   };
 
   return (

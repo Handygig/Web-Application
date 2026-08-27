@@ -39,6 +39,13 @@ class JobTypeController extends Controller
         ]);
     }
 
+    public function show(JobType $jobType): Response
+    {
+        return Inertia::render('Admin/JobType/Show', [
+            'jobType' => $jobType,
+        ]);
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([

@@ -66,10 +66,12 @@ Route::middleware('auth')->group(function () {
         // Providers
         Route::get('providers', [AdminProviderController::class, 'index'])->name('providers.index');
         Route::get('providers/kyc', [KycController::class, 'index'])->name('providers.kyc');
+        Route::get('providers/kyc/{kycVerification}', [KycController::class, 'show'])->name('providers.kyc.show');
         Route::patch('providers/kyc/{kycVerification}/approve', [KycController::class, 'approve'])->name('providers.kyc.approve');
         Route::patch('providers/kyc/{kycVerification}/reject', [KycController::class, 'reject'])->name('providers.kyc.reject');
 
         Route::get('providers/banned', [BannedAccountController::class, 'index'])->name('providers.banned');
+        Route::get('providers/banned/{bannedAccount}', [BannedAccountController::class, 'show'])->name('providers.banned.show');
         Route::patch('providers/banned/{bannedAccount}/unban', [BannedAccountController::class, 'unban'])->name('providers.banned.unban');
 
         Route::get('providers/create', [AdminProviderController::class, 'create'])->name('providers.create');

@@ -44,6 +44,15 @@ class BookingController extends Controller
         ]);
     }
 
+    public function show(JobRequest $booking): Response
+    {
+        $bookingModel = JobRequest::with(['customer.user', 'property', 'serviceCategory'])->findOrFail($booking->id);
+
+        return Inertia::render('Admin/Booking/Show', [
+            'booking' => $bookingModel,
+        ]);
+    }
+
     public function updateStatus(Request $request, JobRequest $booking): RedirectResponse
     {
         $validated = $request->validate([
@@ -77,7 +86,7 @@ class BookingController extends Controller
         return redirect()->back()->with('success', 'Booking status updated successfully.');
     }
 
-    public function cancel(Request $request, JobRequest $booking): RedirectResponse
+    public function cancel(JobRequest $booking): RedirectResponse
     {
         $history = $booking->history ?? [];
         $history[] = [

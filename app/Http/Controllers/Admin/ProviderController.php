@@ -67,6 +67,15 @@ class ProviderController extends Controller
         ]);
     }
 
+    public function show(Provider $provider): Response
+    {
+        $providerModel = Provider::with(['user', 'serviceCategories', 'company', 'kycVerifications'])->findOrFail($provider->id);
+
+        return Inertia::render('Admin/Provider/Show', [
+            'provider' => $providerModel,
+        ]);
+    }
+
     public function kyc(Request $request): Response
     {
         $providers = Provider::with(['user', 'serviceCategories', 'company'])->latest()->get();
@@ -107,7 +116,7 @@ class ProviderController extends Controller
                 'status' => $validated['status'],
             ]);
 
-            $provider = Provider::create([
+            $prov = Provider::create([
                 'user_id' => $user->id,
                 'provider_type' => 'individual',
                 'bio' => $validated['bio'] ?? null,
@@ -119,7 +128,7 @@ class ProviderController extends Controller
                     ['service_name' => $validated['service_category']],
                     ['is_active' => true]
                 );
-                $provider->serviceCategories()->sync([$category->id]);
+                $prov->serviceCategories()->sync([$category->id]);
             }
         });
 

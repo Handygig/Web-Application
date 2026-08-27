@@ -47,7 +47,16 @@ class BannedAccountController extends Controller
         ]);
     }
 
-    public function unban(Request $request, BannedAccount $bannedAccount): RedirectResponse
+    public function show(BannedAccount $bannedAccount): Response
+    {
+        $ban = BannedAccount::with('user')->findOrFail($bannedAccount->id);
+
+        return Inertia::render('Admin/Provider/BannedShow', [
+            'ban' => $ban,
+        ]);
+    }
+
+    public function unban(BannedAccount $bannedAccount): RedirectResponse
     {
         $bannedAccount->update([
             'status' => 'UNBANNED',
