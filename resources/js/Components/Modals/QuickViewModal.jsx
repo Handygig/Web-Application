@@ -10,6 +10,11 @@ export default function QuickViewModal({
   onClose,
 }) {
   const { t } = useTranslation();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!onClose || !open) return;
@@ -20,7 +25,7 @@ export default function QuickViewModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose, open]);
 
-  if (!open || !data) return null;
+  if (!open || !data || !mounted || typeof window === 'undefined' || !window.document?.body) return null;
 
   const isCustomer = type === 'customer';
 
@@ -122,5 +127,5 @@ export default function QuickViewModal({
     </div>
   );
 
-  return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : modalContent;
+  return createPortal(modalContent, window.document.body);
 }

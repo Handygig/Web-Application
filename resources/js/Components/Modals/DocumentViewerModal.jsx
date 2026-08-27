@@ -18,6 +18,11 @@ import { useTranslation } from '@/Hooks/useTranslation';
 export default function DocumentViewerModal({ open = false, document = null, onClose }) {
   const { t } = useTranslation();
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) {
@@ -34,15 +39,19 @@ export default function DocumentViewerModal({ open = false, document = null, onC
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose, open]);
 
-  if (!open || !document) return null;
+  if (!open || !document || !mounted || typeof window === 'undefined' || !window.document?.body) {
+    return null;
+  }
 
   const isImage =
-    document.fileType?.includes('image') ||
+    document.fileType?.toLowerCase().includes('image') ||
     document.fileType === 'PNG' ||
     document.fileType === 'JPG' ||
     document.fileType === 'JPEG' ||
     document.name?.toLowerCase().endsWith('.png') ||
-    document.name?.toLowerCase().endsWith('.jpg');
+    document.name?.toLowerCase().endsWith('.jpg') ||
+    document.name?.toLowerCase().endsWith('.jpeg') ||
+    document.name?.toLowerCase().endsWith('.webp');
 
   const handleZoomIn = () => setZoomLevel((prev) => Math.min(prev + 0.25, 2.5));
   const handleZoomOut = () => setZoomLevel((prev) => Math.max(prev - 0.25, 0.5));
@@ -149,6 +158,14 @@ export default function DocumentViewerModal({ open = false, document = null, onC
                 className="max-h-[70vh] rounded-xl object-contain shadow-2xl ring-1 ring-slate-800"
               />
             </div>
+          ) : document.url ? (
+            <div className="w-full h-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 flex flex-col">
+              <iframe
+                src={document.url}
+                title={document.name}
+                className="w-full h-full min-h-[500px] border-0 rounded-xl bg-white"
+              />
+            </div>
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-center p-8 bg-slate-900/60 rounded-2xl border border-slate-800 max-w-2xl">
               <div className="h-20 w-20 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-4 ring-1 ring-indigo-500/20">
@@ -206,5 +223,5 @@ export default function DocumentViewerModal({ open = false, document = null, onC
     </div>
   );
 
-  return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : modalContent;
+  return createPortal(modalContent, window.document.body);
 }

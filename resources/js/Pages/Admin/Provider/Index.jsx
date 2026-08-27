@@ -151,6 +151,7 @@ export default function ProviderIndex({ providers: serverProviders, categories: 
     if (serverProviders?.data && serverProviders.data.length > 0) {
       return serverProviders.data.map((p) => ({
         id: p.id,
+        isRealDb: true,
         full_name: p.user?.full_name || p.full_name || 'Provider User',
         email: p.user?.email || p.email || '',
         phone: p.user?.phone || p.phone || '',
@@ -161,8 +162,30 @@ export default function ProviderIndex({ providers: serverProviders, categories: 
         bio: p.bio || 'Registered service provider.',
       }));
     }
-    return INITIAL_MOCK_PROVIDERS;
+    return INITIAL_MOCK_PROVIDERS.map((p) => ({ ...p, isRealDb: false }));
   });
+
+  // Sync providerList when serverProviders prop updates
+  useEffect(() => {
+    if (serverProviders?.data && serverProviders.data.length > 0) {
+      setProviderList(
+        serverProviders.data.map((p) => ({
+          id: p.id,
+          isRealDb: true,
+          full_name: p.user?.full_name || p.full_name || 'Provider User',
+          email: p.user?.email || p.email || '',
+          phone: p.user?.phone || p.phone || '',
+          service: p.service_categories?.[0]?.service_name || p.service || 'General Service',
+          location: p.location || 'New York, NY',
+          status: p.user?.status === 'active' || p.status === 'Active' ? 'Active' : 'Inactive',
+          joined: p.created_at ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Jan 2025',
+          bio: p.bio || 'Registered service provider.',
+        }))
+      );
+    } else if (serverProviders?.data && serverProviders.data.length === 0) {
+      setProviderList([]);
+    }
+  }, [serverProviders]);
 
   // Modals state
   const [selectedProvider, setSelectedProvider] = useState(null);
@@ -265,74 +288,95 @@ export default function ProviderIndex({ providers: serverProviders, categories: 
 
   const confirmDelete = () => {
     if (!deletingProvider) return;
+    const targetProvider = deletingProvider;
     setActionProcessing(true);
 
-    setTimeout(() => {
-      setProviderList((prev) => prev.filter((p) => p.id !== deletingProvider.id));
+    if (targetProvider.isRealDb) {
+      router.delete(route('admin.providers.destroy', targetProvider.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+          setProviderList((prev) => prev.filter((p) => p.id !== targetProvider.id));
+          setActionProcessing(false);
+          setIsDeleteModalOpen(false);
+          setDeletingProvider(null);
+        },
+        onError: () => {
+          setActionProcessing(false);
+          setIsDeleteModalOpen(false);
+          setDeletingProvider(null);
+        },
+        onFinish: () => {
+          setActionProcessing(false);
+          setIsDeleteModalOpen(false);
+          setDeletingProvider(null);
+        },
+      });
+    } else {
+      setProviderList((prev) => prev.filter((p) => p.id !== targetProvider.id));
       setActionProcessing(false);
       setIsDeleteModalOpen(false);
       setDeletingProvider(null);
-
-      // Trigger server request if route available
-      try {
-        router.delete(route('admin.providers.destroy', deletingProvider.id), {
-          preserveScroll: true,
-          onError: () => {},
-        });
-      } catch (e) {
-        // Fallback gracefully for pure mock environment
-      }
-    }, 400);
+    }
   };
 
   const handleFormSubmit = (data) => {
     setActionProcessing(true);
-    setTimeout(() => {
-      if (editingProvider) {
-        setProviderList((prev) =>
-          prev.map((p) =>
-            p.id === editingProvider.id
-              ? {
-                  ...p,
-                  full_name: data.full_name,
-                  email: data.email,
-                  phone: data.phone,
-                  service: data.service_category,
-                  location: data.location,
-                  bio: data.bio,
-                  status: data.status === 'active' ? 'Active' : 'Inactive',
-                }
-              : p
-          )
-        );
-      } else {
-        const newProvider = {
-          id: Date.now(),
-          full_name: data.full_name,
-          email: data.email,
-          phone: data.phone || '+1 555-0000',
-          service: data.service_category || 'General Service',
-          location: data.location || 'New York, NY',
-          status: data.status === 'active' ? 'Active' : 'Inactive',
-          joined: 'Just now',
-          bio: data.bio || 'Newly added service provider.',
-          rating: '5.0',
-          reviews_count: 1,
-        };
-        setProviderList((prev) => [newProvider, ...prev]);
-      }
+    const targetProvider = editingProvider;
+
+    if (targetProvider) {
+      setProviderList((prev) =>
+        prev.map((p) =>
+          p.id === targetProvider.id
+            ? {
+                ...p,
+                full_name: data.full_name,
+                email: data.email,
+                phone: data.phone,
+                service: data.service_category,
+                location: data.location,
+                bio: data.bio,
+                status: data.status === 'active' ? 'Active' : 'Inactive',
+              }
+            : p
+        )
+      );
       setActionProcessing(false);
       setIsFormModalOpen(false);
       setEditingProvider(null);
 
-      try {
-        if (editingProvider) {
-          router.put(route('admin.providers.update', editingProvider.id), data, { preserveScroll: true });
-        } else {
-          router.post(route('admin.providers.store'), data, { preserveScroll: true });
-        }
-      } catch (e) {}
-    }, 400);
+      if (targetProvider.isRealDb) {
+        router.put(route('admin.providers.update', targetProvider.id), data, {
+          preserveScroll: true,
+          preserveState: true,
+          onError: () => {},
+        });
+      }
+    } else {
+      const newProvider = {
+        id: Date.now(),
+        isRealDb: false,
+        full_name: data.full_name,
+        email: data.email,
+        phone: data.phone || '+1 555-0000',
+        service: data.service_category || 'General Service',
+        location: data.location || 'New York, NY',
+        status: data.status === 'active' ? 'Active' : 'Inactive',
+        joined: 'Just now',
+        bio: data.bio || 'Newly added service provider.',
+        rating: '5.0',
+        reviews_count: 1,
+      };
+      setProviderList((prev) => [newProvider, ...prev]);
+      setActionProcessing(false);
+      setIsFormModalOpen(false);
+      setEditingProvider(null);
+
+      router.post(route('admin.providers.store'), data, {
+        preserveScroll: true,
+        preserveState: true,
+        onError: () => {},
+      });
+    }
   };
 
   const handleRetry = () => {

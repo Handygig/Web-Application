@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\BannedAccountController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\JobTypeController as AdminJobTypeController;
+use App\Http\Controllers\Admin\KycController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\PropertyTypeController as AdminPropertyTypeController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
@@ -20,6 +23,7 @@ use App\Http\Controllers\Company\EmployeeController as CompanyEmployeeController
 use App\Http\Controllers\Company\PaymentController as CompanyPaymentController;
 use App\Http\Controllers\Company\ProfileController as CompanyProfileController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,12 +65,12 @@ Route::middleware('auth')->group(function () {
 
         // Providers
         Route::get('providers', [AdminProviderController::class, 'index'])->name('providers.index');
-        Route::get('providers/kyc', [\App\Http\Controllers\Admin\KycController::class, 'index'])->name('providers.kyc');
-        Route::patch('providers/kyc/{kycVerification}/approve', [\App\Http\Controllers\Admin\KycController::class, 'approve'])->name('providers.kyc.approve');
-        Route::patch('providers/kyc/{kycVerification}/reject', [\App\Http\Controllers\Admin\KycController::class, 'reject'])->name('providers.kyc.reject');
+        Route::get('providers/kyc', [KycController::class, 'index'])->name('providers.kyc');
+        Route::patch('providers/kyc/{kycVerification}/approve', [KycController::class, 'approve'])->name('providers.kyc.approve');
+        Route::patch('providers/kyc/{kycVerification}/reject', [KycController::class, 'reject'])->name('providers.kyc.reject');
 
-        Route::get('providers/banned', [\App\Http\Controllers\Admin\BannedAccountController::class, 'index'])->name('providers.banned');
-        Route::patch('providers/banned/{bannedAccount}/unban', [\App\Http\Controllers\Admin\BannedAccountController::class, 'unban'])->name('providers.banned.unban');
+        Route::get('providers/banned', [BannedAccountController::class, 'index'])->name('providers.banned');
+        Route::patch('providers/banned/{bannedAccount}/unban', [BannedAccountController::class, 'unban'])->name('providers.banned.unban');
 
         Route::get('providers/create', [AdminProviderController::class, 'create'])->name('providers.create');
         Route::post('providers', [AdminProviderController::class, 'store'])->name('providers.store');
@@ -126,12 +130,18 @@ Route::middleware('auth')->group(function () {
         Route::post('profile/avatar', [AdminProfileController::class, 'updateAvatar'])->name('profile.avatar');
 
         // Audit Logs
-        Route::get('audit-logs', [\App\Http\Controllers\Admin\AuditLogController::class, 'index'])->name('audit-logs.index');
+        Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
+
+        // Notifications
+        Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
     });
 
     // Company Routes
     Route::middleware('role:company')->prefix('company')->name('company.')->group(function () {
         Route::get('dashboard', [CompanyDashboardController::class, 'index'])->name('dashboard');
+
+        // Notifications
+        Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
         // Employees
         Route::get('employees', [CompanyEmployeeController::class, 'index'])->name('employees.index');

@@ -204,6 +204,7 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
     if (dbCustomers?.data && dbCustomers.data.length > 0) {
       return dbCustomers.data.map((c) => ({
         id: c.id,
+        isRealDb: true,
         customerId: `CUST-${1000 + c.id}`,
         full_name: c.user?.full_name || c.full_name || 'Customer User',
         email: c.user?.email || c.email || '',
@@ -217,8 +218,33 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
         completedOrders: 11,
       }));
     }
-    return INITIAL_MOCK_CUSTOMERS;
+    return INITIAL_MOCK_CUSTOMERS.map((c) => ({ ...c, isRealDb: false }));
   });
+
+  // Sync customerList when dbCustomers prop updates
+  useEffect(() => {
+    if (dbCustomers?.data && dbCustomers.data.length > 0) {
+      setCustomerList(
+        dbCustomers.data.map((c) => ({
+          id: c.id,
+          isRealDb: true,
+          customerId: `CUST-${1000 + c.id}`,
+          full_name: c.user?.full_name || c.full_name || 'Customer User',
+          email: c.user?.email || c.email || '',
+          phone: c.user?.phone || c.phone || '',
+          status: c.user?.status ? c.user.status.charAt(0).toUpperCase() + c.user.status.slice(1) : 'Active',
+          customerType: 'Individual',
+          joined: c.created_at ? new Date(c.created_at).toLocaleDateString() : 'Jan 2025',
+          lastActive: 'Recent',
+          ordersCount: 12,
+          totalSpent: '1,100.00',
+          completedOrders: 11,
+        }))
+      );
+    } else if (dbCustomers?.data && dbCustomers.data.length === 0) {
+      setCustomerList([]);
+    }
+  }, [dbCustomers]);
 
   // Modal controls
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -346,7 +372,7 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
 
       try {
         router.put(route('admin.customers.update', suspendingCustomer.id), { status: 'suspended' }, { preserveScroll: true });
-      } catch (e) {}
+      } catch (e) { }
     }, 400);
   };
 
@@ -371,7 +397,7 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
 
       try {
         router.put(route('admin.customers.update', banningCustomer.id), { status: 'banned' }, { preserveScroll: true });
-      } catch (e) {}
+      } catch (e) { }
     }, 400);
   };
 
@@ -387,7 +413,7 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
 
       try {
         router.put(route('admin.customers.update', c.id), { status: 'active' }, { preserveScroll: true });
-      } catch (e) {}
+      } catch (e) { }
     }, 400);
   };
 
@@ -398,20 +424,37 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
 
   const confirmDelete = () => {
     if (!deletingCustomer) return;
+    const targetCustomer = deletingCustomer;
     setActionProcessing(true);
 
-    setTimeout(() => {
-      setCustomerList((prev) => prev.filter((c) => c.id !== deletingCustomer.id));
+    if (targetCustomer.isRealDb) {
+      router.delete(route('admin.customers.destroy', targetCustomer.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+          setCustomerList((prev) => prev.filter((c) => c.id !== targetCustomer.id));
+          setActionProcessing(false);
+          setIsDeleteModalOpen(false);
+          setDeletingCustomer(null);
+        },
+        onError: () => {
+          setActionProcessing(false);
+          setIsDeleteModalOpen(false);
+          setDeletingCustomer(null);
+        },
+        onFinish: () => {
+          setActionProcessing(false);
+          setIsDeleteModalOpen(false);
+          setDeletingCustomer(null);
+        },
+      });
+    } else {
+      setCustomerList((prev) => prev.filter((c) => c.id !== targetCustomer.id));
       setActionProcessing(false);
       setIsDeleteModalOpen(false);
       setDeletingCustomer(null);
       setToastMessage(t('Customer account deleted successfully.'));
       setTimeout(() => setToastMessage(''), 4000);
-
-      try {
-        router.delete(route('admin.customers.destroy', deletingCustomer.id), { preserveScroll: true });
-      } catch (e) {}
-    }, 400);
+    }
   };
 
   const handleFormSubmit = (data) => {
@@ -422,15 +465,15 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
           prev.map((c) =>
             c.id === editingCustomer.id
               ? {
-                  ...c,
-                  full_name: data.full_name,
-                  email: data.email,
-                  phone: data.phone,
-                  status: data.status,
-                  customerType: data.customerType,
-                  address: data.address,
-                  city: data.city,
-                }
+                ...c,
+                full_name: data.full_name,
+                email: data.email,
+                phone: data.phone,
+                status: data.status,
+                customerType: data.customerType,
+                address: data.address,
+                city: data.city,
+              }
               : c
           )
         );
@@ -468,7 +511,7 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
         } else {
           router.post(route('admin.customers.store'), data, { preserveScroll: true });
         }
-      } catch (e) {}
+      } catch (e) { }
     }, 400);
   };
 
@@ -730,11 +773,11 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
                   {paginatedCustomers.map((cust) => {
                     const initials = cust.full_name
                       ? cust.full_name
-                          .split(' ')
-                          .map((n) => n[0])
-                          .join('')
-                          .slice(0, 2)
-                          .toUpperCase()
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .slice(0, 2)
+                        .toUpperCase()
                       : 'C';
 
                     const status = cust.status || 'Active';
@@ -774,26 +817,24 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
                         {/* Status badge */}
                         <td className="px-4 py-3.5">
                           <span
-                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold whitespace-nowrap ${
-                              isActive
+                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold whitespace-nowrap ${isActive
                                 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                 : isSuspended
-                                ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                                : isBanned
-                                ? 'bg-red-50 text-red-700 border border-red-200'
-                                : 'bg-slate-100 text-slate-600 border border-slate-200'
-                            }`}
+                                  ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                                  : isBanned
+                                    ? 'bg-red-50 text-red-700 border border-red-200'
+                                    : 'bg-slate-100 text-slate-600 border border-slate-200'
+                              }`}
                           >
                             <span
-                              className={`h-1.5 w-1.5 rounded-full ${
-                                isActive
+                              className={`h-1.5 w-1.5 rounded-full ${isActive
                                   ? 'bg-emerald-500'
                                   : isSuspended
-                                  ? 'bg-amber-500'
-                                  : isBanned
-                                  ? 'bg-red-500'
-                                  : 'bg-slate-400'
-                              }`}
+                                    ? 'bg-amber-500'
+                                    : isBanned
+                                      ? 'bg-red-500'
+                                      : 'bg-slate-400'
+                                }`}
                             />
                             {status}
                           </span>
@@ -847,9 +888,8 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
                                       <button
                                         type="button"
                                         onClick={() => handleEdit(cust)}
-                                        className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-slate-700 ${
-                                          active ? 'bg-slate-50' : ''
-                                        }`}
+                                        className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-slate-700 ${active ? 'bg-slate-50' : ''
+                                          }`}
                                       >
                                         <Edit3 className="h-3.5 w-3.5 text-slate-500" />
                                         {t('Edit Customer')}
@@ -863,9 +903,8 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
                                         <button
                                           type="button"
                                           onClick={() => handleReactivate(cust)}
-                                          className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-emerald-700 ${
-                                            active ? 'bg-emerald-50' : ''
-                                          }`}
+                                          className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-emerald-700 ${active ? 'bg-emerald-50' : ''
+                                            }`}
                                         >
                                           <UserCheck className="h-3.5 w-3.5 text-emerald-600" />
                                           {t('Reactivate')}
@@ -880,9 +919,8 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
                                         <button
                                           type="button"
                                           onClick={() => handlePromptSuspend(cust)}
-                                          className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-amber-700 ${
-                                            active ? 'bg-amber-50' : ''
-                                          }`}
+                                          className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-amber-700 ${active ? 'bg-amber-50' : ''
+                                            }`}
                                         >
                                           <PauseCircle className="h-3.5 w-3.5 text-amber-600" />
                                           {t('Suspend')}
@@ -897,9 +935,8 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
                                         <button
                                           type="button"
                                           onClick={() => handlePromptBan(cust)}
-                                          className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-red-600 ${
-                                            active ? 'bg-red-50' : ''
-                                          }`}
+                                          className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-red-600 ${active ? 'bg-red-50' : ''
+                                            }`}
                                         >
                                           <Lock className="h-3.5 w-3.5 text-red-500" />
                                           {t('Ban Account')}
@@ -915,9 +952,8 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
                                       <button
                                         type="button"
                                         onClick={() => handlePromptDelete(cust)}
-                                        className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-red-600 ${
-                                          active ? 'bg-red-50' : ''
-                                        }`}
+                                        className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-red-600 ${active ? 'bg-red-50' : ''
+                                          }`}
                                       >
                                         <Trash2 className="h-3.5 w-3.5 text-red-500" />
                                         {t('Delete Customer')}
@@ -941,11 +977,11 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
               {paginatedCustomers.map((cust) => {
                 const initials = cust.full_name
                   ? cust.full_name
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')
-                      .slice(0, 2)
-                      .toUpperCase()
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')
+                    .slice(0, 2)
+                    .toUpperCase()
                   : 'C';
                 const status = cust.status || 'Active';
 
@@ -1029,11 +1065,10 @@ export default function CustomerIndex({ dbCustomers, stats: serverStats, filters
                       key={pageNum}
                       type="button"
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`h-8 w-8 rounded-xl text-xs font-bold transition ${
-                        currentPage === pageNum
+                      className={`h-8 w-8 rounded-xl text-xs font-bold transition ${currentPage === pageNum
                           ? 'bg-theme-accent text-white shadow-2xs'
                           : 'text-slate-600 hover:bg-slate-100'
-                      }`}
+                        }`}
                     >
                       {pageNum}
                     </button>

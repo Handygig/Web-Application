@@ -61,12 +61,6 @@ export function getNavByRole(t) {
                     href: '/admin/job-types',
                     activePaths: ['/admin/job-types*'],
                 },
-                {
-                    label: t('Audit Logs'),
-                    icon: FileText,
-                    href: '/admin/audit-logs',
-                    activePaths: ['/admin/audit-logs*'],
-                },
             ],
         },
         {

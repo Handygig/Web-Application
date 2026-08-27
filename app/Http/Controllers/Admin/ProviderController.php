@@ -164,15 +164,40 @@ class ProviderController extends Controller
 
     public function destroy(Provider $provider): RedirectResponse
     {
-        DB::transaction(function () use ($provider) {
-            $user = $provider->user;
-            $provider->delete();
-            if ($user) {
-                $user->delete();
-            }
-        });
+        try {
+            DB::transaction(function () use ($provider) {
+                if (method_exists($provider, 'serviceCategories')) {
+                    $provider->serviceCategories()->detach();
+                }
 
-        return redirect()->back()->with('success', 'Provider deleted successfully.');
+                $user = $provider->user;
+
+                // Delete child relationships to avoid foreign key violations
+                DB::table('provider_services')->where('provider_id', $provider->id)->delete();
+                DB::table('job_assignments')->where('provider_id', $provider->id)->delete();
+                DB::table('quotations')->where('provider_id', $provider->id)->delete();
+                DB::table('payout_accounts')->where('provider_id', $provider->id)->delete();
+                DB::table('payouts')->where('provider_id', $provider->id)->delete();
+                DB::table('kyc_verifications')->where('provider_id', $provider->id)->delete();
+                DB::table('reviews')->where('provider_id', $provider->id)->delete();
+                DB::table('disputes')->where('provider_id', $provider->id)->delete();
+                DB::table('payments')->where('provider_id', $provider->id)->delete();
+
+                if ($user) {
+                    DB::table('banned_accounts')->where('user_id', $user->id)->delete();
+                    DB::table('audit_logs')->where('user_id', $user->id)->delete();
+                }
+
+                $provider->delete();
+                if ($user) {
+                    $user->delete();
+                }
+            });
+
+            return redirect()->route('admin.providers.index')->with('success', 'Provider deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.providers.index')->with('error', 'Unable to delete provider: '.$e->getMessage());
+        }
     }
 
     public function toggleActive(Provider $provider): RedirectResponse
