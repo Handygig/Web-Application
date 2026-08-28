@@ -24,7 +24,7 @@ export default function Navbar({ onMenuToggle }) {
       desc: 'Electrical Services Provider submitted license verification',
       time: '5 min ago',
       unread: true,
-      href: route((isAdmin ? 'admin' : 'company') + '.providers.kyc'),
+      href: isAdmin ? route('admin.providers.kyc') : route('company.dashboard'),
     },
     {
       id: 2,

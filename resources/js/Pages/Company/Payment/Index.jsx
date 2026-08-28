@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import PageHeader from '@/Components/Other/PageHeader';
+import TabSwitch from '@/Components/Other/TabSwitch';
+import TableCard from '@/Components/Cards/TableCard';
 import {
   DollarSign,
   Plus,
@@ -278,9 +281,19 @@ export default function PaymentIndex({ initialStats }) {
     setDateFilter('all');
   };
 
+  const paymentTabs = [
+    { key: 'all', label: `${t('All')} (${transactions.length})` },
+    { key: 'paid', label: `${t('Paid')} (${transactions.filter((t) => t.status === 'paid' || t.status === 'settled').length})` },
+    { key: 'pending', label: `${t('Pending')} (${transactions.filter((t) => t.status === 'pending').length})` },
+    { key: 'disbursed', label: `${t('Disbursed')} (${transactions.filter((t) => t.status === 'disbursed').length})` },
+    { key: 'refunded', label: `${t('Refunded')} (${transactions.filter((t) => t.status === 'refunded').length})` },
+  ];
+
   return (
     <AppLayout>
-      <div className="space-y-6 pb-12">
+      <Head title={t('Payments')} />
+
+      <div className="flex w-full flex-col gap-6">
         {/* Toast Notification Banner */}
         {toastMessage && (
           <div
@@ -303,68 +316,58 @@ export default function PaymentIndex({ initialStats }) {
           </div>
         )}
 
-        {/* 1. Top Header & Action Controls */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/80 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-sm">
-          <div className="space-y-1">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                {t('Payments & Financial Hub')}
-              </h1>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-[#EBF5EC] text-[#5E6933] border border-emerald-200">
-                <Sparkles className="w-3.5 h-3.5 text-[#5E6933]" />
-                {t('Payouts & Invoices')}
-              </span>
-            </div>
-            <p className="text-sm text-slate-500 max-w-2xl">
-              {t('Monitor company revenue, customer transactions, platform fees, and technician payouts')}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
+        <PageHeader
+          title={t('Payments & Invoices')}
+          description={t('Track revenue, net payouts, platform commission, and disbursement history.')}
+          action={
             <button
-              onClick={handleExportCSV}
-              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-2xl transition-all flex items-center gap-2 border border-slate-200/80"
-            >
-              <Download className="w-4 h-4 text-slate-600" />
-              <span>{t('Download Financial Report')}</span>
-            </button>
-
-            <button
+              type="button"
               onClick={() => setIsPayoutModalOpen(true)}
-              className="px-5 py-2.5 bg-[#5E6933] hover:bg-[#4d5729] text-white text-xs font-extrabold rounded-2xl transition-all flex items-center gap-2 shadow-md hover:-translate-y-0.5"
+              className="bg-theme-accent hover:bg-theme-accent-hover inline-flex items-center gap-2 rounded-[12px] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-theme-accent/15 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="h-4 w-4" />
               <span>{t('Request Payout')}</span>
             </button>
-          </div>
-        </div>
+          }
+        />
 
         {/* 2. Top 4 Summary Metric Cards */}
         <PaymentMetrics metrics={metrics} />
 
-        {/* 3. Search, Filter & View Controls */}
-        <PaymentFilters
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          methodFilter={methodFilter}
-          setMethodFilter={setMethodFilter}
-          dateFilter={dateFilter}
-          setDateFilter={setDateFilter}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          onExportCSV={handleExportCSV}
-          onResetFilters={handleResetFilters}
-        />
+        {/* 3. TABS & SEARCH / FILTER CONTROLS */}
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 pb-3">
+            <TabSwitch tabs={paymentTabs} activeTab={statusFilter} onChange={setStatusFilter} />
+            <div className="text-xs text-slate-500 font-medium">
+              {t('Showing')} <span className="font-bold text-slate-900">{filteredTransactions.length}</span> {t('transactions')}
+            </div>
+          </div>
 
-        {/* 4. Transactions & Invoices Data Table */}
-        <PaymentTable
-          transactions={filteredTransactions}
-          viewMode={viewMode}
-          onViewInvoice={handleViewInvoice}
-          onDownloadReceipt={handleDownloadReceipt}
-        />
+          <PaymentFilters
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            methodFilter={methodFilter}
+            setMethodFilter={setMethodFilter}
+            dateFilter={dateFilter}
+            setDateFilter={setDateFilter}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            onExportCSV={handleExportCSV}
+            onResetFilters={handleResetFilters}
+          />
+        </div>
+
+        {/* 4. Transactions & Invoices Data Table inside TableCard */}
+        <TableCard>
+          <PaymentTable
+            transactions={filteredTransactions}
+            viewMode={viewMode}
+            onViewInvoice={handleViewInvoice}
+            onDownloadReceipt={handleDownloadReceipt}
+          />
+        </TableCard>
 
         {/* 5. Invoice Details & Receipt Modal */}
         <InvoiceDetailsModal

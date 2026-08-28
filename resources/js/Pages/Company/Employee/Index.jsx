@@ -1,6 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import PageHeader from '@/Components/Other/PageHeader';
+import StatCard from '@/Components/Cards/StatCard';
+import TabSwitch from '@/Components/Other/TabSwitch';
+import TableCard from '@/Components/Cards/TableCard';
 import {
   Users,
   UserCheck,
@@ -470,230 +474,196 @@ export default function EmployeeIndex() {
     }
   };
 
+  const employeeTabs = [
+    { key: 'all', label: `${t('All')} (${totalStaff})` },
+    { key: 'available', label: `${t('Available')} (${availableForDispatch})` },
+    { key: 'on_shift_job', label: `${t('On Shift - In Job')} (${currentlyOnShift})` },
+    { key: 'on_break', label: `${t('On Break')} (${technicians.filter((t) => t.status === 'on_break').length})` },
+    { key: 'off_duty', label: `${t('Off Duty')} (${technicians.filter((t) => t.status === 'off_duty').length})` },
+  ];
+
   return (
     <AppLayout>
-      <div className="employee-management-root mx-auto max-w-[1400px] space-y-6 pb-12">
-        
-        {/* 1. TOP HEADER & ACTION CONTROLS */}
-        <div className="bg-white/80 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                {t('Employee Management')}
-              </h1>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#EBF5EC] text-[#2F4F2F] border border-[#C6E2CB]">
-                <UserCheck className="w-3.5 h-3.5 text-[#4CAF50]" />
-                {t('Staff Portal')}
-              </span>
-            </div>
-            <p className="text-sm font-medium text-slate-500 mt-1">
-              {t('Manage field service technicians, assignments, and availability')}
-            </p>
-          </div>
+      <Head title={t('Employee Management')} />
 
-          <div className="flex items-center gap-3">
+      <div className="flex w-full flex-col gap-6">
+        <PageHeader
+          title={t('Employee Management')}
+          description={t('Manage field service technicians, assignments, and availability.')}
+          action={
             <button
+              type="button"
               onClick={handleOpenAddModal}
-              className="flex items-center gap-2 px-5 py-3 rounded-2xl text-white font-bold text-sm transition-all shadow-md hover:opacity-90 active:scale-98"
-              style={{ backgroundColor: 'var(--color-accent)' }}
+              className="bg-theme-accent hover:bg-theme-accent-hover inline-flex items-center gap-2 rounded-[12px] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-theme-accent/15 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>{t('Add New Technician')}</span>
+              <Plus className="h-4 w-4" />
+              {t('Add New Technician')}
             </button>
-          </div>
+          }
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <StatCard
+            icon={Users}
+            label={t('Total Technicians')}
+            value={totalStaff.toString()}
+            iconBgClass="bg-indigo-50"
+            iconColorClass="text-theme-accent"
+            ringClass="ring-indigo-50/50"
+          />
+
+          <StatCard
+            icon={Clock}
+            label={t('Currently On Shift')}
+            value={currentlyOnShift.toString()}
+            iconBgClass="bg-emerald-50"
+            iconColorClass="text-emerald-600"
+            ringClass="ring-emerald-50/50"
+          />
+
+          <StatCard
+            icon={Zap}
+            label={t('Available for Dispatch')}
+            value={availableForDispatch.toString()}
+            iconBgClass="bg-sky-50"
+            iconColorClass="text-sky-600"
+            ringClass="ring-sky-50/50"
+          />
+
+          <StatCard
+            icon={Star}
+            label={t('Average Rating')}
+            value={`${avgRating} / 5.0`}
+            iconBgClass="bg-amber-50"
+            iconColorClass="text-amber-600"
+            ringClass="ring-amber-50/50"
+          />
         </div>
 
-        {/* 2. SUMMARY / KEY METRICS CARDS (TOP ROW) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          
-          {/* Total Staff Card */}
-          <div
-            className="p-5 rounded-2xl shadow-sm text-white flex flex-col justify-between space-y-4"
-            style={{ backgroundColor: 'var(--color-accent)' }}
-          >
-            <div className="flex items-start justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-white/80">{t('Total Technicians')}</span>
-              <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center text-white backdrop-blur-xs">
-                <Users className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              {totalStaff}
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-white/90 font-medium">
-              <ShieldCheck className="w-3.5 h-3.5 text-white/80" />
-              <span>{t('Active registered field workforce')}</span>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 pb-3">
+            <TabSwitch tabs={employeeTabs} activeTab={statusFilter} onChange={setStatusFilter} />
+            <div className="text-xs text-slate-500 font-medium">
+              {t('Showing')} <span className="font-bold text-slate-900">{filteredTechnicians.length}</span> {t('technicians')}
             </div>
           </div>
 
-          {/* Currently On Shift Card */}
-          <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4">
-            <div className="flex items-start justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Currently On Shift')}</span>
-              <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
-                <Clock className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {currentlyOnShift}
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-700 font-medium">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>{t('Clocked in & active today')}</span>
-            </div>
-          </div>
-
-          {/* Available for Dispatch Card */}
-          <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4">
-            <div className="flex items-start justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Available for Dispatch')}</span>
-              <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
-                <Zap className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {availableForDispatch}
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-blue-700 font-medium">
-              <CheckCircle2 className="w-3.5 h-3.5 text-blue-500" />
-              <span>{t('Ready for immediate job assignment')}</span>
-            </div>
-          </div>
-
-          {/* Average Rating Score Card */}
-          <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4">
-            <div className="flex items-start justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Average Rating')}</span>
-              <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
-                <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
-              </div>
-            </div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight flex items-baseline gap-2">
-              {avgRating}
-              <span className="text-sm font-semibold text-slate-400">/ 5.0</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-amber-700 font-medium">
-              <Award className="w-3.5 h-3.5 text-amber-500" />
-              <span>{t('Based on customer reviews')}</span>
-            </div>
-          </div>
-
-        </div>
-
-        {/* 3. SEARCH & FILTER CONTROLS BAR */}
-        <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-          
-          {/* Search Box */}
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('Search by Name, Employee ID (TECH-101), or Specialty...')}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] transition-all outline-none"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-
-          {/* Filter Dropdowns & View Toggle */}
-          <div className="flex flex-wrap items-center gap-3">
+          {/* 3. SEARCH & FILTER CONTROLS BAR */}
+          <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
             
-            {/* Status Dropdown */}
-            <div className="relative flex items-center">
-              <Filter className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="pl-9 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] transition-all cursor-pointer outline-none appearance-none"
-              >
-                <option value="all">{t('Status: All')}</option>
-                <option value="on_shift">{t('On Shift (Any)')}</option>
-                <option value="available">{t('Available Only')}</option>
-                <option value="on_shift_job">{t('In Active Job')}</option>
-                <option value="on_break">{t('On Break')}</option>
-                <option value="off_duty">{t('Off Duty')}</option>
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 pointer-events-none" />
+            {/* Search Box */}
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t('Search by Name, Employee ID (TECH-101), or Specialty...')}
+                className="w-full pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all outline-none"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 rounded-full hover:bg-slate-200/50"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
 
-            {/* Skill / Specialization Dropdown */}
-            <div className="relative flex items-center">
-              <Briefcase className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
-              <select
-                value={skillFilter}
-                onChange={(e) => setSkillFilter(e.target.value)}
-                className="pl-9 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] transition-all cursor-pointer outline-none appearance-none"
-              >
-                <option value="all">{t('Skill: All Specialties')}</option>
-                <option value="Plumbing">{t('Plumbing')}</option>
-                <option value="HVAC">{t('HVAC')}</option>
-                <option value="Electrical">{t('Electrical')}</option>
-                <option value="General Repair">{t('General Repair')}</option>
-                <option value="Roofing">{t('Roofing')}</option>
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 pointer-events-none" />
-            </div>
+            {/* Filter Dropdowns & View Toggle */}
+            <div className="flex flex-wrap items-center gap-3">
+              
+              {/* Status Dropdown */}
+              <div className="relative flex items-center">
+                <Filter className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
+                >
+                  <option value="all">{t('Status: All')}</option>
+                  <option value="on_shift">{t('On Shift (Any)')}</option>
+                  <option value="available">{t('Available Only')}</option>
+                  <option value="on_shift_job">{t('In Active Job')}</option>
+                  <option value="on_break">{t('On Break')}</option>
+                  <option value="off_duty">{t('Off Duty')}</option>
+                </select>
+                <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 pointer-events-none" />
+              </div>
 
-            {/* View Mode Toggle Buttons */}
-            <div className="flex items-center p-1 bg-slate-100 rounded-2xl border border-slate-200/80">
-              <button
-                onClick={() => setViewMode('table')}
-                className={`p-2 rounded-xl transition-all ${
-                  viewMode === 'table'
-                    ? 'bg-white text-slate-900 shadow-xs font-bold'
-                    : 'text-slate-500 hover:text-slate-700'
-                }`}
-                title={t('Table View')}
-              >
-                <List className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-xl transition-all ${
-                  viewMode === 'grid'
-                    ? 'bg-white text-slate-900 shadow-xs font-bold'
-                    : 'text-slate-500 hover:text-slate-700'
-                }`}
-                title={t('Grid View')}
-              >
-                <LayoutGrid className="w-4 h-4" />
-              </button>
-            </div>
+              {/* Skill / Specialization Dropdown */}
+              <div className="relative flex items-center">
+                <Briefcase className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
+                <select
+                  value={skillFilter}
+                  onChange={(e) => setSkillFilter(e.target.value)}
+                  className="pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
+                >
+                  <option value="all">{t('Skill: All Specialties')}</option>
+                  <option value="Plumbing">{t('Plumbing')}</option>
+                  <option value="HVAC">{t('HVAC')}</option>
+                  <option value="Electrical">{t('Electrical')}</option>
+                  <option value="General Repair">{t('General Repair')}</option>
+                  <option value="Roofing">{t('Roofing')}</option>
+                </select>
+                <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 pointer-events-none" />
+              </div>
 
+              {/* View Mode Toggle Buttons */}
+              <div className="flex items-center p-1 bg-slate-100 rounded-2xl border border-slate-200/80">
+                <button
+                  onClick={() => setViewMode('table')}
+                  title={t('Table View')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    viewMode === 'table'
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  <List className="w-4 h-4" />
+                  <span className="hidden sm:inline">{t('Table')}</span>
+                </button>
+                <button
+                  onClick={() => setViewMode('grid')}
+                  title={t('Grid View')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    viewMode === 'grid'
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                  <span className="hidden sm:inline">{t('Grid')}</span>
+                </button>
+              </div>
+            </div>
           </div>
-
         </div>
 
-        {/* 4. MAIN EMPLOYEE DATA CONTENT (TABLE / GRID VIEW) */}
-        {filteredTechnicians.length === 0 ? (
-          <div className="bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200/80 p-12 text-center shadow-sm">
-            <div className="w-14 h-14 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
-              <Users className="w-7 h-7" />
+        {/* 4. TECHNICIAN LIST / GRID / EMPTY STATE IN TABLECARD */}
+        <TableCard>
+          {filteredTechnicians.length === 0 ? (
+            <div className="p-8 text-center">
+              <div className="w-14 h-14 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
+                <Users className="w-7 h-7" />
+              </div>
+              <h3 className="text-lg font-extrabold text-slate-900">{t('No technicians match your search')}</h3>
+              <p className="text-sm text-slate-500 mt-1 max-w-md mx-auto">
+                {t('Try adjusting your search query, status filters, or skill selection to see field staff.')}
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setStatusFilter('all');
+                  setSkillFilter('all');
+                }}
+                className="mt-4 px-4 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold text-xs rounded-xl transition-all"
+              >
+                {t('Reset Filters')}
+              </button>
             </div>
-            <h3 className="text-lg font-extrabold text-slate-900">{t('No technicians match your search')}</h3>
-            <p className="text-sm text-slate-500 mt-1 max-w-md mx-auto">
-              {t('Try adjusting your search query, status filters, or skill selection to see field staff.')}
-            </p>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setStatusFilter('all');
-                setSkillFilter('all');
-              }}
-              className="mt-4 px-4 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold text-xs rounded-xl transition-all"
-            >
-              {t('Reset Filters')}
-            </button>
-          </div>
-        ) : viewMode === 'table' ? (
+          ) : viewMode === 'table' ? (
 
           /* --- TABLE VIEW --- */
           <div className="bg-white rounded-2xl border border-[#E2E4D9] shadow-sm overflow-hidden">
@@ -968,6 +938,7 @@ export default function EmployeeIndex() {
             ))}
           </div>
         )}
+        </TableCard>
 
         {/* 5. ADD / EDIT TECHNICIAN MODAL */}
         {isModalOpen && (
