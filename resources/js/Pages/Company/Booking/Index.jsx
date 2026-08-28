@@ -12,7 +12,6 @@ import BookingMetrics from './BookingMetrics';
 import BookingFilters from './BookingFilters';
 import BookingTable from './BookingTable';
 import BookingList from './BookingList';
-import BookingCalendar from './BookingCalendar';
 import BookingDetailsDrawer from './BookingDetailsDrawer';
 import CreateBookingModal from './CreateBookingModal';
 import AssignTechModal from './AssignTechModal';
@@ -245,7 +244,7 @@ export default function BookingIndex() {
           />
         </div>
 
-        {/* 4. BOOKINGS DATA VIEW (TABLE / CARDS LIST / CALENDAR) */}
+        {/* 4. BOOKINGS DATA VIEW (TABLE / CARDS LIST) */}
         <TableCard>
           {viewMode === 'table' && (
             <BookingTable
@@ -258,14 +257,6 @@ export default function BookingIndex() {
 
           {viewMode === 'list' && (
             <BookingList
-              bookings={filteredBookings}
-              onViewDetails={handleViewDetails}
-              onOpenAssignModal={handleOpenAssignModal}
-            />
-          )}
-
-          {viewMode === 'calendar' && (
-            <BookingCalendar
               bookings={filteredBookings}
               onViewDetails={handleViewDetails}
               onOpenAssignModal={handleOpenAssignModal}
