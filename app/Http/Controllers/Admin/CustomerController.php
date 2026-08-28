@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\BanCustomerRequest;
+use App\Http\Requests\Admin\StoreCustomerRequest;
+use App\Http\Requests\Admin\UpdateCustomerRequest;
+use App\Http\Resources\Admin\CustomerResource;
 use App\Models\AuditLog;
 use App\Models\BannedAccount;
 use App\Models\Customer;
@@ -49,7 +53,7 @@ class CustomerController extends Controller
         ];
 
         return Inertia::render('Admin/Customer/Index', [
-            'dbCustomers' => $customers,
+            'dbCustomers' => CustomerResource::collection($customers),
             'stats' => $stats,
             'filters' => [
                 'search' => $search ?? '',
@@ -58,23 +62,18 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function show(int $customer): Response
+    public function show(Customer $customer): Response
     {
-        $customerModel = Customer::with(['user', 'properties', 'jobRequests'])->findOrFail($customer);
+        $customerModel = Customer::with(['user', 'properties', 'jobRequests'])->findOrFail($customer->id);
 
         return Inertia::render('Admin/Customer/Show', [
-            'customer' => $customerModel,
+            'customer' => new CustomerResource($customerModel),
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreCustomerRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:50',
-            'status' => 'required|string|in:active,inactive,suspended,banned',
-        ]);
+        $validated = $request->validated();
 
         DB::transaction(function () use ($validated) {
             $user = User::create([
@@ -90,20 +89,21 @@ class CustomerController extends Controller
                 'user_id' => $user->id,
             ]);
 
-            AuditLog::log(auth()->id(), 'Customer created', 'Customer', $user->id, "Created customer: {$user->full_name}");
+            AuditLog::log(
+                auth()->id(),
+                'Customer created',
+                'Customer',
+                $user->id,
+                "Created customer: {$user->full_name}"
+            );
         });
 
-        return redirect()->back()->with('success', 'Customer created successfully.');
+        return redirect()->back()->with('success', __('Customer created successfully.'));
     }
 
-    public function update(Request $request, Customer $customer): RedirectResponse
+    public function update(UpdateCustomerRequest $request, Customer $customer): RedirectResponse
     {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$customer->user_id,
-            'phone' => 'nullable|string|max:50',
-            'status' => 'required|string|in:active,inactive,suspended,banned',
-        ]);
+        $validated = $request->validated();
 
         if ($customer->user) {
             $customer->user->update([
@@ -114,37 +114,52 @@ class CustomerController extends Controller
             ]);
         }
 
-        AuditLog::log(auth()->id(), 'Customer updated', 'Customer', $customer->id, "Updated customer: {$customer->user->full_name}");
+        AuditLog::log(
+            auth()->id(),
+            'Customer updated',
+            'Customer',
+            $customer->id,
+            "Updated customer: {$customer->user->full_name}"
+        );
 
-        return redirect()->back()->with('success', 'Customer updated successfully.');
+        return redirect()->back()->with('success', __('Customer updated successfully.'));
     }
 
     public function suspend(Customer $customer): RedirectResponse
     {
         if ($customer->user) {
             $customer->user->update(['status' => 'suspended']);
-            AuditLog::log(auth()->id(), 'Customer suspended', 'Customer', $customer->id, "Suspended customer #{$customer->id}");
+            AuditLog::log(
+                auth()->id(),
+                'Customer suspended',
+                'Customer',
+                $customer->id,
+                "Suspended customer #{$customer->id}"
+            );
         }
 
-        return redirect()->back()->with('success', 'Customer suspended successfully.');
+        return redirect()->back()->with('success', __('Customer suspended successfully.'));
     }
 
     public function activate(Customer $customer): RedirectResponse
     {
         if ($customer->user) {
             $customer->user->update(['status' => 'active']);
-            AuditLog::log(auth()->id(), 'Customer activated', 'Customer', $customer->id, "Activated customer #{$customer->id}");
+            AuditLog::log(
+                auth()->id(),
+                'Customer activated',
+                'Customer',
+                $customer->id,
+                "Activated customer #{$customer->id}"
+            );
         }
 
-        return redirect()->back()->with('success', 'Customer activated successfully.');
+        return redirect()->back()->with('success', __('Customer activated successfully.'));
     }
 
-    public function ban(Request $request, Customer $customer): RedirectResponse
+    public function ban(BanCustomerRequest $request, Customer $customer): RedirectResponse
     {
-        $validated = $request->validate([
-            'reason' => 'required|string',
-            'ban_type' => 'nullable|string|in:TEMPORARY,PERMANENT',
-        ]);
+        $validated = $request->validated();
 
         if ($customer->user) {
             $customer->user->update(['status' => 'banned']);
@@ -159,10 +174,16 @@ class CustomerController extends Controller
                 'status' => 'ACTIVE',
             ]);
 
-            AuditLog::log(auth()->id(), 'Customer banned', 'Customer', $customer->id, "Banned customer #{$customer->id}. Reason: {$validated['reason']}");
+            AuditLog::log(
+                auth()->id(),
+                'Customer banned',
+                'Customer',
+                $customer->id,
+                "Banned customer #{$customer->id}. Reason: {$validated['reason']}"
+            );
         }
 
-        return redirect()->back()->with('success', 'Customer banned successfully.');
+        return redirect()->back()->with('success', __('Customer banned successfully.'));
     }
 
     public function destroy(Customer $customer): RedirectResponse
@@ -190,11 +211,17 @@ class CustomerController extends Controller
                 }
             });
 
-            AuditLog::log(auth()->id(), 'Customer deleted', 'Customer', $customer->id, "Deleted customer #{$customer->id}");
+            AuditLog::log(
+                auth()->id(),
+                'Customer deleted',
+                'Customer',
+                $customer->id,
+                "Deleted customer #{$customer->id}"
+            );
 
-            return redirect()->route('admin.customers.index')->with('success', 'Customer deleted successfully.');
+            return redirect()->route('admin.customers.index')->with('success', __('Customer deleted successfully.'));
         } catch (\Exception $e) {
-            return redirect()->route('admin.customers.index')->with('error', 'Unable to delete customer: '.$e->getMessage());
+            return redirect()->route('admin.customers.index')->with('error', __('Unable to delete customer: :message', ['message' => $e->getMessage()]));
         }
     }
 }

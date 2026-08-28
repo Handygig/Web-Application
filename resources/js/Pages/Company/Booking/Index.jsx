@@ -1,13 +1,17 @@
 import React, { useState, useMemo } from 'react';
+import { Head } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
-import { Calendar, Plus, UserCheck } from 'lucide-react';
+import PageHeader from '@/Components/Other/PageHeader';
+import StatCard from '@/Components/Cards/StatCard';
+import TabSwitch from '@/Components/Other/TabSwitch';
+import TableCard from '@/Components/Cards/TableCard';
+import { Tag, Clock, Activity, CheckCircle2, Plus } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
 import BookingMetrics from './BookingMetrics';
 import BookingFilters from './BookingFilters';
 import BookingTable from './BookingTable';
 import BookingList from './BookingList';
-import BookingCalendar from './BookingCalendar';
 import BookingDetailsDrawer from './BookingDetailsDrawer';
 import CreateBookingModal from './CreateBookingModal';
 import AssignTechModal from './AssignTechModal';
@@ -188,80 +192,77 @@ export default function BookingIndex() {
     setBookings((prev) => [createdBooking, ...prev]);
   };
 
+  const tabs = [
+    { key: 'all', label: `${t('All')} (${metrics.totalBookings})` },
+    { key: 'pending_dispatch', label: `${t('Pending Dispatch')} (${metrics.pendingDispatch})` },
+    { key: 'in_progress', label: `${t('In Progress')} (${metrics.inProgress})` },
+    { key: 'completed', label: `${t('Completed')} (${metrics.completedToday})` },
+  ];
+
   return (
     <AppLayout>
-      <div className="bookings-management-root mx-auto max-w-[1400px] space-y-6 pb-12">
-        
-        {/* 1. TOP HEADER & ACTION BAR */}
-        <div className="bg-white/80 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                {t('Bookings & Service Requests')}
-              </h1>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#EBF5EC] text-[#2F4F2F] border border-[#C6E2CB]">
-                <Calendar className="w-3.5 h-3.5 text-[#4CAF50]" />
-                {t('Dispatch Hub')}
-              </span>
-            </div>
-            <p className="text-sm font-medium text-slate-500 mt-1">
-              {t('Track, schedule, assign technicians, and manage customer service jobs')}
-            </p>
-          </div>
+      <Head title={t('Bookings')} />
 
-          <div className="flex items-center gap-3">
+      <div className="flex w-full flex-col gap-6">
+        <PageHeader
+          title={t('Bookings')}
+          description={t('View and manage customer bookings across the platform.')}
+          action={
             <button
+              type="button"
               onClick={() => setIsCreateModalOpen(true)}
-              className="flex items-center gap-2 px-5 py-3 rounded-2xl text-white font-bold text-sm transition-all shadow-md hover:opacity-90 active:scale-98"
-              style={{ backgroundColor: 'var(--color-accent, #5E6933)' }}
+              className="bg-theme-accent hover:bg-theme-accent-hover inline-flex items-center gap-2 rounded-[12px] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-theme-accent/15 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>{t('+ Create Manual Booking')}</span>
+              <Plus className="h-4 w-4" />
+              {t('Create Manual Booking')}
             </button>
-          </div>
-        </div>
+          }
+        />
 
         {/* 2. SUMMARY METRIC CARDS (TOP 4 CARDS) */}
         <BookingMetrics metrics={metrics} />
 
-        {/* 3. SEARCH, FILTER & VIEW CONTROLS */}
-        <BookingFilters
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          categoryFilter={categoryFilter}
-          setCategoryFilter={setCategoryFilter}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          totalResults={filteredBookings.length}
-        />
+        {/* 3. TABS & SEARCH/FILTER CONTROLS */}
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 pb-3">
+            <TabSwitch tabs={tabs} activeTab={statusFilter} onChange={setStatusFilter} />
+            <div className="text-xs text-slate-500 font-medium">
+              {t('Showing')} <span className="font-bold text-slate-900">{filteredBookings.length}</span> {t('bookings')}
+            </div>
+          </div>
 
-        {/* 4. BOOKINGS DATA VIEW (TABLE / CARDS LIST / CALENDAR) */}
-        {viewMode === 'table' && (
-          <BookingTable
-            bookings={filteredBookings}
-            onViewDetails={handleViewDetails}
-            onOpenAssignModal={handleOpenAssignModal}
-            onUpdateStatus={handleUpdateStatus}
+          <BookingFilters
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            categoryFilter={categoryFilter}
+            setCategoryFilter={setCategoryFilter}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            totalResults={filteredBookings.length}
           />
-        )}
+        </div>
 
-        {viewMode === 'list' && (
-          <BookingList
-            bookings={filteredBookings}
-            onViewDetails={handleViewDetails}
-            onOpenAssignModal={handleOpenAssignModal}
-          />
-        )}
+        {/* 4. BOOKINGS DATA VIEW (TABLE / CARDS LIST) */}
+        <TableCard>
+          {viewMode === 'table' && (
+            <BookingTable
+              bookings={filteredBookings}
+              onViewDetails={handleViewDetails}
+              onOpenAssignModal={handleOpenAssignModal}
+              onUpdateStatus={handleUpdateStatus}
+            />
+          )}
 
-        {viewMode === 'calendar' && (
-          <BookingCalendar
-            bookings={filteredBookings}
-            onViewDetails={handleViewDetails}
-            onOpenAssignModal={handleOpenAssignModal}
-          />
-        )}
+          {viewMode === 'list' && (
+            <BookingList
+              bookings={filteredBookings}
+              onViewDetails={handleViewDetails}
+              onOpenAssignModal={handleOpenAssignModal}
+            />
+          )}
+        </TableCard>
 
         {/* 5. BOOKING DETAILS & DISPATCH DRAWER */}
         <BookingDetailsDrawer

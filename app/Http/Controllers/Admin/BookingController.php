@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateBookingStatusRequest;
+use App\Http\Resources\Admin\BookingResource;
 use App\Models\AuditLog;
 use App\Models\JobRequest;
 use Illuminate\Http\RedirectResponse;
@@ -36,7 +38,7 @@ class BookingController extends Controller
         $bookings = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Booking/Index', [
-            'bookings' => $bookings,
+            'bookings' => BookingResource::collection($bookings),
             'filters' => [
                 'search' => $search ?? '',
                 'status' => $status ?? 'all',
@@ -44,18 +46,25 @@ class BookingController extends Controller
         ]);
     }
 
-    public function updateStatus(Request $request, JobRequest $booking): RedirectResponse
+    public function show(JobRequest $booking): Response
     {
-        $validated = $request->validate([
-            'status' => 'required|string|in:pending,confirmed,in_progress,completed,cancelled',
+        $bookingModel = JobRequest::with(['customer.user', 'property', 'serviceCategory'])->findOrFail($booking->id);
+
+        return Inertia::render('Admin/Booking/Show', [
+            'booking' => new BookingResource($bookingModel),
         ]);
+    }
+
+    public function updateStatus(UpdateBookingStatusRequest $request, JobRequest $booking): RedirectResponse
+    {
+        $validated = $request->validated();
 
         $newStatus = strtolower($validated['status']);
         $currentStatus = strtolower($booking->status);
 
         if ($currentStatus === 'cancelled' && $newStatus === 'completed') {
             return redirect()->back()->withErrors([
-                'status' => 'Cancelled bookings cannot be directly changed to completed.',
+                'status' => __('Cancelled bookings cannot be directly changed to completed.'),
             ]);
         }
 
@@ -72,12 +81,18 @@ class BookingController extends Controller
             'history' => $history,
         ]);
 
-        AuditLog::log(auth()->id(), 'Booking status changed', 'JobRequest', $booking->id, "Changed booking status from {$currentStatus} to {$newStatus}");
+        AuditLog::log(
+            auth()->id(),
+            'Booking status changed',
+            'JobRequest',
+            $booking->id,
+            "Changed booking status from {$currentStatus} to {$newStatus}"
+        );
 
-        return redirect()->back()->with('success', 'Booking status updated successfully.');
+        return redirect()->back()->with('success', __('Booking status updated successfully.'));
     }
 
-    public function cancel(Request $request, JobRequest $booking): RedirectResponse
+    public function cancel(JobRequest $booking): RedirectResponse
     {
         $history = $booking->history ?? [];
         $history[] = [
@@ -92,8 +107,14 @@ class BookingController extends Controller
             'history' => $history,
         ]);
 
-        AuditLog::log(auth()->id(), 'Booking cancelled', 'JobRequest', $booking->id, "Cancelled booking #{$booking->id}");
+        AuditLog::log(
+            auth()->id(),
+            'Booking cancelled',
+            'JobRequest',
+            $booking->id,
+            "Cancelled booking #{$booking->id}"
+        );
 
-        return redirect()->back()->with('success', 'Booking cancelled successfully.');
+        return redirect()->back()->with('success', __('Booking cancelled successfully.'));
     }
 }

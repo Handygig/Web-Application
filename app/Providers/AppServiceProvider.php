@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -21,10 +23,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (str_starts_with(config('app.url'), 'https://')) {
+        if ($this->app->environment('production') || str_starts_with(config('app.url'), 'https://')) {
             URL::forceScheme('https');
         }
 
         Vite::prefetch(concurrency: 3);
+
+        Gate::define('viewApiDocs', function (User $user) {
+            return true;
+        });
     }
 }

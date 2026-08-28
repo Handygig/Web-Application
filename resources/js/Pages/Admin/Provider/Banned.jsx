@@ -26,116 +26,6 @@ import TableCard from '@/Components/Cards/TableCard';
 import BannedAccountDetailModal from '@/Components/Modals/BannedAccountDetailModal';
 import UnbanConfirmModal from '@/Components/Modals/UnbanConfirmModal';
 
-const INITIAL_MOCK_BANNED = [
-  {
-    id: 1,
-    accountId: 'ACC-8819',
-    full_name: 'Arthur Pendelton',
-    email: 'arthur.pendelton@domain.com',
-    phone: '+1 555-0182',
-    accountType: 'Customer',
-    banType: 'Temporary',
-    reason: 'Policy Violation',
-    detailedReason: 'Repeated non-payment cancellations and abusive feedback directed at dispatchers.',
-    bannedDate: 'Aug 14, 2026 10:30 AM',
-    bannedBy: 'Admin Sarah',
-    expiryNotice: 'Expires in 12 days',
-    previousViolations: 2,
-    joinedDate: 'Jan 15, 2025',
-    lastLogin: 'Aug 13, 2026',
-    history: [
-      { date: 'Aug 14, 2026 10:30 AM', action: 'Account Banned', banType: 'Temporary', reason: 'Policy Violation', admin: 'Admin Sarah' },
-      { date: 'May 02, 2026 04:00 PM', action: 'Warning Issued', banType: '—', reason: 'Inappropriate message language', admin: 'Admin Alex' },
-    ],
-  },
-  {
-    id: 2,
-    accountId: 'ACC-8824',
-    full_name: 'Victor Vance',
-    businessName: 'Vance Illegal Demolition',
-    email: 'victor.vance@fakepro.net',
-    phone: '+1 555-0294',
-    accountType: 'Provider',
-    category: 'Demolition & Heavy Equipment',
-    location: 'Chicago, IL',
-    banType: 'Permanent',
-    reason: 'Fraud',
-    detailedReason: 'Submitted forged state trade license and fake insurance documentation during verification audit.',
-    bannedDate: 'Aug 12, 2026 03:15 PM',
-    bannedBy: 'Admin Alex',
-    expiryNotice: 'Permanent',
-    previousViolations: 3,
-    joinedDate: 'Mar 10, 2025',
-    lastLogin: 'Aug 11, 2026',
-    history: [
-      { date: 'Aug 12, 2026 03:15 PM', action: 'Permanent Ban', banType: 'Permanent', reason: 'Fraud & Document Forgery', admin: 'Admin Alex' },
-    ],
-  },
-  {
-    id: 3,
-    accountId: 'ACC-8811',
-    full_name: 'Clarissa Montgomery',
-    email: 'clarissa.m@email.com',
-    phone: '+1 555-0371',
-    accountType: 'Customer',
-    banType: 'Temporary',
-    reason: 'Suspicious Activity',
-    detailedReason: 'Multiple fraudulent chargeback claims initiated with credit card issuer.',
-    bannedDate: 'Aug 05, 2026 11:20 AM',
-    bannedBy: 'Admin Sarah',
-    expiryNotice: 'Ban Expired',
-    previousViolations: 1,
-    joinedDate: 'Feb 20, 2025',
-    lastLogin: 'Aug 04, 2026',
-    history: [
-      { date: 'Aug 05, 2026 11:20 AM', action: 'Account Banned', banType: 'Temporary (7 Days)', reason: 'Suspicious Activity', admin: 'Admin Sarah' },
-    ],
-  },
-  {
-    id: 4,
-    accountId: 'ACC-8830',
-    full_name: 'Derrick Miller',
-    businessName: 'Miller Fast Repair',
-    email: 'derrick.miller@repairfast.org',
-    phone: '+1 555-0466',
-    accountType: 'Provider',
-    category: 'Appliance Repair',
-    location: 'Austin, TX',
-    banType: 'Permanent',
-    reason: 'Abuse',
-    detailedReason: 'Off-platform payment solicitation and harassment reported by 3 separate customers.',
-    bannedDate: 'Aug 01, 2026 09:00 AM',
-    bannedBy: 'Admin Alex',
-    expiryNotice: 'Permanent',
-    previousViolations: 4,
-    joinedDate: 'Apr 05, 2025',
-    lastLogin: 'Jul 31, 2026',
-    history: [
-      { date: 'Aug 01, 2026 09:00 AM', action: 'Permanent Ban', banType: 'Permanent', reason: 'Customer Harassment & Misconduct', admin: 'Admin Alex' },
-    ],
-  },
-  {
-    id: 5,
-    accountId: 'ACC-8805',
-    full_name: 'Jason Blackwood',
-    email: 'jason.b@techlabs.com',
-    phone: '+1 555-0512',
-    accountType: 'Customer',
-    banType: 'Temporary',
-    reason: 'Multiple Violations',
-    detailedReason: 'Spamming job request system with fake addresses and false emergency bookings.',
-    bannedDate: 'Jul 28, 2026 02:40 PM',
-    bannedBy: 'Admin Alex',
-    expiryNotice: 'Expires in 4 days',
-    previousViolations: 2,
-    joinedDate: 'May 12, 2025',
-    lastLogin: 'Jul 27, 2026',
-    history: [
-      { date: 'Jul 28, 2026 02:40 PM', action: 'Account Banned', banType: 'Temporary', reason: 'Multiple System Violations', admin: 'Admin Alex' },
-    ],
-  },
-];
-
 export default function ProviderBanned({ bannedUsers }) {
   const { t } = useTranslation();
 
@@ -174,7 +64,7 @@ export default function ProviderBanned({ bannedUsers }) {
         previousViolations: 1,
       }));
     }
-    return INITIAL_MOCK_BANNED;
+    return [];
   });
 
   // Modal controls

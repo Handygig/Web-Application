@@ -17,7 +17,7 @@ use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(): Response
     {
         $grossRevenue = class_exists(Payment::class) ? (float) Payment::sum('amount') : 0;
         $platformFees = class_exists(Payment::class) ? (float) Payment::sum('platform_fee') : 0;
