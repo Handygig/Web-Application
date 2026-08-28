@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { usePage, Link } from '@inertiajs/react';
+import { Head, usePage, Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import PageHeader from '@/Components/Other/PageHeader';
+import StatCard from '@/Components/Cards/StatCard';
 import {
   ArrowUpRight,
   Wrench,
@@ -169,144 +171,84 @@ export default function Dashboard({ stats }) {
 
   return (
     <AppLayout>
-      <div className="provider-dashboard-root mx-auto max-w-[1400px] space-y-6 pb-8">
-        
-        {/* PROVIDER COMPANY HEADER & QUICK DISPATCH CONTROLS */}
-        <div className="bg-white/80 backdrop-blur-md p-6 rounded-3xl border border-[#E2E4D9] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                {t('Provider Dashboard')}
-              </h1>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#EBF5EC] text-[#2F4F2F] border border-[#C6E2CB]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#4CAF50]" />
-                {t('Verified Company')}
-              </span>
-            </div>
-            <p className="text-sm font-medium text-slate-500 mt-1">
-              {t('Managing operations & field service dispatch for')} <strong className="text-slate-800">{companyName}</strong>
-            </p>
-          </div>
+      <Head title={t('Provider Dashboard')} />
 
-          <div className="flex items-center gap-3">
-            {/* Acceptance Toggle */}
-            <button
-              onClick={() => setIsAcceptingJobs(!isAcceptingJobs)}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl border text-xs font-bold transition-all shadow-xs ${
-                isAcceptingJobs
-                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                  : 'bg-slate-100 text-slate-600 border-slate-300'
-              }`}
-            >
-              <Radio className={`w-4 h-4 ${isAcceptingJobs ? 'text-emerald-600 animate-pulse' : 'text-slate-400'}`} />
-              <span>{isAcceptingJobs ? t('Accepting New Job Requests') : t('Requests Paused')}</span>
-            </button>
-
-            {/* Quick Dispatch Modal Button */}
-            <button
-              onClick={() => setShowDispatchModal(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-white font-bold text-xs transition-all shadow-md hover:opacity-90 active:scale-98"
-              style={{ backgroundColor: 'var(--color-accent, #5E6933)' }}
-            >
-              <Plus className="w-4 h-4" />
-              <span>{t('Dispatch Job')}</span>
-            </button>
-          </div>
-        </div>
-
-        {/* 1. TOP METRIC CARDS (ROW 1 - FULL WIDTH 4-CARD GRID) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          
-          {/* Card 1 (Olive Green Accent): Total Revenue */}
-          <div
-            className="p-6 rounded-2xl border border-[#E2E4D9] shadow-sm text-white flex flex-col justify-between space-y-4"
-            style={{ backgroundColor: 'var(--color-accent, #5E6933)' }}
-          >
-            <div className="flex items-start justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-white/80">{t('Total Revenue')}</span>
-              <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center text-white backdrop-blur-xs">
-                <DollarSign className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              {formattedCurrency(totalRevenue)}
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-xs">
-                <TrendingUp className="w-3.5 h-3.5" />
-                {t('+12.5% Gross Earnings')}
-              </span>
-            </div>
-          </div>
-
-          {/* Card 2: Active Bookings */}
-          <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm flex flex-col justify-between space-y-4">
-            <div className="flex items-start justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Active Bookings')}</span>
-              <Link
-                href={route('company.bookings.index')}
-                className="w-9 h-9 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-700 transition-colors"
+      <div className="flex w-full flex-col gap-6">
+        <PageHeader
+          title={t('Provider Dashboard')}
+          description={`${t('Managing operations & field service dispatch for')} ${companyName}`}
+          action={
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setIsAcceptingJobs(!isAcceptingJobs)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl border text-xs font-bold transition-all shadow-xs ${
+                  isAcceptingJobs
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                    : 'bg-slate-100 text-slate-600 border-slate-300'
+                }`}
               >
-                <ArrowUpRight className="w-5 h-5" />
-              </Link>
-            </div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{activeBookingsCount}</div>
-            <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                <Activity className="w-3.5 h-3.5 text-emerald-600" />
-                {t('In Active Repair & Dispatch')}
-              </span>
-            </div>
-          </div>
+                <Radio className={`w-4 h-4 ${isAcceptingJobs ? 'text-emerald-600 animate-pulse' : 'text-slate-400'}`} />
+                <span>{isAcceptingJobs ? t('Accepting New Job Requests') : t('Requests Paused')}</span>
+              </button>
 
-          {/* Card 3: Field Technicians */}
-          <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm flex flex-col justify-between space-y-4">
-            <div className="flex items-start justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Field Technicians')}</span>
-              <Link
-                href={route('company.employees.index')}
-                className="w-9 h-9 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-700 transition-colors"
+              <button
+                type="button"
+                onClick={() => setShowDispatchModal(true)}
+                className="bg-theme-accent hover:bg-theme-accent-hover inline-flex items-center gap-2 rounded-[12px] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-theme-accent/15 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
-                <ArrowUpRight className="w-5 h-5" />
-              </Link>
+                <Plus className="h-4 w-4" />
+                <span>{t('Dispatch Job')}</span>
+              </button>
             </div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{totalEmployees}</div>
-            <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                <Wrench className="w-3.5 h-3.5 text-slate-500" />
-                {t('12 Active On Shift')}
-              </span>
-            </div>
-          </div>
+          }
+        />
 
-          {/* Card 4: Customer Satisfaction */}
-          <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm flex flex-col justify-between space-y-4">
-            <div className="flex items-start justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('Customer Satisfaction')}</span>
-              <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
-                <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
-              </div>
-            </div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight flex items-baseline gap-2">
-              {customerRating}
-              <span className="text-sm font-semibold text-slate-400">/ 5.0</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
-                <UserCheck className="w-3.5 h-3.5 text-amber-600" />
-                {totalCustomers} {t('Total Reviews')}
-              </span>
-            </div>
-          </div>
+        {/* 1. TOP METRIC CARDS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <StatCard
+            icon={DollarSign}
+            label={t('Total Revenue')}
+            value={formattedCurrency(totalRevenue)}
+            iconBgClass="bg-indigo-50"
+            iconColorClass="text-theme-accent"
+            ringClass="ring-indigo-50/50"
+          />
 
+          <StatCard
+            icon={Activity}
+            label={t('Active Bookings')}
+            value={activeBookingsCount.toString()}
+            iconBgClass="bg-[#EBF5EC]"
+            iconColorClass="text-[#5E6933]"
+            ringClass="ring-emerald-50/50"
+          />
+
+          <StatCard
+            icon={Wrench}
+            label={t('Field Technicians')}
+            value={totalEmployees.toString()}
+            iconBgClass="bg-sky-50"
+            iconColorClass="text-sky-600"
+            ringClass="ring-sky-50/50"
+          />
+
+          <StatCard
+            icon={Star}
+            label={t('Customer Satisfaction')}
+            value={`${customerRating} / 5.0`}
+            iconBgClass="bg-amber-50"
+            iconColorClass="text-amber-600"
+            ringClass="ring-amber-50/50"
+          />
         </div>
 
         {/* 2. MAIN CONTENT GRID (2 COLUMNS: 8 COLS LEFT / 4 COLS RIGHT) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
+
           {/* --- LEFT COLUMN (65–70% WIDTH / 8 COLUMNS) --- */}
           <div className="lg:col-span-8 space-y-6">
-            
+
             {/* A. WEEKLY PERFORMANCE CHART CARD */}
             <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
@@ -337,13 +279,12 @@ export default function Dashboard({ stats }) {
                         height: item.height,
                         backgroundColor: idx === 3 ? 'var(--color-accent, #5E6933)' : undefined,
                       }}
-                      className={`w-full max-w-[32px] rounded-t-xl transition-all duration-300 group-hover:opacity-90 ${
-                        idx === 3
+                      className={`w-full max-w-[32px] rounded-t-xl transition-all duration-300 group-hover:opacity-90 ${idx === 3
                           ? 'shadow-xs'
                           : idx % 2 === 0
-                          ? 'bg-[#8A9A4A]'
-                          : 'bg-slate-200'
-                      }`}
+                            ? 'bg-[#8A9A4A]'
+                            : 'bg-slate-200'
+                        }`}
                     />
                     <span className="text-xs font-bold text-slate-600">{item.day}</span>
                   </div>
@@ -368,33 +309,29 @@ export default function Dashboard({ stats }) {
                 <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold text-slate-600">
                   <button
                     onClick={() => setBookingFilter('all')}
-                    className={`px-3 py-1 rounded-lg transition-all ${
-                      bookingFilter === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'hover:text-slate-900'
-                    }`}
+                    className={`px-3 py-1 rounded-lg transition-all ${bookingFilter === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'hover:text-slate-900'
+                      }`}
                   >
                     {t('All Jobs')}
                   </button>
                   <button
                     onClick={() => setBookingFilter('urgent')}
-                    className={`px-3 py-1 rounded-lg transition-all ${
-                      bookingFilter === 'urgent' ? 'bg-white text-rose-700 shadow-xs' : 'hover:text-slate-900'
-                    }`}
+                    className={`px-3 py-1 rounded-lg transition-all ${bookingFilter === 'urgent' ? 'bg-white text-rose-700 shadow-xs' : 'hover:text-slate-900'
+                      }`}
                   >
                     {t('Urgent')}
                   </button>
                   <button
                     onClick={() => setBookingFilter('in_progress')}
-                    className={`px-3 py-1 rounded-lg transition-all ${
-                      bookingFilter === 'in_progress' ? 'bg-white text-emerald-800 shadow-xs' : 'hover:text-slate-900'
-                    }`}
+                    className={`px-3 py-1 rounded-lg transition-all ${bookingFilter === 'in_progress' ? 'bg-white text-emerald-800 shadow-xs' : 'hover:text-slate-900'
+                      }`}
                   >
                     {t('In Progress')}
                   </button>
                   <button
                     onClick={() => setBookingFilter('scheduled')}
-                    className={`px-3 py-1 rounded-lg transition-all ${
-                      bookingFilter === 'scheduled' ? 'bg-white text-blue-700 shadow-xs' : 'hover:text-slate-900'
-                    }`}
+                    className={`px-3 py-1 rounded-lg transition-all ${bookingFilter === 'scheduled' ? 'bg-white text-blue-700 shadow-xs' : 'hover:text-slate-900'
+                      }`}
                   >
                     {t('Scheduled')}
                   </button>
@@ -456,7 +393,7 @@ export default function Dashboard({ stats }) {
 
           {/* --- RIGHT COLUMN (30–35% WIDTH / 4 COLUMNS) --- */}
           <div className="lg:col-span-4 space-y-6">
-            
+
             {/* A. EMERGENCY ACTION CARD */}
             <div className="p-6 rounded-2xl border border-rose-200 bg-rose-50/40 shadow-sm flex flex-col justify-between space-y-4">
               <div>
