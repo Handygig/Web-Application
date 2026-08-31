@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Customer\QuotationController;
 use App\Http\Controllers\Api\Customer\ReviewController;
 use App\Http\Controllers\Api\Customer\ServiceCategoryController;
 use App\Http\Controllers\Api\Provider\AuthController as ProviderAuthController;
+use App\Http\Controllers\Company\BookingController;
 use Illuminate\Support\Facades\Route;
 
 // Shared/General Firebase Auth Route
@@ -75,4 +76,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Protected Provider API Routes
     Route::middleware('role:provider')->prefix('provider')->group(function () {});
+
+    // Protected Company API Routes
+    Route::middleware('role:company')->prefix('company')->group(function () {
+        Route::delete('bookings/{id}', [BookingController::class, 'destroy']);
+    });
 });

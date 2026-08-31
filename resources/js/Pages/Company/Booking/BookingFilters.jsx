@@ -18,7 +18,7 @@ export default function BookingFilters({
   return (
     <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
       {/* Search Box */}
-      <div className="relative flex-1">
+      <div className="relative w-full lg:w-1/2">
         <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
         <input
           type="text"
@@ -73,35 +73,6 @@ export default function BookingFilters({
             <option value="General Repair">{t('General Repair')}</option>
           </select>
           <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 pointer-events-none" />
-        </div>
-
-        {/* View Mode Toggle Buttons */}
-        <div className="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200/80">
-          <button
-            onClick={() => setViewMode('table')}
-            title={t('Table View')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              viewMode === 'table'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            <List className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('Table')}</span>
-          </button>
-          
-          <button
-            onClick={() => setViewMode('list')}
-            title={t('Card List View')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              viewMode === 'list'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            <LayoutGrid className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('Cards')}</span>
-          </button>
         </div>
 
       </div>
