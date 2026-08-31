@@ -163,6 +163,7 @@ Route::middleware('auth')->group(function () {
         Route::get('bookings/{booking}/edit', [CompanyBookingController::class, 'edit'])->name('bookings.edit');
         Route::put('bookings/{booking}', [CompanyBookingController::class, 'update'])->name('bookings.update');
         Route::delete('bookings/{booking}', [CompanyBookingController::class, 'destroy'])->name('bookings.destroy');
+        Route::delete('/api/company/bookings/{id}', [CompanyBookingController::class, 'destroy']);
         Route::put('bookings/{booking}/toggle-active', [CompanyBookingController::class, 'toggleActive'])->name('bookings.toggle-active');
 
         // Payments
