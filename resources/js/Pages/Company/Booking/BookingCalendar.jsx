@@ -3,9 +3,24 @@ import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, MapPin, Use
 import { StatusBadge, UrgencyBadge } from './BookingBadgeHelpers';
 import { useTranslation } from '@/Hooks/useTranslation';
 
+const getSriLankaDateString = () => {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Colombo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date());
+
+  const year = parts.find((p) => p.type === 'year')?.value;
+  const month = parts.find((p) => p.type === 'month')?.value;
+  const day = parts.find((p) => p.type === 'day')?.value;
+
+  return `${year}-${month}-${day}`;
+};
+
 export default function BookingCalendar({ bookings, onViewDetails, onOpenAssignModal }) {
   const { t } = useTranslation();
-  const [selectedDate, setSelectedDate] = useState('2026-08-15');
+  const [selectedDate, setSelectedDate] = useState(getSriLankaDateString());
 
   // Time slots for dispatch schedule view
   const timeSlots = [
