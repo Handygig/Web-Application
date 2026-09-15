@@ -118,23 +118,30 @@ export default function Dashboard({ stats }) {
     {
       id: 1,
       name: 'Sarah Jenkins',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
       rating: 5,
-      comment: t('David arrived within 20 mins and fixed the pipe leak immediately. Top notch emergency response!'),
+      comment: t(
+        'David arrived within 20 mins and fixed the pipe leak immediately. Top notch emergency response!'
+      ),
       service: t('Plumbing Repair'),
     },
     {
       id: 2,
       name: 'Robert Chen',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
       rating: 5,
-      comment: t('Thorough AC inspection and transparent pricing. Highly recommended for home maintenance.'),
+      comment: t(
+        'Thorough AC inspection and transparent pricing. Highly recommended for home maintenance.'
+      ),
       service: t('HVAC Servicing'),
     },
     {
       id: 3,
       name: 'Marcus Brody',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
       rating: 5,
       comment: t('Clean electrical installation and very professional team. Will book again!'),
       service: t('Electrical Upgrade'),
@@ -188,8 +195,12 @@ export default function Dashboard({ stats }) {
                     : 'bg-slate-100 text-slate-600 border-slate-300'
                 }`}
               >
-                <Radio className={`w-4 h-4 ${isAcceptingJobs ? 'text-emerald-600 animate-pulse' : 'text-slate-400'}`} />
-                <span>{isAcceptingJobs ? t('Accepting New Job Requests') : t('Requests Paused')}</span>
+                <Radio
+                  className={`w-4 h-4 ${isAcceptingJobs ? 'text-emerald-600 animate-pulse' : 'text-slate-400'}`}
+                />
+                <span>
+                  {isAcceptingJobs ? t('Accepting New Job Requests') : t('Requests Paused')}
+                </span>
               </button>
 
               <button
@@ -245,15 +256,15 @@ export default function Dashboard({ stats }) {
 
         {/* 2. MAIN CONTENT GRID (2 COLUMNS: 8 COLS LEFT / 4 COLS RIGHT) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
           {/* --- LEFT COLUMN (65–70% WIDTH / 8 COLUMNS) --- */}
           <div className="lg:col-span-8 space-y-6">
-
             {/* A. WEEKLY PERFORMANCE CHART CARD */}
             <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <div>
-                  <h3 className="text-lg font-extrabold text-slate-900 tracking-tight">{t('Weekly Revenue & Job Volume')}</h3>
+                  <h3 className="text-lg font-extrabold text-slate-900 tracking-tight">
+                    {t('Weekly Revenue & Job Volume')}
+                  </h3>
                   <p className="text-xs font-medium text-slate-500 mt-0.5">
                     {t('Mon–Sun performance trends for completed repairs & billing')}
                   </p>
@@ -265,7 +276,10 @@ export default function Dashboard({ stats }) {
 
               <div className="h-52 flex items-end justify-between gap-3 px-2 pt-4 pb-2">
                 {analyticsDays.map((item, idx) => (
-                  <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group relative">
+                  <div
+                    key={idx}
+                    className="flex-1 flex flex-col items-center gap-2 h-full justify-end group relative"
+                  >
                     {item.highlight && (
                       <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md z-10 whitespace-nowrap">
                         {item.highlight}
@@ -279,12 +293,9 @@ export default function Dashboard({ stats }) {
                         height: item.height,
                         backgroundColor: idx === 3 ? 'var(--color-accent, #5E6933)' : undefined,
                       }}
-                      className={`w-full max-w-[32px] rounded-t-xl transition-all duration-300 group-hover:opacity-90 ${idx === 3
-                          ? 'shadow-xs'
-                          : idx % 2 === 0
-                            ? 'bg-[#8A9A4A]'
-                            : 'bg-slate-200'
-                        }`}
+                      className={`w-full max-w-[32px] rounded-t-xl transition-all duration-300 group-hover:opacity-90 ${
+                        idx === 3 ? 'shadow-xs' : idx % 2 === 0 ? 'bg-[#8A9A4A]' : 'bg-slate-200'
+                      }`}
                     />
                     <span className="text-xs font-bold text-slate-600">{item.day}</span>
                   </div>
@@ -301,7 +312,9 @@ export default function Dashboard({ stats }) {
                     {t('Live Service Bookings & Active Dispatch')}
                   </h3>
                   <p className="text-xs font-medium text-slate-500 mt-0.5">
-                    {t('Real-time queue of customer bookings, technician assignments, and job status')}
+                    {t(
+                      'Real-time queue of customer bookings, technician assignments, and job status'
+                    )}
                   </p>
                 </div>
 
@@ -309,29 +322,41 @@ export default function Dashboard({ stats }) {
                 <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold text-slate-600">
                   <button
                     onClick={() => setBookingFilter('all')}
-                    className={`px-3 py-1 rounded-lg transition-all ${bookingFilter === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'hover:text-slate-900'
-                      }`}
+                    className={`px-3 py-1 rounded-lg transition-all ${
+                      bookingFilter === 'all'
+                        ? 'bg-white text-slate-900 shadow-xs'
+                        : 'hover:text-slate-900'
+                    }`}
                   >
                     {t('All Jobs')}
                   </button>
                   <button
                     onClick={() => setBookingFilter('urgent')}
-                    className={`px-3 py-1 rounded-lg transition-all ${bookingFilter === 'urgent' ? 'bg-white text-rose-700 shadow-xs' : 'hover:text-slate-900'
-                      }`}
+                    className={`px-3 py-1 rounded-lg transition-all ${
+                      bookingFilter === 'urgent'
+                        ? 'bg-white text-rose-700 shadow-xs'
+                        : 'hover:text-slate-900'
+                    }`}
                   >
                     {t('Urgent')}
                   </button>
                   <button
                     onClick={() => setBookingFilter('in_progress')}
-                    className={`px-3 py-1 rounded-lg transition-all ${bookingFilter === 'in_progress' ? 'bg-white text-emerald-800 shadow-xs' : 'hover:text-slate-900'
-                      }`}
+                    className={`px-3 py-1 rounded-lg transition-all ${
+                      bookingFilter === 'in_progress'
+                        ? 'bg-white text-emerald-800 shadow-xs'
+                        : 'hover:text-slate-900'
+                    }`}
                   >
                     {t('In Progress')}
                   </button>
                   <button
                     onClick={() => setBookingFilter('scheduled')}
-                    className={`px-3 py-1 rounded-lg transition-all ${bookingFilter === 'scheduled' ? 'bg-white text-blue-700 shadow-xs' : 'hover:text-slate-900'
-                      }`}
+                    className={`px-3 py-1 rounded-lg transition-all ${
+                      bookingFilter === 'scheduled'
+                        ? 'bg-white text-blue-700 shadow-xs'
+                        : 'hover:text-slate-900'
+                    }`}
                   >
                     {t('Scheduled')}
                   </button>
@@ -361,7 +386,10 @@ export default function Dashboard({ stats }) {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-medium text-slate-600 pt-1">
                       <div className="flex items-center gap-1.5">
                         <Users className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span className="truncate">{t('Customer')}: <strong className="text-slate-800">{job.customer}</strong></span>
+                        <span className="truncate">
+                          {t('Customer')}:{' '}
+                          <strong className="text-slate-800">{job.customer}</strong>
+                        </span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <Wrench className="w-3.5 h-3.5 text-slate-400 shrink-0" />
@@ -374,7 +402,9 @@ export default function Dashboard({ stats }) {
                     </div>
 
                     <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
-                      <span className="text-[11px] font-semibold text-slate-400">{t('Requested')} {job.time}</span>
+                      <span className="text-[11px] font-semibold text-slate-400">
+                        {t('Requested')} {job.time}
+                      </span>
                       <Link
                         href={route('company.bookings.index')}
                         className="font-bold flex items-center gap-1 hover:underline"
@@ -388,12 +418,10 @@ export default function Dashboard({ stats }) {
                 ))}
               </div>
             </div>
-
           </div>
 
           {/* --- RIGHT COLUMN (30–35% WIDTH / 4 COLUMNS) --- */}
           <div className="lg:col-span-4 space-y-6">
-
             {/* A. EMERGENCY ACTION CARD */}
             <div className="p-6 rounded-2xl border border-rose-200 bg-rose-50/40 shadow-sm flex flex-col justify-between space-y-4">
               <div>
@@ -440,7 +468,9 @@ export default function Dashboard({ stats }) {
                   </div>
                   <div className="flex items-center gap-1 text-[11px] text-slate-500 font-medium pt-1">
                     <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                    <span>{t('Scheduled Payout')}: <strong>Aug 25, 2026</strong></span>
+                    <span>
+                      {t('Scheduled Payout')}: <strong>Aug 25, 2026</strong>
+                    </span>
                   </div>
                 </div>
 
@@ -475,7 +505,9 @@ export default function Dashboard({ stats }) {
             {/* C. RECENT CUSTOMER REVIEWS WIDGET */}
             <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                <h3 className="text-base font-bold text-slate-900">{t('Recent Customer Reviews')}</h3>
+                <h3 className="text-base font-bold text-slate-900">
+                  {t('Recent Customer Reviews')}
+                </h3>
                 <span className="flex items-center gap-1 text-xs font-extrabold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
                   <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                   4.9 / 5.0
@@ -484,7 +516,10 @@ export default function Dashboard({ stats }) {
 
               <div className="space-y-3">
                 {recentReviews.map((rev) => (
-                  <div key={rev.id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors text-left border border-slate-100">
+                  <div
+                    key={rev.id}
+                    className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors text-left border border-slate-100"
+                  >
                     <img
                       src={rev.avatar}
                       alt={rev.name}
@@ -499,7 +534,9 @@ export default function Dashboard({ stats }) {
                           ))}
                         </div>
                       </div>
-                      <p className="text-xs font-medium text-slate-600 line-clamp-2 mt-0.5">{rev.comment}</p>
+                      <p className="text-xs font-medium text-slate-600 line-clamp-2 mt-0.5">
+                        {rev.comment}
+                      </p>
                       <span className="inline-block text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded mt-1.5 border border-emerald-200">
                         {rev.service}
                       </span>
@@ -508,9 +545,7 @@ export default function Dashboard({ stats }) {
                 ))}
               </div>
             </div>
-
           </div>
-
         </div>
 
         {/* QUICK DISPATCH MODAL */}
@@ -529,7 +564,9 @@ export default function Dashboard({ stats }) {
 
               <div className="space-y-3 text-xs">
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">{t('Service Request')}</label>
+                  <label className="font-bold text-slate-700 block mb-1">
+                    {t('Service Request')}
+                  </label>
                   <input
                     type="text"
                     defaultValue="JOB-4089 - Emergency Pipe Leak Repair"
@@ -538,7 +575,9 @@ export default function Dashboard({ stats }) {
                 </div>
 
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">{t('Assign Field Staff / Plumber')}</label>
+                  <label className="font-bold text-slate-700 block mb-1">
+                    {t('Assign Field Staff / Plumber')}
+                  </label>
                   <select className="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-900 focus:outline-none">
                     <option>David Miller (Master Plumber - Available)</option>
                     <option>Alex Rivera (HVAC Technician - Available)</option>
@@ -565,7 +604,6 @@ export default function Dashboard({ stats }) {
             </div>
           </div>
         )}
-
       </div>
     </AppLayout>
   );

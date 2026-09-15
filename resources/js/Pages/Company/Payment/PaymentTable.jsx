@@ -15,12 +15,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
-export default function PaymentTable({
-  transactions,
-  viewMode,
-  onViewInvoice,
-  onDownloadReceipt,
-}) {
+export default function PaymentTable({ transactions, viewMode, onViewInvoice, onDownloadReceipt }) {
   const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -127,7 +122,9 @@ export default function PaymentTable({
         </div>
         <h4 className="text-lg font-bold text-gray-900">{t('No transactions found')}</h4>
         <p className="text-xs text-gray-500 max-w-md mx-auto mt-1">
-          {t('Try adjusting your search criteria, payment method filters, or date range selection.')}
+          {t(
+            'Try adjusting your search criteria, payment method filters, or date range selection.'
+          )}
         </p>
       </div>
     );
@@ -153,10 +150,7 @@ export default function PaymentTable({
               </thead>
               <tbody className="divide-y divide-[#F0F2EA] text-sm">
                 {paginatedTxns.map((txn) => (
-                  <tr
-                    key={txn.id}
-                    className="hover:bg-[#FAFBF7] transition-colors group"
-                  >
+                  <tr key={txn.id} className="hover:bg-[#FAFBF7] transition-colors group">
                     {/* Transaction ID & Job Ref */}
                     <td className="py-4 px-6 align-middle">
                       <div className="space-y-1">
@@ -164,9 +158,14 @@ export default function PaymentTable({
                           {txn.id}
                         </span>
                         <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                          <span className="font-bold text-gray-900 whitespace-nowrap">{txn.jobId}</span>
+                          <span className="font-bold text-gray-900 whitespace-nowrap">
+                            {txn.jobId}
+                          </span>
                           <span className="text-gray-300">•</span>
-                          <span className="truncate max-w-[140px] text-gray-500" title={txn.serviceName}>
+                          <span
+                            className="truncate max-w-[140px] text-gray-500"
+                            title={txn.serviceName}
+                          >
                             {txn.serviceName}
                           </span>
                         </div>
@@ -176,9 +175,15 @@ export default function PaymentTable({
                     {/* Customer & Date */}
                     <td className="py-4 px-6 align-middle">
                       <div className="space-y-0.5">
-                        <div className="font-semibold text-gray-900 text-sm">{txn.customerName}</div>
-                        <div className="text-xs text-gray-500 whitespace-nowrap">{txn.customerPhone}</div>
-                        <div className="text-xs text-gray-400 whitespace-nowrap">{txn.timestamp}</div>
+                        <div className="font-semibold text-gray-900 text-sm">
+                          {txn.customerName}
+                        </div>
+                        <div className="text-xs text-gray-500 whitespace-nowrap">
+                          {txn.customerPhone}
+                        </div>
+                        <div className="text-xs text-gray-400 whitespace-nowrap">
+                          {txn.timestamp}
+                        </div>
                       </div>
                     </td>
 
@@ -198,7 +203,8 @@ export default function PaymentTable({
                         -{formattedCurrency(txn.platformFee)} ({txn.commissionPercentage || '10'}%)
                       </div>
                       <div className="font-extrabold text-[#5E6933] text-sm mt-0.5 whitespace-nowrap">
-                        {formattedCurrency(txn.netPayout)} <span className="text-[10px] text-gray-400 font-normal">({t('Net')})</span>
+                        {formattedCurrency(txn.netPayout)}{' '}
+                        <span className="text-[10px] text-gray-400 font-normal">({t('Net')})</span>
                       </div>
                     </td>
 
@@ -233,11 +239,16 @@ export default function PaymentTable({
           {/* TABLE FOOTER / PAGINATION */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#F9FAF7] px-6 py-3.5 border-t border-[#E2E4D9] text-xs text-gray-600">
             <div className="whitespace-nowrap">
-              {t('Showing')} <span className="font-bold text-gray-900">{(currentPage - 1) * itemsPerPage + 1}</span>–
+              {t('Showing')}{' '}
+              <span className="font-bold text-gray-900">
+                {(currentPage - 1) * itemsPerPage + 1}
+              </span>
+              –
               <span className="font-bold text-gray-900">
                 {Math.min(currentPage * itemsPerPage, transactions.length)}
               </span>{' '}
-              {t('of')} <span className="font-bold text-gray-900">{transactions.length}</span> {t('transactions')}
+              {t('of')} <span className="font-bold text-gray-900">{transactions.length}</span>{' '}
+              {t('transactions')}
             </div>
             <div className="flex items-center gap-1.5">
               <button
@@ -275,7 +286,9 @@ export default function PaymentTable({
                   <span className="font-mono text-xs font-bold text-[#5E6933] bg-[#EBF5EC] px-2.5 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap">
                     {txn.id}
                   </span>
-                  <div className="text-xs font-bold text-gray-900 mt-1.5 whitespace-nowrap">{txn.jobId}</div>
+                  <div className="text-xs font-bold text-gray-900 mt-1.5 whitespace-nowrap">
+                    {txn.jobId}
+                  </div>
                 </div>
                 {renderStatusBadge(txn.status)}
               </div>
@@ -289,13 +302,17 @@ export default function PaymentTable({
 
               <div className="pt-3 border-t border-[#F0F2EA] flex items-center justify-between">
                 <div>
-                  <div className="text-[11px] font-semibold uppercase text-gray-400">{t('Gross Charged')}</div>
+                  <div className="text-[11px] font-semibold uppercase text-gray-400">
+                    {t('Gross Charged')}
+                  </div>
                   <div className="text-base font-extrabold text-gray-900">
                     {formattedCurrency(txn.grossAmount)}
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[11px] font-semibold uppercase text-gray-400">{t('Company Net')}</div>
+                  <div className="text-[11px] font-semibold uppercase text-gray-400">
+                    {t('Company Net')}
+                  </div>
                   <div className="text-base font-extrabold text-[#5E6933]">
                     {formattedCurrency(txn.netPayout)}
                   </div>

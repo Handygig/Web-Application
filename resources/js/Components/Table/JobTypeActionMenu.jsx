@@ -41,7 +41,9 @@ export default function JobTypeActionMenu({
                 type="button"
                 onClick={() => onPromptToggleActive(jobType)}
                 className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left ${
-                  isActive ? 'text-amber-700 hover:bg-amber-50' : 'text-emerald-700 hover:bg-emerald-50'
+                  isActive
+                    ? 'text-amber-700 hover:bg-amber-50'
+                    : 'text-emerald-700 hover:bg-emerald-50'
                 } ${active ? (isActive ? 'bg-amber-50' : 'bg-emerald-50') : ''}`}
               >
                 <Power className="h-3.5 w-3.5" />

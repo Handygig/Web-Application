@@ -43,7 +43,9 @@ export default function UnbanConfirmModal({
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-slate-900">{t('Unban Account?')}</h3>
                 <p className="mt-1 text-xs text-slate-500 leading-relaxed">
-                  {t('Are you sure you want to unban this account? The user will regain access to the platform.')}
+                  {t(
+                    'Are you sure you want to unban this account? The user will regain access to the platform.'
+                  )}
                 </p>
               </div>
 
@@ -71,7 +73,9 @@ export default function UnbanConfirmModal({
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400 font-medium">{t('Original Reason')}:</span>
-                <span className="font-semibold text-red-600 truncate max-w-[180px]">{account.reason}</span>
+                <span className="font-semibold text-red-600 truncate max-w-[180px]">
+                  {account.reason}
+                </span>
               </div>
             </div>
 

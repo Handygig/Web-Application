@@ -81,7 +81,9 @@ export default function KycRejectModal({
           <div className="flex-1">
             <h3 className="text-xl font-bold text-slate-900">{t('Reject Verification')}</h3>
             <p className="mt-1 text-xs text-slate-500">
-              {t('Rejecting verification for')} <span className="font-semibold text-slate-800">{providerName}</span>. {t('Please specify the exact reason so the provider can rectify their submission.')}
+              {t('Rejecting verification for')}{' '}
+              <span className="font-semibold text-slate-800">{providerName}</span>.{' '}
+              {t('Please specify the exact reason so the provider can rectify their submission.')}
             </p>
           </div>
 
@@ -135,7 +137,9 @@ export default function KycRejectModal({
                   setCustomReasonText(e.target.value);
                   if (errorText) setErrorText('');
                 }}
-                placeholder={t('Enter the reason why this verification request is being rejected...')}
+                placeholder={t(
+                  'Enter the reason why this verification request is being rejected...'
+                )}
                 className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500 transition-all"
               />
             </div>

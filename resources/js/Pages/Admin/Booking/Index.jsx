@@ -90,41 +90,49 @@ export default function BookingIndex({ bookings }) {
 
   // Filter & Sort logic
   const filteredBookings = useMemo(() => {
-    return bookingList.filter((b) => {
-      if (activeTab !== 'all' && b.status.toLowerCase() !== activeTab.toLowerCase()) {
-        return false;
-      }
-      if (providerFilter !== 'all' && b.providerName !== providerFilter) {
-        return false;
-      }
-      if (customerFilter !== 'all' && b.customerName !== customerFilter) {
-        return false;
-      }
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        const matchesId = b.id.toLowerCase().includes(q);
-        const matchesCustName = b.customerName.toLowerCase().includes(q);
-        const matchesCustEmail = b.customerEmail.toLowerCase().includes(q);
-        const matchesProvName = b.providerName.toLowerCase().includes(q);
-        const matchesPropName = b.propertyName.toLowerCase().includes(q);
-
-        if (!matchesId && !matchesCustName && !matchesCustEmail && !matchesProvName && !matchesPropName) {
+    return bookingList
+      .filter((b) => {
+        if (activeTab !== 'all' && b.status.toLowerCase() !== activeTab.toLowerCase()) {
           return false;
         }
-      }
-      return true;
-    }).sort((a, b) => {
-      if (sortOption === 'oldest') {
-        return a.id.localeCompare(b.id);
-      }
-      if (sortOption === 'amount-high') {
-        return (b.rawAmount || 0) - (a.rawAmount || 0);
-      }
-      if (sortOption === 'amount-low') {
-        return (a.rawAmount || 0) - (b.rawAmount || 0);
-      }
-      return b.id.localeCompare(a.id);
-    });
+        if (providerFilter !== 'all' && b.providerName !== providerFilter) {
+          return false;
+        }
+        if (customerFilter !== 'all' && b.customerName !== customerFilter) {
+          return false;
+        }
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase().trim();
+          const matchesId = b.id.toLowerCase().includes(q);
+          const matchesCustName = b.customerName.toLowerCase().includes(q);
+          const matchesCustEmail = b.customerEmail.toLowerCase().includes(q);
+          const matchesProvName = b.providerName.toLowerCase().includes(q);
+          const matchesPropName = b.propertyName.toLowerCase().includes(q);
+
+          if (
+            !matchesId &&
+            !matchesCustName &&
+            !matchesCustEmail &&
+            !matchesProvName &&
+            !matchesPropName
+          ) {
+            return false;
+          }
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortOption === 'oldest') {
+          return a.id.localeCompare(b.id);
+        }
+        if (sortOption === 'amount-high') {
+          return (b.rawAmount || 0) - (a.rawAmount || 0);
+        }
+        if (sortOption === 'amount-low') {
+          return (a.rawAmount || 0) - (b.rawAmount || 0);
+        }
+        return b.id.localeCompare(a.id);
+      });
   }, [bookingList, activeTab, providerFilter, customerFilter, searchQuery, sortOption]);
 
   useEffect(() => {
@@ -150,7 +158,16 @@ export default function BookingIndex({ bookings }) {
   const handleExportCSV = () => {
     if (filteredBookings.length === 0) return;
 
-    const headers = ['Booking ID', 'Customer', 'Customer Email', 'Provider', 'Property/Service', 'Booking Date', 'Amount', 'Status'];
+    const headers = [
+      'Booking ID',
+      'Customer',
+      'Customer Email',
+      'Provider',
+      'Property/Service',
+      'Booking Date',
+      'Amount',
+      'Status',
+    ];
     const rows = filteredBookings.map((b) => [
       b.id,
       `"${b.customerName}"`,
@@ -204,9 +221,13 @@ export default function BookingIndex({ bookings }) {
   };
 
   const handleStatusChange = (b, newStatus) => {
-    router.patch(route('admin.bookings.status', b.realId), { status: newStatus.toLowerCase() }, {
-      preserveScroll: true,
-    });
+    router.patch(
+      route('admin.bookings.status', b.realId),
+      { status: newStatus.toLowerCase() },
+      {
+        preserveScroll: true,
+      }
+    );
   };
 
   const handlePromptCancel = (b) => {
@@ -216,13 +237,17 @@ export default function BookingIndex({ bookings }) {
 
   const confirmCancel = () => {
     if (!cancellingBooking) return;
-    router.patch(route('admin.bookings.status', cancellingBooking.realId), { status: 'cancelled' }, {
-      preserveScroll: true,
-      onSuccess: () => {
-        setIsCancelModalOpen(false);
-        setCancellingBooking(null);
+    router.patch(
+      route('admin.bookings.status', cancellingBooking.realId),
+      { status: 'cancelled' },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setIsCancelModalOpen(false);
+          setCancellingBooking(null);
+        },
       }
-    });
+    );
   };
 
   const tabs = [
@@ -251,7 +276,12 @@ export default function BookingIndex({ bookings }) {
       label: t('Customer'),
       render: (row) => {
         const custInitials = row.customerName
-          ? row.customerName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+          ? row.customerName
+              .split(' ')
+              .map((n) => n[0])
+              .join('')
+              .slice(0, 2)
+              .toUpperCase()
           : 'C';
         return (
           <button
@@ -266,7 +296,9 @@ export default function BookingIndex({ bookings }) {
               <span className="block font-semibold text-slate-900 text-xs group-hover/cust:text-theme-accent truncate">
                 {row.customerName}
               </span>
-              <span className="text-[11px] text-slate-400 block truncate max-w-[140px]">{row.customerEmail}</span>
+              <span className="text-[11px] text-slate-400 block truncate max-w-[140px]">
+                {row.customerEmail}
+              </span>
             </div>
           </button>
         );
@@ -447,7 +479,9 @@ export default function BookingIndex({ bookings }) {
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 pb-3">
             <TabSwitch tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
             <div className="text-xs text-slate-500 font-medium">
-              {t('Showing')} <span className="font-bold text-slate-900">{filteredBookings.length}</span> {t('bookings')}
+              {t('Showing')}{' '}
+              <span className="font-bold text-slate-900">{filteredBookings.length}</span>{' '}
+              {t('bookings')}
             </div>
           </div>
 
@@ -461,7 +495,11 @@ export default function BookingIndex({ bookings }) {
               />
 
               <div className="flex items-center gap-3 self-end md:self-auto">
-                {(searchQuery || activeTab !== 'all' || providerFilter !== 'all' || customerFilter !== 'all' || dateFilter !== 'all') && (
+                {(searchQuery ||
+                  activeTab !== 'all' ||
+                  providerFilter !== 'all' ||
+                  customerFilter !== 'all' ||
+                  dateFilter !== 'all') && (
                   <ClearFiltersButton onClick={handleClearFilters} className="h-[46px]" />
                 )}
 
@@ -548,8 +586,12 @@ export default function BookingIndex({ bookings }) {
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className="font-mono font-bold text-slate-900 text-xs block">{b.id}</span>
-                        <h4 className="font-bold text-slate-800 text-sm mt-0.5">{b.propertyName}</h4>
+                        <span className="font-mono font-bold text-slate-900 text-xs block">
+                          {b.id}
+                        </span>
+                        <h4 className="font-bold text-slate-800 text-sm mt-0.5">
+                          {b.propertyName}
+                        </h4>
                       </div>
                       <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold bg-slate-100 text-slate-700">
                         {status}
@@ -559,7 +601,9 @@ export default function BookingIndex({ bookings }) {
                     <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-2 border-t border-slate-50">
                       <div>
                         <span className="text-slate-400 block">{t('Customer')}</span>
-                        <span className="font-medium text-slate-800 block truncate">{b.customerName}</span>
+                        <span className="font-medium text-slate-800 block truncate">
+                          {b.customerName}
+                        </span>
                       </div>
                       <div>
                         <span className="text-slate-400 block">{t('Amount')}</span>
@@ -567,7 +611,9 @@ export default function BookingIndex({ bookings }) {
                       </div>
                       <div>
                         <span className="text-slate-400 block">{t('Provider')}</span>
-                        <span className="font-medium text-slate-800 block truncate">{b.providerName}</span>
+                        <span className="font-medium text-slate-800 block truncate">
+                          {b.providerName}
+                        </span>
                       </div>
                       <div>
                         <span className="text-slate-400 block">{t('Date')}</span>
@@ -619,10 +665,10 @@ export default function BookingIndex({ bookings }) {
         message={
           cancellingBooking
             ? t('Are you sure you want to cancel booking :id for :customer with :provider?', {
-              id: cancellingBooking.id,
-              customer: cancellingBooking.customerName,
-              provider: cancellingBooking.providerName,
-            })
+                id: cancellingBooking.id,
+                customer: cancellingBooking.customerName,
+                provider: cancellingBooking.providerName,
+              })
             : t('Are you sure you want to cancel this booking?')
         }
         confirmLabel={t('Cancel Booking')}

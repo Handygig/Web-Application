@@ -99,7 +99,11 @@ export default function Navbar({ onMenuToggle }) {
 
           {/* Logo */}
           <Link href={route('dashboard')} className="group flex items-center gap-2.5">
-            <img src="/images/handygig-logo.png" alt="Logo" className="h-10 w-auto transition-transform group-hover:scale-105" />
+            <img
+              src="/images/handygig-logo.png"
+              alt="Logo"
+              className="h-10 w-auto transition-transform group-hover:scale-105"
+            />
           </Link>
         </div>
 
@@ -156,8 +160,7 @@ export default function Navbar({ onMenuToggle }) {
                     <Link
                       key={n.id}
                       href={
-                        n.href ||
-                        route((isAdmin ? 'admin' : 'company') + '.notifications.index')
+                        n.href || route((isAdmin ? 'admin' : 'company') + '.notifications.index')
                       }
                       onClick={() => {
                         setNotifications((prev) =>
@@ -173,7 +176,9 @@ export default function Navbar({ onMenuToggle }) {
                         <h4 className="text-xs font-bold text-slate-900 hover:text-theme-accent transition">
                           {n.title}
                         </h4>
-                        <span className="text-[10px] font-medium text-slate-400 shrink-0">{n.time}</span>
+                        <span className="text-[10px] font-medium text-slate-400 shrink-0">
+                          {n.time}
+                        </span>
                       </div>
                       <p className="mt-1 text-[11px] text-slate-600 leading-snug">{n.desc}</p>
                     </Link>
@@ -259,9 +264,7 @@ export default function Navbar({ onMenuToggle }) {
                 <span className="max-w-[110px] truncate text-xs font-semibold text-slate-800 leading-tight">
                   {auth?.user?.full_name || auth?.user?.name || 'Admin'}
                 </span>
-                <span className="text-[10px] font-medium text-slate-400">
-                  {roleName}
-                </span>
+                <span className="text-[10px] font-medium text-slate-400">{roleName}</span>
               </div>
             </button>
 
@@ -278,9 +281,7 @@ export default function Navbar({ onMenuToggle }) {
                     <p className="font-semibold text-xs text-slate-800 truncate">
                       {auth.user.full_name || auth.user.name}
                     </p>
-                    <p className="truncate text-[11px] text-slate-400 mt-0.5">
-                      {auth.user.email}
-                    </p>
+                    <p className="truncate text-[11px] text-slate-400 mt-0.5">{auth.user.email}</p>
                   </div>
                 )}
 

@@ -56,13 +56,32 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Morning Shift (08:00 - 16:00)',
       rating: 4.9,
       completedJobs: 142,
-      avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80',
       location: 'Downtown District 4',
       joinedDate: 'Jan 2024',
       recentJobs: [
-        { id: 'JOB-4089', client: 'Sarah Jenkins', service: 'Emergency Pipe Leak Repair', status: 'In Progress', date: 'Today' },
-        { id: 'JOB-4055', client: 'Michael Scott', service: 'Water Heater Replacement', status: 'Completed', date: 'Yesterday' },
-        { id: 'JOB-4012', client: 'Pam Beesly', service: 'Drain Clog Removal', status: 'Completed', date: '3 days ago' },
+        {
+          id: 'JOB-4089',
+          client: 'Sarah Jenkins',
+          service: 'Emergency Pipe Leak Repair',
+          status: 'In Progress',
+          date: 'Today',
+        },
+        {
+          id: 'JOB-4055',
+          client: 'Michael Scott',
+          service: 'Water Heater Replacement',
+          status: 'Completed',
+          date: 'Yesterday',
+        },
+        {
+          id: 'JOB-4012',
+          client: 'Pam Beesly',
+          service: 'Drain Clog Removal',
+          status: 'Completed',
+          date: '3 days ago',
+        },
       ],
     },
     {
@@ -79,12 +98,25 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Day Shift (09:00 - 17:00)',
       rating: 4.85,
       completedJobs: 98,
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
       location: 'Northside Suburbs',
       joinedDate: 'Mar 2024',
       recentJobs: [
-        { id: 'JOB-4084', client: 'Robert Chen', service: 'HVAC Unit Diagnostics & Tune-up', status: 'In Progress', date: 'Today' },
-        { id: 'JOB-4040', client: 'Jim Halpert', service: 'Central AC Refrigerant Refill', status: 'Completed', date: '2 days ago' },
+        {
+          id: 'JOB-4084',
+          client: 'Robert Chen',
+          service: 'HVAC Unit Diagnostics & Tune-up',
+          status: 'In Progress',
+          date: 'Today',
+        },
+        {
+          id: 'JOB-4040',
+          client: 'Jim Halpert',
+          service: 'Central AC Refrigerant Refill',
+          status: 'Completed',
+          date: '2 days ago',
+        },
       ],
     },
     {
@@ -101,12 +133,25 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Day Shift (08:30 - 16:30)',
       rating: 4.95,
       completedJobs: 176,
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
       location: 'Commercial Zone West',
       joinedDate: 'Nov 2023',
       recentJobs: [
-        { id: 'JOB-4081', client: 'Marcus Brody', service: 'Commercial Electrical Panel Upgrade', status: 'Scheduled', date: 'Today, 2:30 PM' },
-        { id: 'JOB-4029', client: 'Angela Martin', service: 'Lighting Circuit Installation', status: 'Completed', date: '4 days ago' },
+        {
+          id: 'JOB-4081',
+          client: 'Marcus Brody',
+          service: 'Commercial Electrical Panel Upgrade',
+          status: 'Scheduled',
+          date: 'Today, 2:30 PM',
+        },
+        {
+          id: 'JOB-4029',
+          client: 'Angela Martin',
+          service: 'Lighting Circuit Installation',
+          status: 'Completed',
+          date: '4 days ago',
+        },
       ],
     },
     {
@@ -123,11 +168,18 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Morning Shift (07:00 - 15:00)',
       rating: 4.78,
       completedJobs: 84,
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
       location: 'Westside Avenue',
       joinedDate: 'May 2024',
       recentJobs: [
-        { id: 'JOB-4078', client: 'Elena Rostova', service: 'High-Pressure Sewer Line Cleansing', status: 'In Progress', date: 'Today' },
+        {
+          id: 'JOB-4078',
+          client: 'Elena Rostova',
+          service: 'High-Pressure Sewer Line Cleansing',
+          status: 'In Progress',
+          date: 'Today',
+        },
       ],
     },
     {
@@ -144,11 +196,18 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Day Shift (09:00 - 17:00)',
       rating: 4.92,
       completedJobs: 115,
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
       location: 'Central Plaza',
       joinedDate: 'Feb 2024',
       recentJobs: [
-        { id: 'JOB-4033', client: 'Dwight Schrute', service: 'Drywall Repair & Fixture Fitting', status: 'Completed', date: 'Yesterday' },
+        {
+          id: 'JOB-4033',
+          client: 'Dwight Schrute',
+          service: 'Drywall Repair & Fixture Fitting',
+          status: 'Completed',
+          date: 'Yesterday',
+        },
       ],
     },
     {
@@ -165,11 +224,18 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Evening Shift (14:00 - 22:00)',
       rating: 4.88,
       completedJobs: 67,
-      avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
       location: 'Eastside Sector',
       joinedDate: 'Jun 2024',
       recentJobs: [
-        { id: 'JOB-4019', client: 'Stanley Hudson', service: 'Ductwork Inspection', status: 'Completed', date: '3 days ago' },
+        {
+          id: 'JOB-4019',
+          client: 'Stanley Hudson',
+          service: 'Ductwork Inspection',
+          status: 'Completed',
+          date: '3 days ago',
+        },
       ],
     },
     {
@@ -186,11 +252,18 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Morning Shift (08:00 - 16:00)',
       rating: 4.96,
       completedJobs: 130,
-      avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
       location: 'Tech Corridor',
       joinedDate: 'Jan 2024',
       recentJobs: [
-        { id: 'JOB-4022', client: 'Oscar Martinez', service: 'EV Charger Installation', status: 'Completed', date: '4 days ago' },
+        {
+          id: 'JOB-4022',
+          client: 'Oscar Martinez',
+          service: 'EV Charger Installation',
+          status: 'Completed',
+          date: '4 days ago',
+        },
       ],
     },
     {
@@ -207,7 +280,8 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Day Shift (08:00 - 16:00)',
       rating: 4.75,
       completedJobs: 52,
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
       location: 'Southside Heights',
       joinedDate: 'Jul 2024',
       recentJobs: [],
@@ -224,9 +298,10 @@ export default function EmployeeIndex() {
       activeAssignment: null,
       hourlyRate: '38.00',
       shiftAssignment: 'Off Duty',
-      rating: 4.70,
+      rating: 4.7,
       completedJobs: 41,
-      avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
       location: 'Suburban North',
       joinedDate: 'Aug 2024',
       recentJobs: [],
@@ -245,7 +320,8 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Off Duty',
       rating: 4.82,
       completedJobs: 79,
-      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
       location: 'Downtown East',
       joinedDate: 'Apr 2024',
       recentJobs: [],
@@ -280,7 +356,9 @@ export default function EmployeeIndex() {
 
   // Calculate Key Metrics
   const totalStaff = technicians.length;
-  const currentlyOnShift = technicians.filter((t) => t.status === 'on_shift_job' || t.status === 'available' || t.status === 'on_break').length;
+  const currentlyOnShift = technicians.filter(
+    (t) => t.status === 'on_shift_job' || t.status === 'available' || t.status === 'on_break'
+  ).length;
   const availableForDispatch = technicians.filter((t) => t.status === 'available').length;
   const avgRating = useMemo(() => {
     if (!technicians.length) return '0.0';
@@ -306,7 +384,10 @@ export default function EmployeeIndex() {
       // Status filter
       let matchesStatus = true;
       if (statusFilter === 'on_shift') {
-        matchesStatus = tech.status === 'on_shift_job' || tech.status === 'available' || tech.status === 'on_break';
+        matchesStatus =
+          tech.status === 'on_shift_job' ||
+          tech.status === 'available' ||
+          tech.status === 'on_break';
       } else if (statusFilter === 'available') {
         matchesStatus = tech.status === 'available';
       } else if (statusFilter === 'on_shift_job') {
@@ -318,7 +399,8 @@ export default function EmployeeIndex() {
       }
 
       // Skill filter
-      const matchesSkill = skillFilter === 'all' || tech.specialization.toLowerCase() === skillFilter.toLowerCase();
+      const matchesSkill =
+        skillFilter === 'all' || tech.specialization.toLowerCase() === skillFilter.toLowerCase();
 
       return matchesSearch && matchesStatus && matchesSkill;
     });
@@ -378,7 +460,8 @@ export default function EmployeeIndex() {
       );
     } else {
       // Create new auto-generated ID
-      const newIdNumber = Math.max(...technicians.map((t) => parseInt(t.id.replace('TECH-', ''), 10) || 100)) + 1;
+      const newIdNumber =
+        Math.max(...technicians.map((t) => parseInt(t.id.replace('TECH-', ''), 10) || 100)) + 1;
       const newTech = {
         id: `TECH-${newIdNumber}`,
         ...formData,
@@ -411,7 +494,12 @@ export default function EmployeeIndex() {
         return {
           ...t,
           status: nextStatus,
-          shiftAssignment: nextStatus === 'off_duty' ? 'Off Duty' : t.shiftAssignment === 'Off Duty' ? 'Day Shift (08:00 - 16:00)' : t.shiftAssignment,
+          shiftAssignment:
+            nextStatus === 'off_duty'
+              ? 'Off Duty'
+              : t.shiftAssignment === 'Off Duty'
+                ? 'Day Shift (08:00 - 16:00)'
+                : t.shiftAssignment,
         };
       })
     );
@@ -462,15 +550,35 @@ export default function EmployeeIndex() {
   const getSpecializationBadge = (spec) => {
     switch (spec.toLowerCase()) {
       case 'plumbing':
-        return <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200">{spec}</span>;
+        return (
+          <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200">
+            {spec}
+          </span>
+        );
       case 'hvac':
-        return <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200">{spec}</span>;
+        return (
+          <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200">
+            {spec}
+          </span>
+        );
       case 'electrical':
-        return <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">{spec}</span>;
+        return (
+          <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+            {spec}
+          </span>
+        );
       case 'roofing':
-        return <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">{spec}</span>;
+        return (
+          <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+            {spec}
+          </span>
+        );
       default:
-        return <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">{spec}</span>;
+        return (
+          <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+            {spec}
+          </span>
+        );
     }
   };
 
@@ -478,8 +586,14 @@ export default function EmployeeIndex() {
     { key: 'all', label: `${t('All')} (${totalStaff})` },
     { key: 'available', label: `${t('Available')} (${availableForDispatch})` },
     { key: 'on_shift_job', label: `${t('On Shift - In Job')} (${currentlyOnShift})` },
-    { key: 'on_break', label: `${t('On Break')} (${technicians.filter((t) => t.status === 'on_break').length})` },
-    { key: 'off_duty', label: `${t('Off Duty')} (${technicians.filter((t) => t.status === 'off_duty').length})` },
+    {
+      key: 'on_break',
+      label: `${t('On Break')} (${technicians.filter((t) => t.status === 'on_break').length})`,
+    },
+    {
+      key: 'off_duty',
+      label: `${t('Off Duty')} (${technicians.filter((t) => t.status === 'off_duty').length})`,
+    },
   ];
 
   return (
@@ -544,13 +658,14 @@ export default function EmployeeIndex() {
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 pb-3">
             <TabSwitch tabs={employeeTabs} activeTab={statusFilter} onChange={setStatusFilter} />
             <div className="text-xs text-slate-500 font-medium">
-              {t('Showing')} <span className="font-bold text-slate-900">{filteredTechnicians.length}</span> {t('technicians')}
+              {t('Showing')}{' '}
+              <span className="font-bold text-slate-900">{filteredTechnicians.length}</span>{' '}
+              {t('technicians')}
             </div>
           </div>
 
           {/* 3. SEARCH & FILTER CONTROLS BAR */}
           <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-            
             {/* Search Box */}
             <div className="relative flex-1">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -573,7 +688,6 @@ export default function EmployeeIndex() {
 
             {/* Filter Dropdowns & View Toggle */}
             <div className="flex flex-wrap items-center gap-3">
-              
               {/* Status Dropdown */}
               <div className="relative flex items-center">
                 <Filter className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
@@ -648,9 +762,13 @@ export default function EmployeeIndex() {
               <div className="w-14 h-14 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
                 <Users className="w-7 h-7" />
               </div>
-              <h3 className="text-lg font-extrabold text-slate-900">{t('No technicians match your search')}</h3>
+              <h3 className="text-lg font-extrabold text-slate-900">
+                {t('No technicians match your search')}
+              </h3>
               <p className="text-sm text-slate-500 mt-1 max-w-md mx-auto">
-                {t('Try adjusting your search query, status filters, or skill selection to see field staff.')}
+                {t(
+                  'Try adjusting your search query, status filters, or skill selection to see field staff.'
+                )}
               </p>
               <button
                 onClick={() => {
@@ -664,287 +782,289 @@ export default function EmployeeIndex() {
               </button>
             </div>
           ) : viewMode === 'table' ? (
-
-          /* --- TABLE VIEW --- */
-          <div className="bg-white rounded-2xl border border-[#E2E4D9] shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse table-fixed">
-                <thead>
-                  <tr className="bg-[#F9FAF7] border-b border-[#E2E4D9] text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    <th className="py-3.5 px-6 w-64">{t('Technician')}</th>
-                    <th className="py-3.5 px-6 w-44">{t('Specialization')}</th>
-                    <th className="py-3.5 px-6 w-48">{t('Status')}</th>
-                    <th className="py-3.5 px-6 w-40">{t('Active Job')}</th>
-                    <th className="py-3.5 px-6 w-36">{t('Rating & Jobs')}</th>
-                    <th className="py-3.5 px-6 w-32">{t('Hourly Rate')}</th>
-                    <th className="py-3.5 px-6 w-36 text-right">{t('Actions')}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#F0F2EA] text-sm">
-                  {filteredTechnicians.map((tech) => (
-                    <tr key={tech.id} className="hover:bg-[#FAFBF7] transition-colors group">
-                      
-                      {/* Technician Info Column */}
-                      <td className="py-4 px-6 align-middle">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={tech.avatar}
-                            alt={tech.firstName}
-                            className="w-10 h-10 rounded-full object-cover border border-[#E2E4D9] shadow-2xs shrink-0"
-                          />
-                          <div className="space-y-0.5 min-w-0">
-                            <div className="font-bold text-gray-900 flex items-center gap-2">
-                              <span className="truncate">{tech.firstName} {tech.lastName}</span>
-                              <span className="font-mono text-xs font-bold text-[#5E6933] bg-[#EBF5EC] px-2 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap shrink-0">
-                                {tech.id}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-3 text-xs text-gray-500 whitespace-nowrap">
-                              <span className="flex items-center gap-1">
-                                <Phone className="w-3 h-3 text-gray-400" />
-                                {tech.phone}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Specialization / Role Column */}
-                      <td className="py-4 px-6 align-middle">
-                        <div className="space-y-1">
-                          <div>{getSpecializationBadge(tech.specialization)}</div>
-                          <div className="text-xs font-medium text-gray-500 truncate">{tech.roleTitle}</div>
-                        </div>
-                      </td>
-
-                      {/* Status Badge Column */}
-                      <td className="py-4 px-6 align-middle whitespace-nowrap">
-                        <div className="space-y-1">
-                          {getStatusBadge(tech.status)}
-                          <div className="text-[11px] font-medium text-gray-400 flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {tech.shiftAssignment}
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Active Assignment Column */}
-                      <td className="py-4 px-6 align-middle whitespace-nowrap">
-                        {tech.activeAssignment ? (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
-                            <Briefcase className="w-3.5 h-3.5 text-amber-600" />
-                            {tech.activeAssignment}
-                          </span>
-                        ) : (
-                          <span className="text-xs font-medium text-gray-400 italic">
-                            {t('Unassigned')}
-                          </span>
-                        )}
-                      </td>
-
-                      {/* Rating & Jobs Column */}
-                      <td className="py-4 px-6 align-middle whitespace-nowrap">
-                        <div className="flex items-center gap-1.5">
-                          <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                          <span className="font-extrabold text-gray-900">{tech.rating}</span>
-                          <span className="text-xs text-gray-400 font-medium">({tech.completedJobs} {t('jobs')})</span>
-                        </div>
-                      </td>
-
-                      {/* Hourly Rate Column */}
-                      <td className="py-4 px-6 align-middle whitespace-nowrap">
-                        <span className="font-bold text-gray-900">${tech.hourlyRate}/hr</span>
-                      </td>
-
-                      {/* Actions Column */}
-                      <td className="py-4 px-6 align-middle text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-1">
-                          
-                          {/* Schedule / History Button */}
-                          <button
-                            onClick={() => setSelectedTechForSchedule(tech)}
-                            className="p-1.5 text-gray-600 hover:text-gray-900 border border-[#E2E4D9] bg-white hover:bg-gray-50 rounded-lg transition-all shadow-2xs"
-                            title={t('View Schedule & History')}
-                          >
-                            <Calendar className="w-3.5 h-3.5" />
-                          </button>
-
-                          {/* Quick Shift Toggle Button */}
-                          <button
-                            onClick={() => handleToggleShiftStatus(tech.id)}
-                            className="p-1.5 text-gray-600 hover:text-emerald-700 border border-[#E2E4D9] bg-white hover:bg-emerald-50 rounded-lg transition-all shadow-2xs"
-                            title={t('Toggle Shift Status')}
-                          >
-                            <RefreshCw className="w-3.5 h-3.5" />
-                          </button>
-
-                          {/* Edit Button */}
-                          <button
-                            onClick={() => handleOpenEditModal(tech)}
-                            className="p-1.5 text-gray-600 hover:text-blue-600 border border-[#E2E4D9] bg-white hover:bg-blue-50 rounded-lg transition-all shadow-2xs"
-                            title={t('Edit Technician Details')}
-                          >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
-
-                          {/* Delete Button */}
-                          <button
-                            onClick={() => handleDeleteTech(tech.id)}
-                            className="p-1.5 text-gray-600 hover:text-rose-600 border border-[#E2E4D9] bg-white hover:bg-rose-50 rounded-lg transition-all shadow-2xs"
-                            title={t('Remove Technician')}
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </td>
+            /* --- TABLE VIEW --- */
+            <div className="bg-white rounded-2xl border border-[#E2E4D9] shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse table-fixed">
+                  <thead>
+                    <tr className="bg-[#F9FAF7] border-b border-[#E2E4D9] text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      <th className="py-3.5 px-6 w-64">{t('Technician')}</th>
+                      <th className="py-3.5 px-6 w-44">{t('Specialization')}</th>
+                      <th className="py-3.5 px-6 w-48">{t('Status')}</th>
+                      <th className="py-3.5 px-6 w-40">{t('Active Job')}</th>
+                      <th className="py-3.5 px-6 w-36">{t('Rating & Jobs')}</th>
+                      <th className="py-3.5 px-6 w-32">{t('Hourly Rate')}</th>
+                      <th className="py-3.5 px-6 w-36 text-right">{t('Actions')}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-[#F0F2EA] text-sm">
+                    {filteredTechnicians.map((tech) => (
+                      <tr key={tech.id} className="hover:bg-[#FAFBF7] transition-colors group">
+                        {/* Technician Info Column */}
+                        <td className="py-4 px-6 align-middle">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={tech.avatar}
+                              alt={tech.firstName}
+                              className="w-10 h-10 rounded-full object-cover border border-[#E2E4D9] shadow-2xs shrink-0"
+                            />
+                            <div className="space-y-0.5 min-w-0">
+                              <div className="font-bold text-gray-900 flex items-center gap-2">
+                                <span className="truncate">
+                                  {tech.firstName} {tech.lastName}
+                                </span>
+                                <span className="font-mono text-xs font-bold text-[#5E6933] bg-[#EBF5EC] px-2 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap shrink-0">
+                                  {tech.id}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-3 text-xs text-gray-500 whitespace-nowrap">
+                                <span className="flex items-center gap-1">
+                                  <Phone className="w-3 h-3 text-gray-400" />
+                                  {tech.phone}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
 
-            {/* TABLE FOOTER / PAGINATION */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#F9FAF7] px-6 py-3.5 border-t border-[#E2E4D9] text-xs text-gray-600">
-              <div className="whitespace-nowrap">
-                {t('Showing')} <span className="font-bold text-gray-900">1</span>–
-                <span className="font-bold text-gray-900">{filteredTechnicians.length}</span> {t('of')}{' '}
-                <span className="font-bold text-gray-900">{filteredTechnicians.length}</span> {t('technicians')}
+                        {/* Specialization / Role Column */}
+                        <td className="py-4 px-6 align-middle">
+                          <div className="space-y-1">
+                            <div>{getSpecializationBadge(tech.specialization)}</div>
+                            <div className="text-xs font-medium text-gray-500 truncate">
+                              {tech.roleTitle}
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Status Badge Column */}
+                        <td className="py-4 px-6 align-middle whitespace-nowrap">
+                          <div className="space-y-1">
+                            {getStatusBadge(tech.status)}
+                            <div className="text-[11px] font-medium text-gray-400 flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {tech.shiftAssignment}
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Active Assignment Column */}
+                        <td className="py-4 px-6 align-middle whitespace-nowrap">
+                          {tech.activeAssignment ? (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                              <Briefcase className="w-3.5 h-3.5 text-amber-600" />
+                              {tech.activeAssignment}
+                            </span>
+                          ) : (
+                            <span className="text-xs font-medium text-gray-400 italic">
+                              {t('Unassigned')}
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Rating & Jobs Column */}
+                        <td className="py-4 px-6 align-middle whitespace-nowrap">
+                          <div className="flex items-center gap-1.5">
+                            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                            <span className="font-extrabold text-gray-900">{tech.rating}</span>
+                            <span className="text-xs text-gray-400 font-medium">
+                              ({tech.completedJobs} {t('jobs')})
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Hourly Rate Column */}
+                        <td className="py-4 px-6 align-middle whitespace-nowrap">
+                          <span className="font-bold text-gray-900">${tech.hourlyRate}/hr</span>
+                        </td>
+
+                        {/* Actions Column */}
+                        <td className="py-4 px-6 align-middle text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-1">
+                            {/* Schedule / History Button */}
+                            <button
+                              onClick={() => setSelectedTechForSchedule(tech)}
+                              className="p-1.5 text-gray-600 hover:text-gray-900 border border-[#E2E4D9] bg-white hover:bg-gray-50 rounded-lg transition-all shadow-2xs"
+                              title={t('View Schedule & History')}
+                            >
+                              <Calendar className="w-3.5 h-3.5" />
+                            </button>
+
+                            {/* Quick Shift Toggle Button */}
+                            <button
+                              onClick={() => handleToggleShiftStatus(tech.id)}
+                              className="p-1.5 text-gray-600 hover:text-emerald-700 border border-[#E2E4D9] bg-white hover:bg-emerald-50 rounded-lg transition-all shadow-2xs"
+                              title={t('Toggle Shift Status')}
+                            >
+                              <RefreshCw className="w-3.5 h-3.5" />
+                            </button>
+
+                            {/* Edit Button */}
+                            <button
+                              onClick={() => handleOpenEditModal(tech)}
+                              className="p-1.5 text-gray-600 hover:text-blue-600 border border-[#E2E4D9] bg-white hover:bg-blue-50 rounded-lg transition-all shadow-2xs"
+                              title={t('Edit Technician Details')}
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+
+                            {/* Delete Button */}
+                            <button
+                              onClick={() => handleDeleteTech(tech.id)}
+                              className="p-1.5 text-gray-600 hover:text-rose-600 border border-[#E2E4D9] bg-white hover:bg-rose-50 rounded-lg transition-all shadow-2xs"
+                              title={t('Remove Technician')}
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="px-3 py-1 font-semibold text-gray-800">
-                  {t('Page 1 of 1')}
-                </span>
+
+              {/* TABLE FOOTER / PAGINATION */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#F9FAF7] px-6 py-3.5 border-t border-[#E2E4D9] text-xs text-gray-600">
+                <div className="whitespace-nowrap">
+                  {t('Showing')} <span className="font-bold text-gray-900">1</span>–
+                  <span className="font-bold text-gray-900">{filteredTechnicians.length}</span>{' '}
+                  {t('of')}{' '}
+                  <span className="font-bold text-gray-900">{filteredTechnicians.length}</span>{' '}
+                  {t('technicians')}
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="px-3 py-1 font-semibold text-gray-800">{t('Page 1 of 1')}</span>
+                </div>
               </div>
             </div>
-          </div>
-        ) : (
-
-          /* --- GRID CARD VIEW --- */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filteredTechnicians.map((tech) => (
-              <div
-                key={tech.id}
-                className="bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4"
-              >
-                {/* Card Top Header */}
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={tech.avatar}
-                      alt={tech.firstName}
-                      className="w-12 h-12 rounded-2xl object-cover border border-slate-200 shadow-xs"
-                    />
-                    <div>
-                      <div className="font-extrabold text-slate-900 text-base leading-tight">
-                        {tech.firstName} {tech.lastName}
-                      </div>
-                      <div className="text-xs font-medium text-slate-500 mt-0.5">
-                        {tech.roleTitle}
+          ) : (
+            /* --- GRID CARD VIEW --- */
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {filteredTechnicians.map((tech) => (
+                <div
+                  key={tech.id}
+                  className="bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4"
+                >
+                  {/* Card Top Header */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={tech.avatar}
+                        alt={tech.firstName}
+                        className="w-12 h-12 rounded-2xl object-cover border border-slate-200 shadow-xs"
+                      />
+                      <div>
+                        <div className="font-extrabold text-slate-900 text-base leading-tight">
+                          {tech.firstName} {tech.lastName}
+                        </div>
+                        <div className="text-xs font-medium text-slate-500 mt-0.5">
+                          {tech.roleTitle}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
-                    {tech.id}
-                  </span>
-                </div>
-
-                {/* Status & Specialization Row */}
-                <div className="flex items-center justify-between gap-2 pt-1">
-                  <div>{getStatusBadge(tech.status)}</div>
-                  <div>{getSpecializationBadge(tech.specialization)}</div>
-                </div>
-
-                {/* Details Container */}
-                <div className="bg-slate-50/80 rounded-2xl p-3.5 space-y-2 border border-slate-100 text-xs">
-                  <div className="flex items-center justify-between text-slate-600">
-                    <span className="flex items-center gap-1.5 text-slate-400">
-                      <Briefcase className="w-3.5 h-3.5" />
-                      {t('Active Assignment')}
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                      {tech.id}
                     </span>
-                    {tech.activeAssignment ? (
-                      <span className="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
-                        {tech.activeAssignment}
+                  </div>
+
+                  {/* Status & Specialization Row */}
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <div>{getStatusBadge(tech.status)}</div>
+                    <div>{getSpecializationBadge(tech.specialization)}</div>
+                  </div>
+
+                  {/* Details Container */}
+                  <div className="bg-slate-50/80 rounded-2xl p-3.5 space-y-2 border border-slate-100 text-xs">
+                    <div className="flex items-center justify-between text-slate-600">
+                      <span className="flex items-center gap-1.5 text-slate-400">
+                        <Briefcase className="w-3.5 h-3.5" />
+                        {t('Active Assignment')}
                       </span>
-                    ) : (
-                      <span className="text-slate-400 italic">{t('Unassigned')}</span>
-                    )}
-                  </div>
+                      {tech.activeAssignment ? (
+                        <span className="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                          {tech.activeAssignment}
+                        </span>
+                      ) : (
+                        <span className="text-slate-400 italic">{t('Unassigned')}</span>
+                      )}
+                    </div>
 
-                  <div className="flex items-center justify-between text-slate-600">
-                    <span className="flex items-center gap-1.5 text-slate-400">
-                      <Clock className="w-3.5 h-3.5" />
-                      {t('Shift')}
-                    </span>
-                    <span className="font-semibold text-slate-700 truncate max-w-[170px]">{tech.shiftAssignment}</span>
-                  </div>
+                    <div className="flex items-center justify-between text-slate-600">
+                      <span className="flex items-center gap-1.5 text-slate-400">
+                        <Clock className="w-3.5 h-3.5" />
+                        {t('Shift')}
+                      </span>
+                      <span className="font-semibold text-slate-700 truncate max-w-[170px]">
+                        {tech.shiftAssignment}
+                      </span>
+                    </div>
 
-                  <div className="flex items-center justify-between text-slate-600">
-                    <span className="flex items-center gap-1.5 text-slate-400">
-                      <DollarSign className="w-3.5 h-3.5" />
-                      {t('Pay Rate')}
-                    </span>
-                    <span className="font-bold text-slate-900">${tech.hourlyRate}/hr</span>
-                  </div>
+                    <div className="flex items-center justify-between text-slate-600">
+                      <span className="flex items-center gap-1.5 text-slate-400">
+                        <DollarSign className="w-3.5 h-3.5" />
+                        {t('Pay Rate')}
+                      </span>
+                      <span className="font-bold text-slate-900">${tech.hourlyRate}/hr</span>
+                    </div>
 
-                  <div className="flex items-center justify-between text-slate-600 pt-1 border-t border-slate-200/60">
-                    <span className="flex items-center gap-1 text-slate-400">
-                      <Phone className="w-3 h-3" />
-                      {tech.phone}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                      <span className="font-extrabold text-slate-900">{tech.rating}</span>
-                      <span className="text-[11px] text-slate-400">({tech.completedJobs})</span>
+                    <div className="flex items-center justify-between text-slate-600 pt-1 border-t border-slate-200/60">
+                      <span className="flex items-center gap-1 text-slate-400">
+                        <Phone className="w-3 h-3" />
+                        {tech.phone}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                        <span className="font-extrabold text-slate-900">{tech.rating}</span>
+                        <span className="text-[11px] text-slate-400">({tech.completedJobs})</span>
+                      </div>
                     </div>
                   </div>
+
+                  {/* Card Action Buttons */}
+                  <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
+                    <button
+                      onClick={() => setSelectedTechForSchedule(tech)}
+                      className="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                      <span>{t('Schedule')}</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleToggleShiftStatus(tech.id)}
+                      className="py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-all border border-emerald-200"
+                      title={t('Quick Toggle Shift Status')}
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                    </button>
+
+                    <button
+                      onClick={() => handleOpenEditModal(tech)}
+                      className="py-2 px-3 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs font-bold flex items-center justify-center transition-all"
+                      title={t('Edit Details')}
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </button>
+
+                    <button
+                      onClick={() => setDeletingTech(tech)}
+                      className="py-2 px-3 bg-slate-100 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-xl text-xs font-bold flex items-center justify-center transition-all"
+                      title={t('Delete')}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-
-                {/* Card Action Buttons */}
-                <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
-                  <button
-                    onClick={() => setSelectedTechForSchedule(tech)}
-                    className="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
-                  >
-                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{t('Schedule')}</span>
-                  </button>
-
-                  <button
-                    onClick={() => handleToggleShiftStatus(tech.id)}
-                    className="py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-all border border-emerald-200"
-                    title={t('Quick Toggle Shift Status')}
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                  </button>
-
-                  <button
-                    onClick={() => handleOpenEditModal(tech)}
-                    className="py-2 px-3 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs font-bold flex items-center justify-center transition-all"
-                    title={t('Edit Details')}
-                  >
-                    <Edit2 className="w-3.5 h-3.5" />
-                  </button>
-
-                  <button
-                    onClick={() => setDeletingTech(tech)}
-                    className="py-2 px-3 bg-slate-100 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-xl text-xs font-bold flex items-center justify-center transition-all"
-                    title={t('Delete')}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
         </TableCard>
 
         {/* 5. ADD / EDIT TECHNICIAN MODAL */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
             <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-              
               {/* Modal Header */}
               <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div>
@@ -952,7 +1072,9 @@ export default function EmployeeIndex() {
                     {editingTech ? t('Edit Technician Details') : t('Add New Field Technician')}
                   </h3>
                   <p className="text-xs font-medium text-slate-500 mt-0.5">
-                    {editingTech ? t('Update staff profile, pay rates, and shift parameters') : t('Register a new team member to your provider workforce')}
+                    {editingTech
+                      ? t('Update staff profile, pay rates, and shift parameters')
+                      : t('Register a new team member to your provider workforce')}
                   </p>
                 </div>
                 <button
@@ -965,7 +1087,6 @@ export default function EmployeeIndex() {
 
               {/* Modal Form Body */}
               <form onSubmit={handleSubmitForm} className="p-6 space-y-4">
-                
                 {/* Names Row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -1085,12 +1206,18 @@ export default function EmployeeIndex() {
                     </label>
                     <select
                       value={formData.shiftAssignment}
-                      onChange={(e) => setFormData({ ...formData, shiftAssignment: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, shiftAssignment: e.target.value })
+                      }
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none"
                     >
-                      <option value="Morning Shift (08:00 - 16:00)">Morning Shift (08:00 - 16:00)</option>
+                      <option value="Morning Shift (08:00 - 16:00)">
+                        Morning Shift (08:00 - 16:00)
+                      </option>
                       <option value="Day Shift (09:00 - 17:00)">Day Shift (09:00 - 17:00)</option>
-                      <option value="Evening Shift (14:00 - 22:00)">Evening Shift (14:00 - 22:00)</option>
+                      <option value="Evening Shift (14:00 - 22:00)">
+                        Evening Shift (14:00 - 22:00)
+                      </option>
                       <option value="On-Call Duty">On-Call Duty</option>
                       <option value="Off Duty">Off Duty</option>
                     </select>
@@ -1104,17 +1231,35 @@ export default function EmployeeIndex() {
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {[
-                      { id: 'available', label: t('Available'), color: 'bg-emerald-50 text-emerald-800 border-emerald-300' },
-                      { id: 'on_shift_job', label: t('In Job'), color: 'bg-blue-50 text-blue-800 border-blue-300' },
-                      { id: 'on_break', label: t('On Break'), color: 'bg-amber-50 text-amber-800 border-amber-300' },
-                      { id: 'off_duty', label: t('Off Duty'), color: 'bg-slate-100 text-slate-700 border-slate-300' },
+                      {
+                        id: 'available',
+                        label: t('Available'),
+                        color: 'bg-emerald-50 text-emerald-800 border-emerald-300',
+                      },
+                      {
+                        id: 'on_shift_job',
+                        label: t('In Job'),
+                        color: 'bg-blue-50 text-blue-800 border-blue-300',
+                      },
+                      {
+                        id: 'on_break',
+                        label: t('On Break'),
+                        color: 'bg-amber-50 text-amber-800 border-amber-300',
+                      },
+                      {
+                        id: 'off_duty',
+                        label: t('Off Duty'),
+                        color: 'bg-slate-100 text-slate-700 border-slate-300',
+                      },
                     ].map((st) => (
                       <button
                         type="button"
                         key={st.id}
                         onClick={() => setFormData({ ...formData, status: st.id })}
                         className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
-                          formData.status === st.id ? `${st.color} shadow-xs ring-2 ring-offset-1 ring-slate-400` : 'bg-slate-50 border-slate-200 text-slate-500'
+                          formData.status === st.id
+                            ? `${st.color} shadow-xs ring-2 ring-offset-1 ring-slate-400`
+                            : 'bg-slate-50 border-slate-200 text-slate-500'
                         }`}
                       >
                         {st.label}
@@ -1140,7 +1285,6 @@ export default function EmployeeIndex() {
                     {editingTech ? t('Save Changes') : t('Create Technician Profile')}
                   </button>
                 </div>
-
               </form>
             </div>
           </div>
@@ -1150,7 +1294,6 @@ export default function EmployeeIndex() {
         {selectedTechForSchedule && (
           <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
             <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-              
               {/* Header */}
               <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div className="flex items-center gap-3">
@@ -1178,24 +1321,29 @@ export default function EmployeeIndex() {
 
               {/* Modal Content */}
               <div className="p-6 space-y-6">
-                
                 {/* Stats Summary Grid */}
                 <div className="grid grid-cols-3 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                   <div className="text-center">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">{t('Overall Rating')}</span>
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                      {t('Overall Rating')}
+                    </span>
                     <span className="text-xl font-extrabold text-slate-900 flex items-center justify-center gap-1 mt-1">
                       <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                       {selectedTechForSchedule.rating}
                     </span>
                   </div>
                   <div className="text-center border-x border-slate-200/60">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">{t('Jobs Completed')}</span>
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                      {t('Jobs Completed')}
+                    </span>
                     <span className="text-xl font-extrabold text-slate-900 mt-1 block">
                       {selectedTechForSchedule.completedJobs}
                     </span>
                   </div>
                   <div className="text-center">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">{t('Hourly Rate')}</span>
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                      {t('Hourly Rate')}
+                    </span>
                     <span className="text-xl font-extrabold text-emerald-800 mt-1 block">
                       ${selectedTechForSchedule.hourlyRate}/hr
                     </span>
@@ -1206,10 +1354,14 @@ export default function EmployeeIndex() {
                 <div className="space-y-2 text-xs">
                   <div className="flex items-center justify-between py-2 border-b border-slate-100">
                     <span className="text-slate-500 font-semibold">{t('Assigned Shift:')}</span>
-                    <span className="font-bold text-slate-800">{selectedTechForSchedule.shiftAssignment}</span>
+                    <span className="font-bold text-slate-800">
+                      {selectedTechForSchedule.shiftAssignment}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                    <span className="text-slate-500 font-semibold">{t('Primary Service Zone:')}</span>
+                    <span className="text-slate-500 font-semibold">
+                      {t('Primary Service Zone:')}
+                    </span>
                     <span className="font-bold text-slate-800 flex items-center gap-1">
                       <MapPin className="w-3.5 h-3.5 text-slate-400" />
                       {selectedTechForSchedule.location}
@@ -1217,7 +1369,9 @@ export default function EmployeeIndex() {
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <span className="text-slate-500 font-semibold">{t('Joined Workforce:')}</span>
-                    <span className="font-bold text-slate-800">{selectedTechForSchedule.joinedDate}</span>
+                    <span className="font-bold text-slate-800">
+                      {selectedTechForSchedule.joinedDate}
+                    </span>
                   </div>
                 </div>
 
@@ -1227,7 +1381,8 @@ export default function EmployeeIndex() {
                     <Briefcase className="w-3.5 h-3.5 text-slate-500" />
                     {t('Recent Dispatch & Job History')}
                   </h4>
-                  {selectedTechForSchedule.recentJobs && selectedTechForSchedule.recentJobs.length > 0 ? (
+                  {selectedTechForSchedule.recentJobs &&
+                  selectedTechForSchedule.recentJobs.length > 0 ? (
                     <div className="space-y-2">
                       {selectedTechForSchedule.recentJobs.map((job) => (
                         <div
@@ -1241,9 +1396,13 @@ export default function EmployeeIndex() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                              job.status === 'In Progress' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-700'
-                            }`}>
+                            <span
+                              className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                                job.status === 'In Progress'
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : 'bg-slate-200 text-slate-700'
+                              }`}
+                            >
                               {job.status}
                             </span>
                             <div className="text-[10px] text-slate-400 mt-1">{job.date}</div>
@@ -1257,7 +1416,6 @@ export default function EmployeeIndex() {
                     </div>
                   )}
                 </div>
-
               </div>
 
               {/* Modal Footer */}
@@ -1269,7 +1427,6 @@ export default function EmployeeIndex() {
                   {t('Close')}
                 </button>
               </div>
-
             </div>
           </div>
         )}
@@ -1286,7 +1443,11 @@ export default function EmployeeIndex() {
                   {t('Deactivate / Delete Technician?')}
                 </h3>
                 <p className="text-xs font-medium text-slate-500 mt-1">
-                  {t('Are you sure you want to remove')} <strong className="text-slate-800">{deletingTech.firstName} {deletingTech.lastName}</strong> ({deletingTech.id}) {t('from active service dispatch?')}
+                  {t('Are you sure you want to remove')}{' '}
+                  <strong className="text-slate-800">
+                    {deletingTech.firstName} {deletingTech.lastName}
+                  </strong>{' '}
+                  ({deletingTech.id}) {t('from active service dispatch?')}
                 </p>
               </div>
               <div className="flex items-center justify-end gap-3 pt-2">
@@ -1306,7 +1467,6 @@ export default function EmployeeIndex() {
             </div>
           </div>
         )}
-
       </div>
     </AppLayout>
   );

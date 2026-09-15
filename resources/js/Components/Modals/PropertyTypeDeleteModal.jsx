@@ -39,10 +39,17 @@ export default function PropertyTypeDeleteModal({
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-xl font-bold text-slate-900">{t('Cannot Delete Property Type')}</h3>
+                    <h3 className="text-xl font-bold text-slate-900">
+                      {t('Cannot Delete Property Type')}
+                    </h3>
                     <p className="mt-2 text-xs text-slate-600 leading-relaxed">
-                      {t('This property type cannot be deleted because it is currently being used by')}{' '}
-                      <span className="font-bold text-slate-900">{count} {t('existing properties')}</span>.
+                      {t(
+                        'This property type cannot be deleted because it is currently being used by'
+                      )}{' '}
+                      <span className="font-bold text-slate-900">
+                        {count} {t('existing properties')}
+                      </span>
+                      .
                     </p>
                   </div>
 
@@ -56,7 +63,9 @@ export default function PropertyTypeDeleteModal({
                 </div>
 
                 <div className="mt-4 p-3.5 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-600">
-                  {t('To prevent breaking property relationships, you can deactivate this property type instead. Inactive types will not appear when creating new properties.')}
+                  {t(
+                    'To prevent breaking property relationships, you can deactivate this property type instead. Inactive types will not appear when creating new properties.'
+                  )}
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
@@ -89,9 +98,13 @@ export default function PropertyTypeDeleteModal({
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-xl font-bold text-slate-900">{t('Delete Property Type?')}</h3>
+                    <h3 className="text-xl font-bold text-slate-900">
+                      {t('Delete Property Type?')}
+                    </h3>
                     <p className="mt-1 text-xs text-slate-500 leading-relaxed">
-                      {t('Are you sure you want to permanently delete')} <span className="font-semibold text-slate-800">{propertyType.name}</span>? {t('This action cannot be undone.')}
+                      {t('Are you sure you want to permanently delete')}{' '}
+                      <span className="font-semibold text-slate-800">{propertyType.name}</span>?{' '}
+                      {t('This action cannot be undone.')}
                     </p>
                   </div>
 

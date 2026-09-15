@@ -1,12 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Head, router } from '@inertiajs/react';
-import {
-  Users,
-  UserCheck,
-  UserX,
-  UserPlus,
-  ShieldAlert,
-} from 'lucide-react';
+import { Users, UserCheck, UserX, UserPlus, ShieldAlert } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 import AppLayout from '@/Layouts/AppLayout';
 import PageHeader from '@/Components/Other/PageHeader';
@@ -49,18 +43,26 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
 
   const handleSearch = (val) => {
     setSearchQuery(val);
-    router.get(route('admin.customers.index'), {
-      search: val,
-      status: statusFilter,
-    }, { preserveState: true, replace: true });
+    router.get(
+      route('admin.customers.index'),
+      {
+        search: val,
+        status: statusFilter,
+      },
+      { preserveState: true, replace: true }
+    );
   };
 
   const handleStatusFilter = (val) => {
     setStatusFilter(val);
-    router.get(route('admin.customers.index'), {
-      search: searchQuery,
-      status: val,
-    }, { preserveState: true });
+    router.get(
+      route('admin.customers.index'),
+      {
+        search: searchQuery,
+        status: val,
+      },
+      { preserveState: true }
+    );
   };
 
   const handleClearFilters = () => {
@@ -92,15 +94,19 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
   const confirmSuspend = (reason) => {
     if (!suspendingCustomer) return;
     setActionProcessing(true);
-    router.patch(route('admin.customers.suspend', suspendingCustomer.id), { reason }, {
-      preserveScroll: true,
-      onSuccess: () => {
-        setIsSuspendModalOpen(false);
-        setSuspendingCustomer(null);
-        setActionProcessing(false);
-      },
-      onError: () => setActionProcessing(false),
-    });
+    router.patch(
+      route('admin.customers.suspend', suspendingCustomer.id),
+      { reason },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setIsSuspendModalOpen(false);
+          setSuspendingCustomer(null);
+          setActionProcessing(false);
+        },
+        onError: () => setActionProcessing(false),
+      }
+    );
   };
 
   const handlePromptBan = (c) => {
@@ -124,11 +130,15 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
 
   const handleReactivate = (c) => {
     setActionProcessing(true);
-    router.patch(route('admin.customers.activate', c.id), {}, {
-      preserveScroll: true,
-      onSuccess: () => setActionProcessing(false),
-      onError: () => setActionProcessing(false),
-    });
+    router.patch(
+      route('admin.customers.activate', c.id),
+      {},
+      {
+        preserveScroll: true,
+        onSuccess: () => setActionProcessing(false),
+        onError: () => setActionProcessing(false),
+      }
+    );
   };
 
   const handlePromptDelete = (c) => {
@@ -180,7 +190,12 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
       label: t('Customer'),
       render: (row) => {
         const initials = row.full_name
-          ? row.full_name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+          ? row.full_name
+              .split(' ')
+              .map((n) => n[0])
+              .join('')
+              .slice(0, 2)
+              .toUpperCase()
           : 'C';
         return (
           <div className="flex items-center gap-3">
@@ -225,7 +240,9 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
         }
 
         return (
-          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold whitespace-nowrap ${badgeClass}`}>
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold whitespace-nowrap ${badgeClass}`}
+          >
             <span className={`h-1.5 w-1.5 rounded-full ${dotClass}`} />
             {row.status}
           </span>
@@ -405,7 +422,9 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
       <ConfirmModal
         open={isDeleteModalOpen}
         title={t('Delete Customer Account?')}
-        message={t('Are you sure you want to permanently delete this customer account? This action cannot be undone.')}
+        message={t(
+          'Are you sure you want to permanently delete this customer account? This action cannot be undone.'
+        )}
         confirmLabel={t('Delete Account')}
         cancelLabel={t('Keep Account')}
         variant="danger"
