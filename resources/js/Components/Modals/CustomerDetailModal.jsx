@@ -102,10 +102,10 @@ export default function CustomerDetailModal({
                     isActive
                       ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                       : isSuspended
-                      ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                      : isBanned
-                      ? 'bg-red-50 text-red-700 border border-red-200'
-                      : 'bg-slate-100 text-slate-600 border border-slate-200'
+                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                        : isBanned
+                          ? 'bg-red-50 text-red-700 border border-red-200'
+                          : 'bg-slate-100 text-slate-600 border border-slate-200'
                   }`}
                 >
                   <span
@@ -113,10 +113,10 @@ export default function CustomerDetailModal({
                       isActive
                         ? 'bg-emerald-500'
                         : isSuspended
-                        ? 'bg-amber-500'
-                        : isBanned
-                        ? 'bg-red-500'
-                        : 'bg-slate-400'
+                          ? 'bg-amber-500'
+                          : isBanned
+                            ? 'bg-red-500'
+                            : 'bg-slate-400'
                     }`}
                   />
                   {status}
@@ -245,25 +245,33 @@ export default function CustomerDetailModal({
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
                   {t('Total Orders')}
                 </span>
-                <span className="text-xl font-bold text-slate-900">{customer.ordersCount || 18}</span>
+                <span className="text-xl font-bold text-slate-900">
+                  {customer.ordersCount || 18}
+                </span>
               </div>
               <div className="p-3.5 rounded-xl border border-slate-100 bg-slate-50">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
                   {t('Total Spending')}
                 </span>
-                <span className="text-xl font-bold text-emerald-600">${customer.totalSpent || '1,450.00'}</span>
+                <span className="text-xl font-bold text-emerald-600">
+                  ${customer.totalSpent || '1,450.00'}
+                </span>
               </div>
               <div className="p-3.5 rounded-xl border border-slate-100 bg-slate-50">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
                   {t('Completed')}
                 </span>
-                <span className="text-xl font-bold text-indigo-600">{customer.completedOrders || 16}</span>
+                <span className="text-xl font-bold text-indigo-600">
+                  {customer.completedOrders || 16}
+                </span>
               </div>
               <div className="p-3.5 rounded-xl border border-slate-100 bg-slate-50">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
                   {t('Account Age')}
                 </span>
-                <span className="text-xl font-bold text-slate-900">{customer.accountAge || '1.5 yrs'}</span>
+                <span className="text-xl font-bold text-slate-900">
+                  {customer.accountAge || '1.5 yrs'}
+                </span>
               </div>
             </div>
 
@@ -276,35 +284,53 @@ export default function CustomerDetailModal({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Full Name')}</span>
-                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">{customer.full_name}</span>
+                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">
+                    {customer.full_name}
+                  </span>
                 </div>
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Email Address')}</span>
-                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">{customer.email}</span>
+                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">
+                    {customer.email}
+                  </span>
                 </div>
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Phone Number')}</span>
-                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">{customer.phone || '+1 555-0101'}</span>
+                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">
+                    {customer.phone || '+1 555-0101'}
+                  </span>
                 </div>
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Account Type')}</span>
-                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">{customer.customerType || 'Individual Customer'}</span>
+                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">
+                    {customer.customerType || 'Individual Customer'}
+                  </span>
                 </div>
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Address')}</span>
-                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">{customer.address || '742 Evergreen Terrace'}</span>
+                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">
+                    {customer.address || '742 Evergreen Terrace'}
+                  </span>
                 </div>
                 <div>
                   <span className="block text-slate-400 font-medium">{t('City & Country')}</span>
-                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">{customer.city || 'Springfield'}, {customer.country || 'United States'}</span>
+                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">
+                    {customer.city || 'Springfield'}, {customer.country || 'United States'}
+                  </span>
                 </div>
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Registration Date')}</span>
-                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">{customer.joined || customer.joinedDate || 'Jan 12, 2025'}</span>
+                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">
+                    {customer.joined || customer.joinedDate || 'Jan 12, 2025'}
+                  </span>
                 </div>
                 <div>
-                  <span className="block text-slate-400 font-medium">{t('Last Activity / Login')}</span>
-                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">{customer.lastActive || 'Today, 10:30 AM'}</span>
+                  <span className="block text-slate-400 font-medium">
+                    {t('Last Activity / Login')}
+                  </span>
+                  <span className="font-semibold text-slate-800 text-sm mt-0.5 block">
+                    {customer.lastActive || 'Today, 10:30 AM'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -314,7 +340,9 @@ export default function CustomerDetailModal({
         {/* Tab 2: Order & Booking History */}
         {activeTab === 'orders' && (
           <div className="space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('Recent Booking / Order History')}</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              {t('Recent Booking / Order History')}
+            </h4>
             <div className="overflow-x-auto rounded-xl border border-slate-100">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
@@ -327,12 +355,38 @@ export default function CustomerDetailModal({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-slate-700">
-                  {(customer.orders || [
-                    { id: 'ORD-1024', date: 'Aug 14, 2026', provider: 'Vance Master Plumbing', amount: '$180.00', status: 'Completed' },
-                    { id: 'ORD-1019', date: 'Jul 28, 2026', provider: 'BrightSpark Electrical', amount: '$240.00', status: 'Completed' },
-                    { id: 'ORD-1005', date: 'Jul 10, 2026', provider: 'GreenHouse Eco Clean', amount: '$110.00', status: 'Completed' },
-                    { id: 'ORD-0992', date: 'Jun 22, 2026', provider: 'Sterling Climate Control', amount: '$95.00', status: 'Cancelled' },
-                  ]).map((order, idx) => (
+                  {(
+                    customer.orders || [
+                      {
+                        id: 'ORD-1024',
+                        date: 'Aug 14, 2026',
+                        provider: 'Vance Master Plumbing',
+                        amount: '$180.00',
+                        status: 'Completed',
+                      },
+                      {
+                        id: 'ORD-1019',
+                        date: 'Jul 28, 2026',
+                        provider: 'BrightSpark Electrical',
+                        amount: '$240.00',
+                        status: 'Completed',
+                      },
+                      {
+                        id: 'ORD-1005',
+                        date: 'Jul 10, 2026',
+                        provider: 'GreenHouse Eco Clean',
+                        amount: '$110.00',
+                        status: 'Completed',
+                      },
+                      {
+                        id: 'ORD-0992',
+                        date: 'Jun 22, 2026',
+                        provider: 'Sterling Climate Control',
+                        amount: '$95.00',
+                        status: 'Cancelled',
+                      },
+                    ]
+                  ).map((order, idx) => (
                     <tr key={idx} className="hover:bg-slate-50/50">
                       <td className="py-2.5 px-3 font-mono font-bold text-slate-900">{order.id}</td>
                       <td className="py-2.5 px-3 text-slate-600">{order.date}</td>
@@ -344,8 +398,8 @@ export default function CustomerDetailModal({
                             order.status === 'Completed'
                               ? 'bg-emerald-50 text-emerald-700'
                               : order.status === 'Cancelled'
-                              ? 'bg-red-50 text-red-700'
-                              : 'bg-amber-50 text-amber-700'
+                                ? 'bg-red-50 text-red-700'
+                                : 'bg-amber-50 text-amber-700'
                           }`}
                         >
                           {order.status}
@@ -365,16 +419,32 @@ export default function CustomerDetailModal({
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Activity className="h-4 w-4 text-theme-accent" />
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('Recent Customer Activity Timeline')}</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  {t('Recent Customer Activity Timeline')}
+                </h4>
               </div>
 
               <div className="space-y-3 pl-2 border-l-2 border-slate-100 text-xs">
-                {(customer.activityLogs || [
-                  { time: 'Today, 10:30 AM', title: 'Customer logged in to platform', icon: Clock },
-                  { time: 'Yesterday, 04:15 PM', title: 'Completed booking #ORD-1024 with Vance Master Plumbing', icon: CheckCircle2 },
-                  { time: 'Aug 12, 2026', title: 'Updated customer profile phone number and address', icon: Edit2 },
-                  { time: 'Aug 10, 2026', title: 'Registered customer account', icon: User },
-                ]).map((act, idx) => (
+                {(
+                  customer.activityLogs || [
+                    {
+                      time: 'Today, 10:30 AM',
+                      title: 'Customer logged in to platform',
+                      icon: Clock,
+                    },
+                    {
+                      time: 'Yesterday, 04:15 PM',
+                      title: 'Completed booking #ORD-1024 with Vance Master Plumbing',
+                      icon: CheckCircle2,
+                    },
+                    {
+                      time: 'Aug 12, 2026',
+                      title: 'Updated customer profile phone number and address',
+                      icon: Edit2,
+                    },
+                    { time: 'Aug 10, 2026', title: 'Registered customer account', icon: User },
+                  ]
+                ).map((act, idx) => (
                   <div key={idx} className="relative pl-4">
                     <span className="absolute -left-[17px] top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white ring-2 ring-indigo-200">
                       <span className="h-1.5 w-1.5 rounded-full bg-theme-accent" />
@@ -389,7 +459,9 @@ export default function CustomerDetailModal({
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <History className="h-4 w-4 text-slate-500" />
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('Account History Log')}</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  {t('Account History Log')}
+                </h4>
               </div>
 
               <div className="overflow-x-auto rounded-xl border border-slate-100 text-xs">
@@ -403,10 +475,22 @@ export default function CustomerDetailModal({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-slate-700">
-                    {(customer.accountHistory || [
-                      { date: 'Aug 12, 2026', action: 'Profile Updated', description: 'Address updated by customer', admin: '—' },
-                      { date: 'Jan 12, 2025', action: 'Account Created', description: 'Initial account registration', admin: 'System' },
-                    ]).map((h, idx) => (
+                    {(
+                      customer.accountHistory || [
+                        {
+                          date: 'Aug 12, 2026',
+                          action: 'Profile Updated',
+                          description: 'Address updated by customer',
+                          admin: '—',
+                        },
+                        {
+                          date: 'Jan 12, 2025',
+                          action: 'Account Created',
+                          description: 'Initial account registration',
+                          admin: 'System',
+                        },
+                      ]
+                    ).map((h, idx) => (
                       <tr key={idx} className="hover:bg-slate-50/50">
                         <td className="py-2 px-3 font-medium text-slate-900">{h.date}</td>
                         <td className="py-2 px-3 font-semibold text-slate-800">{h.action}</td>

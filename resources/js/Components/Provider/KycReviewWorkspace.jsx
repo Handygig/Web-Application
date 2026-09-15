@@ -24,7 +24,12 @@ import { useTranslation } from '@/Hooks/useTranslation';
 import DocumentViewerModal from '@/Components/Modals/DocumentViewerModal';
 
 const DEFAULT_CHECKLIST = [
-  { id: 1, text: 'Identity information matches submitted information', checked: false, required: true },
+  {
+    id: 1,
+    text: 'Identity information matches submitted information',
+    checked: false,
+    required: true,
+  },
   { id: 2, text: 'Business information is valid', checked: false, required: true },
   { id: 3, text: 'Documents are clear and readable', checked: false, required: true },
   { id: 4, text: 'Documents are not expired', checked: false, required: true },
@@ -59,7 +64,9 @@ export default function KycReviewWorkspace({
 
   if (!request) return null;
 
-  const allRequiredChecked = checklist.filter((item) => item.required).every((item) => item.checked);
+  const allRequiredChecked = checklist
+    .filter((item) => item.required)
+    .every((item) => item.checked);
 
   const toggleChecklistItem = (id) => {
     setChecklist((prev) =>
@@ -75,7 +82,9 @@ export default function KycReviewWorkspace({
 
   const handleApproveClick = () => {
     if (!allRequiredChecked) {
-      setChecklistError(t('Please complete all mandatory verification checklist items before approving.'));
+      setChecklistError(
+        t('Please complete all mandatory verification checklist items before approving.')
+      );
       return;
     }
     setChecklistError('');
@@ -115,8 +124,8 @@ export default function KycReviewWorkspace({
               isApproved
                 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                 : isRejected
-                ? 'bg-red-50 text-red-700 border border-red-200'
-                : 'bg-amber-50 text-amber-700 border border-amber-200'
+                  ? 'bg-red-50 text-red-700 border border-red-200'
+                  : 'bg-amber-50 text-amber-700 border border-amber-200'
             }`}
           >
             {isApproved && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
@@ -142,13 +151,19 @@ export default function KycReviewWorkspace({
                   .toUpperCase()}
               </div>
               <div className="min-w-0">
-                <h3 className="text-lg font-bold text-slate-900 truncate">{request.providerName}</h3>
-                <p className="text-xs font-medium text-theme-accent truncate">{request.businessName}</p>
+                <h3 className="text-lg font-bold text-slate-900 truncate">
+                  {request.providerName}
+                </h3>
+                <p className="text-xs font-medium text-theme-accent truncate">
+                  {request.businessName}
+                </p>
               </div>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Verification Type')}</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                {t('Verification Type')}
+              </span>
               <span className="inline-flex items-center gap-1 font-bold text-xs bg-theme-accent text-white px-2.5 py-1 rounded-lg">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 {request.verificationType}
@@ -168,7 +183,9 @@ export default function KycReviewWorkspace({
                 <Phone className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Phone Number')}</span>
-                  <span className="font-semibold text-slate-800">{request.phone || '+1 555-0198'}</span>
+                  <span className="font-semibold text-slate-800">
+                    {request.phone || '+1 555-0198'}
+                  </span>
                 </div>
               </div>
 
@@ -176,7 +193,9 @@ export default function KycReviewWorkspace({
                 <MapPin className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Address')}</span>
-                  <span className="font-semibold text-slate-800">{request.address || '742 Evergreen Terrace'}</span>
+                  <span className="font-semibold text-slate-800">
+                    {request.address || '742 Evergreen Terrace'}
+                  </span>
                 </div>
               </div>
 
@@ -184,7 +203,9 @@ export default function KycReviewWorkspace({
                 <Globe className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Country')}</span>
-                  <span className="font-semibold text-slate-800">{request.country || 'United States'}</span>
+                  <span className="font-semibold text-slate-800">
+                    {request.country || 'United States'}
+                  </span>
                 </div>
               </div>
 
@@ -192,15 +213,21 @@ export default function KycReviewWorkspace({
                 <Calendar className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Registration Date')}</span>
-                  <span className="font-semibold text-slate-800">{request.registrationDate || 'Jan 12, 2025'}</span>
+                  <span className="font-semibold text-slate-800">
+                    {request.registrationDate || 'Jan 12, 2025'}
+                  </span>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <User className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
                 <div>
-                  <span className="block text-slate-400 font-medium">{t('Provider ID / Application ID')}</span>
-                  <span className="font-mono font-semibold text-slate-800">{request.applicationId || `APP-${request.id}`}</span>
+                  <span className="block text-slate-400 font-medium">
+                    {t('Provider ID / Application ID')}
+                  </span>
+                  <span className="font-mono font-semibold text-slate-800">
+                    {request.applicationId || `APP-${request.id}`}
+                  </span>
                 </div>
               </div>
             </div>
@@ -217,7 +244,8 @@ export default function KycReviewWorkspace({
               </p>
               {request.rejectionReason && (
                 <p className="text-xs text-red-600 mt-2 bg-red-50 p-2.5 rounded-xl border border-red-100">
-                  <span className="font-bold block">{t('Rejection Reason')}:</span> {request.rejectionReason}
+                  <span className="font-bold block">{t('Rejection Reason')}:</span>{' '}
+                  {request.rejectionReason}
                 </p>
               )}
             </div>
@@ -232,7 +260,9 @@ export default function KycReviewWorkspace({
               {t('Submitted Documents')} ({request.documents?.length || 0})
             </h3>
             <p className="text-xs text-slate-500 mb-4">
-              {t('Click "View Document" on any file to inspect, zoom, or download the uploaded verification proofs.')}
+              {t(
+                'Click "View Document" on any file to inspect, zoom, or download the uploaded verification proofs.'
+              )}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -247,7 +277,9 @@ export default function KycReviewWorkspace({
                     </div>
                     <div className="min-w-0">
                       <h4 className="text-sm font-bold text-slate-900 truncate">{doc.name}</h4>
-                      <p className="text-xs text-slate-500 font-medium">{doc.fileType} • {doc.fileSize}</p>
+                      <p className="text-xs text-slate-500 font-medium">
+                        {doc.fileType} • {doc.fileSize}
+                      </p>
                       <span className="text-[11px] text-slate-400 block mt-0.5">
                         {t('Uploaded')}: {doc.uploadDate}
                       </span>
@@ -276,7 +308,9 @@ export default function KycReviewWorkspace({
               </span>
             </div>
             <p className="text-xs text-slate-500 mb-4">
-              {t('All mandatory verification criteria must be inspected and checked prior to approving this submission.')}
+              {t(
+                'All mandatory verification criteria must be inspected and checked prior to approving this submission.'
+              )}
             </p>
 
             {checklistError && (
@@ -371,15 +405,17 @@ export default function KycReviewWorkspace({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-slate-700">
-                  {(request.history || [
-                    {
-                      date: request.submittedDate,
-                      action: 'Initial Submission',
-                      status: 'Pending',
-                      reviewer: '—',
-                      reason: 'Submitted by provider for review.',
-                    },
-                  ]).map((h, idx) => (
+                  {(
+                    request.history || [
+                      {
+                        date: request.submittedDate,
+                        action: 'Initial Submission',
+                        status: 'Pending',
+                        reviewer: '—',
+                        reason: 'Submitted by provider for review.',
+                      },
+                    ]
+                  ).map((h, idx) => (
                     <tr key={idx} className="hover:bg-slate-50/70 transition">
                       <td className="py-2.5 px-3 font-medium text-slate-900">{h.date}</td>
                       <td className="py-2.5 px-3 font-medium">{h.action}</td>
@@ -389,8 +425,8 @@ export default function KycReviewWorkspace({
                             h.status === 'Approved'
                               ? 'bg-emerald-50 text-emerald-700'
                               : h.status === 'Rejected'
-                              ? 'bg-red-50 text-red-700'
-                              : 'bg-amber-50 text-amber-700'
+                                ? 'bg-red-50 text-red-700'
+                                : 'bg-amber-50 text-amber-700'
                           }`}
                         >
                           {h.status}

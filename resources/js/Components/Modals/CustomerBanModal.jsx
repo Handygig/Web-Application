@@ -74,7 +74,9 @@ export default function CustomerBanModal({
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-slate-900">{t('Ban Customer Account')}</h3>
                 <p className="mt-1 text-xs text-slate-500">
-                  {t('Restrict access for')} <span className="font-semibold text-slate-800">{customer.full_name}</span>. {t('Select the ban parameters and reason below.')}
+                  {t('Restrict access for')}{' '}
+                  <span className="font-semibold text-slate-800">{customer.full_name}</span>.{' '}
+                  {t('Select the ban parameters and reason below.')}
                 </p>
               </div>
 

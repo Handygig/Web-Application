@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
-import {
-  Users,
-  Eye,
-  Plus,
-  Mail,
-  Phone,
-  MapPin,
-  Briefcase,
-} from 'lucide-react';
+import { Users, Eye, Plus, Mail, Phone, MapPin, Briefcase } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 import AppLayout from '@/Layouts/AppLayout';
 import PageHeader from '@/Components/Other/PageHeader';
@@ -47,29 +39,41 @@ export default function ProviderIndex({ providers, categories, stats, filters })
 
   const handleSearch = (val) => {
     setSearchQuery(val);
-    router.get(route('admin.providers.index'), {
-      search: val,
-      status: statusFilter,
-      category: categoryFilter,
-    }, { preserveState: true, replace: true });
+    router.get(
+      route('admin.providers.index'),
+      {
+        search: val,
+        status: statusFilter,
+        category: categoryFilter,
+      },
+      { preserveState: true, replace: true }
+    );
   };
 
   const handleStatusFilter = (val) => {
     setStatusFilter(val);
-    router.get(route('admin.providers.index'), {
-      search: searchQuery,
-      status: val,
-      category: categoryFilter,
-    }, { preserveState: true });
+    router.get(
+      route('admin.providers.index'),
+      {
+        search: searchQuery,
+        status: val,
+        category: categoryFilter,
+      },
+      { preserveState: true }
+    );
   };
 
   const handleCategoryFilter = (val) => {
     setCategoryFilter(val);
-    router.get(route('admin.providers.index'), {
-      search: searchQuery,
-      status: statusFilter,
-      category: val,
-    }, { preserveState: true });
+    router.get(
+      route('admin.providers.index'),
+      {
+        search: searchQuery,
+        status: statusFilter,
+        category: val,
+      },
+      { preserveState: true }
+    );
   };
 
   const handleClearFilters = () => {
@@ -121,15 +125,19 @@ export default function ProviderIndex({ providers, categories, stats, filters })
   const confirmToggleActive = () => {
     if (!togglingProvider) return;
     setActionProcessing(true);
-    router.put(route('admin.providers.toggle-active', togglingProvider.id), {}, {
-      preserveScroll: true,
-      onSuccess: () => {
-        setIsToggleModalOpen(false);
-        setTogglingProvider(null);
-        setActionProcessing(false);
-      },
-      onError: () => setActionProcessing(false),
-    });
+    router.put(
+      route('admin.providers.toggle-active', togglingProvider.id),
+      {},
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setIsToggleModalOpen(false);
+          setTogglingProvider(null);
+          setActionProcessing(false);
+        },
+        onError: () => setActionProcessing(false),
+      }
+    );
   };
 
   const handleFormSubmit = (data) => {
@@ -162,7 +170,12 @@ export default function ProviderIndex({ providers, categories, stats, filters })
       label: t('Provider'),
       render: (row) => {
         const initials = row.full_name
-          ? row.full_name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+          ? row.full_name
+              .split(' ')
+              .map((n) => n[0])
+              .join('')
+              .slice(0, 2)
+              .toUpperCase()
           : 'P';
         return (
           <div className="flex items-center gap-3">
@@ -224,7 +237,9 @@ export default function ProviderIndex({ providers, categories, stats, filters })
                 : 'bg-slate-100 text-slate-600 border border-slate-200'
             }`}
           >
-            <span className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`}
+            />
             {row.status}
           </span>
         );
@@ -233,7 +248,9 @@ export default function ProviderIndex({ providers, categories, stats, filters })
     {
       key: 'joined',
       label: t('Joined'),
-      render: (row) => <span className="text-xs font-medium text-slate-600 whitespace-nowrap">{row.joined}</span>,
+      render: (row) => (
+        <span className="text-xs font-medium text-slate-600 whitespace-nowrap">{row.joined}</span>
+      ),
     },
     {
       key: 'actions',
@@ -391,11 +408,19 @@ export default function ProviderIndex({ providers, categories, stats, filters })
 
       <ConfirmModal
         open={isToggleModalOpen}
-        title={togglingProvider?.status === 'Active' ? t('Deactivate Provider Account?') : t('Activate Provider Account?')}
+        title={
+          togglingProvider?.status === 'Active'
+            ? t('Deactivate Provider Account?')
+            : t('Activate Provider Account?')
+        }
         message={
           togglingProvider?.status === 'Active'
-            ? t('Are you sure you want to deactivate the provider account for :name?', { name: togglingProvider?.full_name })
-            : t('Are you sure you want to activate the provider account for :name?', { name: togglingProvider?.full_name })
+            ? t('Are you sure you want to deactivate the provider account for :name?', {
+                name: togglingProvider?.full_name,
+              })
+            : t('Are you sure you want to activate the provider account for :name?', {
+                name: togglingProvider?.full_name,
+              })
         }
         confirmLabel={togglingProvider?.status === 'Active' ? t('Deactivate') : t('Activate')}
         cancelLabel={t('Cancel')}
@@ -411,7 +436,9 @@ export default function ProviderIndex({ providers, categories, stats, filters })
       <ConfirmModal
         open={isDeleteModalOpen}
         title={t('Delete Provider Account?')}
-        message={t('Are you sure you want to permanently delete this provider account? This action cannot be undone.')}
+        message={t(
+          'Are you sure you want to permanently delete this provider account? This action cannot be undone.'
+        )}
         confirmLabel={t('Delete')}
         cancelLabel={t('Cancel')}
         variant="danger"

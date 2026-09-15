@@ -137,7 +137,9 @@ export default function JobTypeFormModal({
                     }`}
                   />
                 </div>
-                {errors.name && <p className="mt-1 text-xs font-medium text-red-500">{errors.name}</p>}
+                {errors.name && (
+                  <p className="mt-1 text-xs font-medium text-red-500">{errors.name}</p>
+                )}
               </div>
 
               {/* Description */}

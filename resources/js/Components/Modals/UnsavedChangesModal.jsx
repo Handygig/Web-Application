@@ -3,11 +3,7 @@ import { createPortal } from 'react-dom';
 import { X, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
-export default function UnsavedChangesModal({
-  open = false,
-  onStay,
-  onLeave,
-}) {
+export default function UnsavedChangesModal({ open = false, onStay, onLeave }) {
   const { t } = useTranslation();
 
   if (!open) return null;
@@ -32,7 +28,9 @@ export default function UnsavedChangesModal({
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-slate-900">{t('Unsaved Changes')}</h3>
                 <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">
-                  {t('You have unsaved changes on your profile. Are you sure you want to leave without saving?')}
+                  {t(
+                    'You have unsaved changes on your profile. Are you sure you want to leave without saving?'
+                  )}
                 </p>
               </div>
 

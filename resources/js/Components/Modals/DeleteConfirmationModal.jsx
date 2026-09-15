@@ -77,7 +77,8 @@ export default function DeleteConfirmationModal({
 
           {/* Description */}
           <p className="mt-2 text-sm text-slate-500 leading-relaxed max-w-xs">
-            {description || t('Are you sure you want to delete this booking? This action cannot be undone.')}
+            {description ||
+              t('Are you sure you want to delete this booking? This action cannot be undone.')}
           </p>
         </div>
 

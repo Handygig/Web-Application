@@ -105,10 +105,10 @@ export default function BookingDetailModal({
                     isPending
                       ? 'bg-amber-50 text-amber-700 border border-amber-200'
                       : isConfirmed
-                      ? 'bg-sky-50 text-sky-700 border border-sky-200'
-                      : isCompleted
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      : 'bg-red-50 text-red-700 border border-red-200'
+                        ? 'bg-sky-50 text-sky-700 border border-sky-200'
+                        : isCompleted
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-red-50 text-red-700 border border-red-200'
                   }`}
                 >
                   <span
@@ -116,10 +116,10 @@ export default function BookingDetailModal({
                       isPending
                         ? 'bg-amber-500'
                         : isConfirmed
-                        ? 'bg-sky-500'
-                        : isCompleted
-                        ? 'bg-emerald-500'
-                        : 'bg-red-500'
+                          ? 'bg-sky-500'
+                          : isCompleted
+                            ? 'bg-emerald-500'
+                            : 'bg-red-500'
                     }`}
                   />
                   {status}
@@ -135,9 +135,7 @@ export default function BookingDetailModal({
                   <Clock className="h-3.5 w-3.5 text-slate-400" />
                   <span>{booking.timeSlot || '10:00 AM – 12:00 PM'}</span>
                 </div>
-                <div className="font-bold text-slate-900 text-sm">
-                  {booking.amount}
-                </div>
+                <div className="font-bold text-slate-900 text-sm">{booking.amount}</div>
               </div>
             </div>
           </div>
@@ -199,8 +197,12 @@ export default function BookingDetailModal({
             <div className="text-xs space-y-1">
               <span className="font-bold text-slate-900 text-sm block">{booking.customerName}</span>
               <span className="text-slate-500 block truncate">{booking.customerEmail}</span>
-              <span className="text-slate-500 block">{booking.customerPhone || '+94 77 123 4567'}</span>
-              <span className="font-mono text-slate-400 text-[11px] block mt-1">ID: {booking.customerId || 'CUST-102'}</span>
+              <span className="text-slate-500 block">
+                {booking.customerPhone || '+94 77 123 4567'}
+              </span>
+              <span className="font-mono text-slate-400 text-[11px] block mt-1">
+                ID: {booking.customerId || 'CUST-102'}
+              </span>
             </div>
           </div>
 
@@ -213,10 +215,16 @@ export default function BookingDetailModal({
             <div className="text-xs space-y-1">
               <span className="font-bold text-slate-900 text-sm block">{booking.providerName}</span>
               {booking.providerBusiness && (
-                <span className="font-semibold text-theme-accent block">{booking.providerBusiness}</span>
+                <span className="font-semibold text-theme-accent block">
+                  {booking.providerBusiness}
+                </span>
               )}
-              <span className="text-slate-500 block truncate">{booking.providerEmail || 'provider@example.com'}</span>
-              <span className="font-mono text-slate-400 text-[11px] block mt-1">ID: {booking.providerId || 'PRV-204'}</span>
+              <span className="text-slate-500 block truncate">
+                {booking.providerEmail || 'provider@example.com'}
+              </span>
+              <span className="font-mono text-slate-400 text-[11px] block mt-1">
+                ID: {booking.providerId || 'PRV-204'}
+              </span>
             </div>
           </div>
 
@@ -228,7 +236,9 @@ export default function BookingDetailModal({
             </div>
             <div className="text-xs space-y-1">
               <span className="font-bold text-slate-900 text-sm block">{booking.propertyName}</span>
-              <span className="text-slate-500 block">{booking.category || 'Luxury Accommodation'}</span>
+              <span className="text-slate-500 block">
+                {booking.category || 'Luxury Accommodation'}
+              </span>
               <span className="flex items-center gap-1 text-slate-500 block">
                 <MapPin className="h-3 w-3 text-slate-400" />
                 {booking.location || 'Colombo, Sri Lanka'}
@@ -241,14 +251,21 @@ export default function BookingDetailModal({
         <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-5 space-y-4">
           <div className="flex items-center gap-2">
             <History className="h-4 w-4 text-theme-accent" />
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('Booking History Timeline')}</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              {t('Booking History Timeline')}
+            </h4>
           </div>
 
           <div className="space-y-3 pl-2 border-l-2 border-slate-200 text-xs">
-            {(booking.history || [
-              { date: booking.createdDate || 'Aug 15, 2026 – 10:30 AM', title: 'Booking created by customer' },
-              { date: 'Aug 15, 2026 – 11:10 AM', title: 'Booking confirmed by provider' },
-            ]).map((h, idx) => (
+            {(
+              booking.history || [
+                {
+                  date: booking.createdDate || 'Aug 15, 2026 – 10:30 AM',
+                  title: 'Booking created by customer',
+                },
+                { date: 'Aug 15, 2026 – 11:10 AM', title: 'Booking confirmed by provider' },
+              ]
+            ).map((h, idx) => (
               <div key={idx} className="relative pl-4">
                 <span className="absolute -left-[17px] top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white ring-2 ring-indigo-200">
                   <span className="h-1.5 w-1.5 rounded-full bg-theme-accent" />

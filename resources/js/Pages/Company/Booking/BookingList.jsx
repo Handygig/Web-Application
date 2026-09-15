@@ -7,16 +7,12 @@ import {
   UserPlus,
   Eye,
   AlertTriangle,
-  DollarSign
+  DollarSign,
 } from 'lucide-react';
 import { StatusBadge, UrgencyBadge, CategoryBadge } from './BookingBadgeHelpers';
 import { useTranslation } from '@/Hooks/useTranslation';
 
-export default function BookingList({
-  bookings,
-  onViewDetails,
-  onOpenAssignModal,
-}) {
+export default function BookingList({ bookings, onViewDetails, onOpenAssignModal }) {
   const { t } = useTranslation();
 
   if (bookings.length === 0) {
@@ -117,7 +113,9 @@ export default function BookingList({
                   />
                   <div>
                     <p className="text-xs font-bold text-slate-900">{booking.assignedTech.name}</p>
-                    <p className="text-[10px] text-slate-500 font-medium">{booking.assignedTech.role}</p>
+                    <p className="text-[10px] text-slate-500 font-medium">
+                      {booking.assignedTech.role}
+                    </p>
                   </div>
                 </div>
               )}
@@ -127,11 +125,11 @@ export default function BookingList({
                 <span className="text-lg font-extrabold text-slate-900 tracking-tight">
                   ${booking.serviceFee.toFixed(2)}
                 </span>
-                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{booking.paymentStatus}</div>
+                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                  {booking.paymentStatus}
+                </div>
               </div>
             </div>
-
-
           </div>
         );
       })}

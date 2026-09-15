@@ -127,12 +127,16 @@ export default function ProviderDetailModal({ open = false, provider = null, onC
               </div>
               <div className="flex items-center gap-1">
                 <Calendar className="h-3.5 w-3.5 text-slate-400" />
-                <span>{t('Joined')}: {provider.created_at || provider.joined || 'Jan 2025'}</span>
+                <span>
+                  {t('Joined')}: {provider.created_at || provider.joined || 'Jan 2025'}
+                </span>
               </div>
               {provider.rating ? (
                 <div className="flex items-center gap-1 text-amber-600 font-semibold">
                   <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                  <span>{provider.rating} ({provider.reviews_count || 12} reviews)</span>
+                  <span>
+                    {provider.rating} ({provider.reviews_count || 12} reviews)
+                  </span>
                 </div>
               ) : null}
             </div>
@@ -146,8 +150,12 @@ export default function ProviderDetailModal({ open = false, provider = null, onC
               <Mail className="h-5 w-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Email Address')}</p>
-              <p className="text-sm font-medium text-slate-800 truncate mt-0.5">{provider.email || provider.user?.email || '-'}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                {t('Email Address')}
+              </p>
+              <p className="text-sm font-medium text-slate-800 truncate mt-0.5">
+                {provider.email || provider.user?.email || '-'}
+              </p>
             </div>
           </div>
 
@@ -156,8 +164,12 @@ export default function ProviderDetailModal({ open = false, provider = null, onC
               <Phone className="h-5 w-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Phone Number')}</p>
-              <p className="text-sm font-medium text-slate-800 truncate mt-0.5">{provider.phone || provider.user?.phone || '-'}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                {t('Phone Number')}
+              </p>
+              <p className="text-sm font-medium text-slate-800 truncate mt-0.5">
+                {provider.phone || provider.user?.phone || '-'}
+              </p>
             </div>
           </div>
 
@@ -166,8 +178,12 @@ export default function ProviderDetailModal({ open = false, provider = null, onC
               <MapPin className="h-5 w-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Location / Address')}</p>
-              <p className="text-sm font-medium text-slate-800 truncate mt-0.5">{provider.location || provider.address || t('Main Service Area')}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                {t('Location / Address')}
+              </p>
+              <p className="text-sm font-medium text-slate-800 truncate mt-0.5">
+                {provider.location || provider.address || t('Main Service Area')}
+              </p>
             </div>
           </div>
 
@@ -176,8 +192,12 @@ export default function ProviderDetailModal({ open = false, provider = null, onC
               <UserCheck className="h-5 w-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Provider Type')}</p>
-              <p className="text-sm font-medium text-slate-800 capitalize truncate mt-0.5">{provider.provider_type || 'Individual Professional'}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                {t('Provider Type')}
+              </p>
+              <p className="text-sm font-medium text-slate-800 capitalize truncate mt-0.5">
+                {provider.provider_type || 'Individual Professional'}
+              </p>
             </div>
           </div>
         </div>
@@ -189,7 +209,11 @@ export default function ProviderDetailModal({ open = false, provider = null, onC
             {t('Description / Biography')}
           </div>
           <p className="text-sm text-slate-600 leading-relaxed">
-            {provider.bio || provider.description || t('No provider description available. This service provider is verified and available for dispatch.')}
+            {provider.bio ||
+              provider.description ||
+              t(
+                'No provider description available. This service provider is verified and available for dispatch.'
+              )}
           </p>
         </div>
 

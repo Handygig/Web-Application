@@ -15,8 +15,11 @@ function NavItem({ item, collapsed }) {
   const hasChildren = Array.isArray(item.children) && item.children.length > 0;
 
   const activePaths = Array.isArray(item.activePaths) ? item.activePaths : [];
-  const hasActivePathMatch = activePaths.some((pattern) => matchesPathPattern(currentPath, pattern));
-  const isActive = !hasChildren && (matchesPathPattern(currentPath, item.href) || hasActivePathMatch);
+  const hasActivePathMatch = activePaths.some((pattern) =>
+    matchesPathPattern(currentPath, pattern)
+  );
+  const isActive =
+    !hasChildren && (matchesPathPattern(currentPath, item.href) || hasActivePathMatch);
 
   const isChildActive = (child) => {
     if (currentPath === child.href) return true;
@@ -79,7 +82,9 @@ function NavItem({ item, collapsed }) {
           </span>
           <ChevronDown
             className={`h-3.5 w-3.5 transition-transform duration-300 ${
-              isGroupOpen ? 'rotate-180 text-[#0f4a2d]' : 'text-slate-400 group-hover:text-slate-600'
+              isGroupOpen
+                ? 'rotate-180 text-[#0f4a2d]'
+                : 'text-slate-400 group-hover:text-slate-600'
             }`}
           />
         </button>
@@ -222,7 +227,10 @@ export default function Sidebar({ open, onClose, navCategories = [] }) {
       {/* Mobile Drawer */}
       {open && (
         <div className="fixed inset-0 z-50 md:hidden flex">
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onClick={onClose} />
+          <div
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
+            onClick={onClose}
+          />
           <aside className="relative z-50 flex flex-col h-full bg-white border-r border-slate-100 shadow-2xl w-[270px] p-3">
             <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 mb-1">
               <span className="font-bold text-sm text-slate-800 tracking-tight">Menu</span>

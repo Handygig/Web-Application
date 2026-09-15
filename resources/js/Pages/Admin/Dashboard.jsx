@@ -19,17 +19,21 @@ import {
   Building,
   Wrench,
   Activity,
-  Layers
+  Layers,
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
-export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentReviews: serverReviews }) {
+export default function Dashboard({
+  stats,
+  pendingKycQueue: serverKyc,
+  recentReviews: serverReviews,
+}) {
   const { t } = useTranslation();
 
   // Financial & platform stats from backend
-  const grossRevenue = stats?.grossRevenue ?? 48250.00;
+  const grossRevenue = stats?.grossRevenue ?? 48250.0;
   const totalCustomers = stats?.totalCustomers ?? 184;
-  const pendingPayoutsAmount = stats?.pendingPayoutsAmount ?? 3410.00;
+  const pendingPayoutsAmount = stats?.pendingPayoutsAmount ?? 3410.0;
   const pendingPayoutsCount = stats?.pendingPayoutsCount ?? 5;
   const totalProviders = stats?.totalProviders ?? 24;
   const activeBookings = stats?.activeBookings ?? 12;
@@ -42,7 +46,11 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
   const avgRating = stats?.avgRating ?? 4.9;
 
   const formattedCurrency = (val) =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(val);
 
   // Fallback sample data if database table is currently empty
   const fallbackKycQueue = [
@@ -70,7 +78,8 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
     {
       id: 1,
       name: 'Alexandra Deff',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
       rating: 5,
       service: 'Electrical Service',
       comment: 'Excellent service! Arrived on time and resolved the wiring issue very quickly.',
@@ -79,7 +88,8 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
     {
       id: 2,
       name: 'Edwin Adenike',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
       rating: 5,
       service: 'Plumbing Repair',
       comment: 'Very professional technician. Replaced pipe fittings and tested thoroughly.',
@@ -88,7 +98,8 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
     {
       id: 3,
       name: 'Isaac Oluwatemilorun',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
       rating: 4,
       service: 'HVAC Maintenance',
       comment: 'Great work on the AC unit maintenance. Very knowledgeable service provider.',
@@ -97,7 +108,8 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
     {
       id: 4,
       name: 'David Oshodi',
-      avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80',
       rating: 5,
       service: 'Home Cleaning',
       comment: 'Thorough cleaning job for the entire apartment. Highly satisfied!',
@@ -113,22 +125,26 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
       <Head title={t('Dashboard')} />
 
       <div className="mx-auto max-w-[1400px] space-y-6 pb-12 font-sans">
-        
         {/* TOP HEADER SECTION */}
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{t('Admin Dashboard')}</h1>
+          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            {t('Admin Dashboard')}
+          </h1>
           <p className="text-sm font-medium text-slate-500 mt-0.5">
-            {t('Manage platform bookings, provider KYC verifications, service payouts, and system activity.')}
+            {t(
+              'Manage platform bookings, provider KYC verifications, service payouts, and system activity.'
+            )}
           </p>
         </div>
 
         {/* STAT CARDS ROW */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          
           {/* Card 1: Total Platform Revenue */}
           <div className="bg-[#0f4a2d] text-white p-6 rounded-3xl shadow-sm flex flex-col justify-between space-y-4 relative overflow-hidden transition-transform hover:-translate-y-0.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-emerald-100/90">{t('Total Platform Revenue')}</span>
+              <span className="text-xs font-semibold text-emerald-100/90">
+                {t('Total Platform Revenue')}
+              </span>
               <Link
                 href={route('admin.bookings.index')}
                 className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
@@ -150,7 +166,9 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
           {/* Card 2: Active Job Bookings */}
           <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-4 transition-transform hover:-translate-y-0.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">{t('Active Job Bookings')}</span>
+              <span className="text-xs font-semibold text-slate-500">
+                {t('Active Job Bookings')}
+              </span>
               <Link
                 href={route('admin.bookings.index')}
                 className="w-8 h-8 rounded-full border border-slate-200/80 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors"
@@ -194,7 +212,9 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
           {/* Card 4: Verified Providers */}
           <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-4 transition-transform hover:-translate-y-0.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">{t('Verified Providers')}</span>
+              <span className="text-xs font-semibold text-slate-500">
+                {t('Verified Providers')}
+              </span>
               <Link
                 href={route('admin.providers.index')}
                 className="w-8 h-8 rounded-full border border-slate-200/80 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors"
@@ -212,15 +232,12 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
               </p>
             </div>
           </div>
-
         </div>
 
         {/* MAIN TWO-COLUMN DASHBOARD GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
           {/* LEFT COLUMN (8 cols): Revenue Overview + Pending KYC Queue + Recent Reviews */}
           <div className="lg:col-span-8 space-y-6">
-            
             {/* Revenue Overview Chart Card */}
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-4">
               {/* Header Title & Month Filter Dropdown */}
@@ -270,10 +287,38 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
 
                   {/* SVG Canvas */}
                   <div className="relative w-full h-44 overflow-visible">
-                    <svg className="w-full h-full overflow-visible" viewBox="0 0 500 160" preserveAspectRatio="none">
-                      <line x1="0" y1="10" x2="500" y2="10" stroke="#f1f5f9" strokeWidth="1.5" strokeDasharray="3 3" />
-                      <line x1="0" y1="55" x2="500" y2="55" stroke="#f1f5f9" strokeWidth="1.5" strokeDasharray="3 3" />
-                      <line x1="0" y1="100" x2="500" y2="100" stroke="#f1f5f9" strokeWidth="1.5" strokeDasharray="3 3" />
+                    <svg
+                      className="w-full h-full overflow-visible"
+                      viewBox="0 0 500 160"
+                      preserveAspectRatio="none"
+                    >
+                      <line
+                        x1="0"
+                        y1="10"
+                        x2="500"
+                        y2="10"
+                        stroke="#f1f5f9"
+                        strokeWidth="1.5"
+                        strokeDasharray="3 3"
+                      />
+                      <line
+                        x1="0"
+                        y1="55"
+                        x2="500"
+                        y2="55"
+                        stroke="#f1f5f9"
+                        strokeWidth="1.5"
+                        strokeDasharray="3 3"
+                      />
+                      <line
+                        x1="0"
+                        y1="100"
+                        x2="500"
+                        y2="100"
+                        stroke="#f1f5f9"
+                        strokeWidth="1.5"
+                        strokeDasharray="3 3"
+                      />
                       <line x1="0" y1="145" x2="500" y2="145" stroke="#e2e8f0" strokeWidth="1.5" />
 
                       {/* Faint Dashed Line (Last Month) */}
@@ -296,10 +341,26 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
                       />
 
                       {/* Vertical Indicator Line on Peak Date */}
-                      <line x1="390" y1="20" x2="390" y2="145" stroke="#e2e8f0" strokeWidth="1" strokeDasharray="2 2" />
+                      <line
+                        x1="390"
+                        y1="20"
+                        x2="390"
+                        y2="145"
+                        stroke="#e2e8f0"
+                        strokeWidth="1"
+                        strokeDasharray="2 2"
+                      />
 
                       {/* Active Dot Node */}
-                      <circle cx="390" cy="20" r="5" fill="#0f4a2d" stroke="#ffffff" strokeWidth="2" className="shadow-lg" />
+                      <circle
+                        cx="390"
+                        cy="20"
+                        r="5"
+                        fill="#0f4a2d"
+                        stroke="#ffffff"
+                        strokeWidth="2"
+                        className="shadow-lg"
+                      />
                     </svg>
 
                     {/* Floating Tooltip Box */}
@@ -327,7 +388,9 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">{t('Pending KYC Verification Queue')}</h3>
+                  <h3 className="text-base font-bold text-slate-900">
+                    {t('Pending KYC Verification Queue')}
+                  </h3>
                   <p className="text-xs font-medium text-slate-400 mt-0.5">
                     {t('Provider identity documents awaiting admin approval')}
                   </p>
@@ -343,14 +406,21 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
 
               <div className="divide-y divide-slate-100 pt-1">
                 {pendingKycQueue.map((item) => (
-                  <div key={item.id} className="py-3.5 first:pt-0 last:pb-0 flex items-center justify-between gap-4">
+                  <div
+                    key={item.id}
+                    className="py-3.5 first:pt-0 last:pb-0 flex items-center justify-between gap-4"
+                  >
                     <div className="flex items-center gap-3.5 min-w-0">
                       <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
                         <ShieldCheck className="w-5 h-5 text-[#0f4a2d]" />
                       </div>
                       <div className="min-w-0">
-                        <h5 className="text-xs font-bold text-slate-900 truncate">{item.provider}</h5>
-                        <p className="text-[11px] font-medium text-slate-500 truncate mt-0.5">{item.type}</p>
+                        <h5 className="text-xs font-bold text-slate-900 truncate">
+                          {item.provider}
+                        </h5>
+                        <p className="text-[11px] font-medium text-slate-500 truncate mt-0.5">
+                          {item.type}
+                        </p>
                         <span className="text-[10px] text-slate-400 block mt-0.5">{item.date}</span>
                       </div>
                     </div>
@@ -370,7 +440,9 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">{t('Recent Customer Reviews')}</h3>
+                  <h3 className="text-base font-bold text-slate-900">
+                    {t('Recent Customer Reviews')}
+                  </h3>
                   <p className="text-xs font-medium text-slate-400 mt-0.5">
                     {t('Latest feedback & ratings from completed service bookings')}
                   </p>
@@ -383,7 +455,10 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
 
               <div className="space-y-4 pt-1 divide-y divide-slate-100">
                 {recentReviews.map((rev) => (
-                  <div key={rev.id} className="pt-3 first:pt-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div
+                    key={rev.id}
+                    className="pt-3 first:pt-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  >
                     <div className="flex items-start gap-3 min-w-0">
                       <img
                         src={rev.avatar}
@@ -420,16 +495,14 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
                 ))}
               </div>
             </div>
-
           </div>
 
           {/* RIGHT COLUMN (4 cols): Booking Status Gauge + Dispatch Summary + Admin Links */}
           <div className="lg:col-span-4 space-y-6">
-            
             {/* Booking Status Distribution Donut Gauge Card */}
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
               <h3 className="text-base font-bold text-slate-900">{t('Booking Distribution')}</h3>
-              
+
               <div className="flex flex-col items-center justify-center py-2">
                 <div className="relative w-44 h-44 flex items-center justify-center">
                   <svg className="w-44 h-44 -rotate-90" viewBox="0 0 100 100">
@@ -466,7 +539,9 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
                   </svg>
                   <div className="absolute text-center">
                     <div className="text-3xl font-extrabold text-slate-900">{totalBookings}</div>
-                    <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{t('Bookings')}</div>
+                    <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                      {t('Bookings')}
+                    </div>
                   </div>
                 </div>
 
@@ -490,22 +565,34 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
             {/* Field Technician Dispatch Metrics Card */}
             <div className="bg-[#0f4a2d] text-white p-6 rounded-3xl shadow-sm space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-emerald-100/90">{t('Live Field Dispatch')}</span>
+                <span className="text-xs font-semibold text-emerald-100/90">
+                  {t('Live Field Dispatch')}
+                </span>
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                  <span className="text-xs font-medium text-emerald-100/80">{t('Technicians On Shift')}</span>
+                  <span className="text-xs font-medium text-emerald-100/80">
+                    {t('Technicians On Shift')}
+                  </span>
                   <span className="text-sm font-extrabold font-mono">{totalProviders} Active</span>
                 </div>
                 <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                  <span className="text-xs font-medium text-emerald-100/80">{t('Pending Payout Clearance')}</span>
-                  <span className="text-sm font-extrabold font-mono">${pendingPayoutsAmount.toLocaleString()} ({pendingPayoutsCount})</span>
+                  <span className="text-xs font-medium text-emerald-100/80">
+                    {t('Pending Payout Clearance')}
+                  </span>
+                  <span className="text-sm font-extrabold font-mono">
+                    ${pendingPayoutsAmount.toLocaleString()} ({pendingPayoutsCount})
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-emerald-100/80">{t('Disputed Requests')}</span>
-                  <span className="text-sm font-extrabold font-mono text-amber-300">{openDisputes} Open</span>
+                  <span className="text-xs font-medium text-emerald-100/80">
+                    {t('Disputed Requests')}
+                  </span>
+                  <span className="text-sm font-extrabold font-mono text-amber-300">
+                    {openDisputes} Open
+                  </span>
                 </div>
               </div>
 
@@ -521,7 +608,7 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
             {/* Quick Admin Actions Card */}
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-3">
               <h3 className="text-base font-bold text-slate-900 mb-2">{t('Admin Shortcuts')}</h3>
-              
+
               <Link
                 href={route('admin.property-types.index')}
                 className="flex items-center justify-between p-3 rounded-2xl border border-slate-100 hover:bg-slate-50 transition group"
@@ -548,11 +635,8 @@ export default function Dashboard({ stats, pendingKycQueue: serverKyc, recentRev
                 <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-900 transition" />
               </Link>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </AppLayout>
   );

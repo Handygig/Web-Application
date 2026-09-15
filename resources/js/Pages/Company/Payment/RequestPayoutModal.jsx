@@ -66,7 +66,9 @@ export default function RequestPayoutModal({
             </div>
             <div>
               <h3 className="text-lg font-extrabold">{t('Request Revenue Payout')}</h3>
-              <p className="text-xs text-white/80">{t('Transfer earnings directly to your company bank')}</p>
+              <p className="text-xs text-white/80">
+                {t('Transfer earnings directly to your company bank')}
+              </p>
             </div>
           </div>
           <button
@@ -169,15 +171,9 @@ export default function RequestPayoutModal({
                 onChange={(e) => setSelectedBank(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#5E6933]/20 focus:border-[#5E6933]"
               >
-                <option value="chase_4821">
-                  Chase Business Checking (•••• 4821) - Primary
-                </option>
-                <option value="bofa_9012">
-                  Bank of America Commercial (•••• 9012)
-                </option>
-                <option value="wells_1120">
-                  Wells Fargo Operating Account (•••• 1120)
-                </option>
+                <option value="chase_4821">Chase Business Checking (•••• 4821) - Primary</option>
+                <option value="bofa_9012">Bank of America Commercial (•••• 9012)</option>
+                <option value="wells_1120">Wells Fargo Operating Account (•••• 1120)</option>
               </select>
             </div>
           </div>

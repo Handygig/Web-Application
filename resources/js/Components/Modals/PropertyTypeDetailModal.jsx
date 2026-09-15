@@ -95,7 +95,9 @@ export default function PropertyTypeDetailModal({
                       : 'bg-slate-100 text-slate-600 border border-slate-200'
                   }`}
                 >
-                  <span className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`}
+                  />
                   {isActive ? t('Active') : t('Inactive')}
                 </span>
               </div>
@@ -146,9 +148,12 @@ export default function PropertyTypeDetailModal({
         <div className="space-y-6">
           {/* Description */}
           <div className="rounded-2xl border border-slate-100 bg-white p-5">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{t('Description')}</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+              {t('Description')}
+            </h4>
             <p className="text-sm text-slate-700 leading-relaxed">
-              {propertyType.description || t('No detailed description available for this property type.')}
+              {propertyType.description ||
+                t('No detailed description available for this property type.')}
             </p>
           </div>
 
@@ -158,33 +163,48 @@ export default function PropertyTypeDetailModal({
               <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                 {t('Created Date')}
               </span>
-              <span className="font-semibold text-slate-800 text-sm">{propertyType.created_at || 'Jan 15, 2025'}</span>
+              <span className="font-semibold text-slate-800 text-sm">
+                {propertyType.created_at || 'Jan 15, 2025'}
+              </span>
             </div>
 
             <div className="p-4 rounded-xl border border-slate-100 bg-slate-50/70">
               <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                 {t('Last Updated')}
               </span>
-              <span className="font-semibold text-slate-800 text-sm">{propertyType.updated_at || 'Aug 14, 2026'}</span>
+              <span className="font-semibold text-slate-800 text-sm">
+                {propertyType.updated_at || 'Aug 14, 2026'}
+              </span>
             </div>
           </div>
 
           {/* Sample Associated Properties */}
           <div className="rounded-2xl border border-slate-100 bg-white p-5 space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('Assigned Platform Properties')}</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                {t('Assigned Platform Properties')}
+              </h4>
               <span className="text-xs font-bold text-slate-900 bg-slate-100 px-2.5 py-0.5 rounded-full">
                 {propertyType.properties_count || 0}
               </span>
             </div>
 
             <div className="divide-y divide-slate-100 text-xs">
-              {(propertyType.sampleProperties || [
-                { name: 'Grand Skyview Heights', location: 'Downtown, NY', status: 'Available' },
-                { name: 'Pinecrest Luxury Residences', location: 'Brooklyn, NY', status: 'Available' },
-                { name: 'Sunset Palms Complex', location: 'Miami, FL', status: 'Rented' },
-              ]).map((prop, idx) => (
-                <div key={idx} className="py-2.5 flex items-center justify-between first:pt-0 last:pb-0">
+              {(
+                propertyType.sampleProperties || [
+                  { name: 'Grand Skyview Heights', location: 'Downtown, NY', status: 'Available' },
+                  {
+                    name: 'Pinecrest Luxury Residences',
+                    location: 'Brooklyn, NY',
+                    status: 'Available',
+                  },
+                  { name: 'Sunset Palms Complex', location: 'Miami, FL', status: 'Rented' },
+                ]
+              ).map((prop, idx) => (
+                <div
+                  key={idx}
+                  className="py-2.5 flex items-center justify-between first:pt-0 last:pb-0"
+                >
                   <div>
                     <span className="font-semibold text-slate-800 block">{prop.name}</span>
                     <span className="text-slate-400 text-[11px]">{prop.location}</span>

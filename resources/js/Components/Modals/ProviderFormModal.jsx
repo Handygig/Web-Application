@@ -35,7 +35,12 @@ export default function ProviderFormModal({
         service_category: provider.service_category || provider.service || '',
         location: provider.location || '',
         bio: provider.bio || provider.description || '',
-        status: provider.status === 'Inactive' || provider.status === 'inactive' || provider.status === false ? 'inactive' : 'active',
+        status:
+          provider.status === 'Inactive' ||
+          provider.status === 'inactive' ||
+          provider.status === false
+            ? 'inactive'
+            : 'active',
       });
     } else {
       setFormData({
@@ -76,7 +81,9 @@ export default function ProviderFormModal({
               {isEditing ? t('Edit Provider') : t('Add New Provider')}
             </h3>
             <p className="text-xs text-slate-500 mt-0.5 leading-normal">
-              {isEditing ? t('Update provider details and availability.') : t('Register a new service provider in the system.')}
+              {isEditing
+                ? t('Update provider details and availability.')
+                : t('Register a new service provider in the system.')}
             </p>
           </div>
 

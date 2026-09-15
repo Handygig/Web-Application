@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
-import {
-  Briefcase,
-  CheckCircle2,
-  XCircle,
-  Plus,
-  Eye,
-} from 'lucide-react';
+import { Briefcase, CheckCircle2, XCircle, Plus, Eye } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 import AppLayout from '@/Layouts/AppLayout';
 import PageHeader from '@/Components/Other/PageHeader';
@@ -46,18 +40,26 @@ export default function JobTypeIndex({ jobTypes, stats, filters }) {
 
   const handleSearch = (val) => {
     setSearchQuery(val);
-    router.get(route('job-types.index'), {
-      search: val,
-      status: statusFilter,
-    }, { preserveState: true, replace: true });
+    router.get(
+      route('job-types.index'),
+      {
+        search: val,
+        status: statusFilter,
+      },
+      { preserveState: true, replace: true }
+    );
   };
 
   const handleStatusFilter = (val) => {
     setStatusFilter(val);
-    router.get(route('job-types.index'), {
-      search: searchQuery,
-      status: val,
-    }, { preserveState: true });
+    router.get(
+      route('job-types.index'),
+      {
+        search: searchQuery,
+        status: val,
+      },
+      { preserveState: true }
+    );
   };
 
   const handleClearFilters = () => {
@@ -89,15 +91,19 @@ export default function JobTypeIndex({ jobTypes, stats, filters }) {
   const confirmToggleActive = () => {
     if (!togglingJobType) return;
     setActionProcessing(true);
-    router.put(route('job-types.toggle-active', togglingJobType.id), {}, {
-      preserveScroll: true,
-      onSuccess: () => {
-        setIsToggleModalOpen(false);
-        setTogglingJobType(null);
-        setActionProcessing(false);
-      },
-      onError: () => setActionProcessing(false),
-    });
+    router.put(
+      route('job-types.toggle-active', togglingJobType.id),
+      {},
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setIsToggleModalOpen(false);
+          setTogglingJobType(null);
+          setActionProcessing(false);
+        },
+        onError: () => setActionProcessing(false),
+      }
+    );
   };
 
   const handlePromptDelete = (jt) => {
@@ -181,7 +187,9 @@ export default function JobTypeIndex({ jobTypes, stats, filters }) {
                 : 'bg-slate-100 text-slate-600 border border-slate-200'
             }`}
           >
-            <span className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`}
+            />
             {row.status}
           </span>
         );
@@ -190,7 +198,11 @@ export default function JobTypeIndex({ jobTypes, stats, filters }) {
     {
       key: 'createdDate',
       label: t('Created Date'),
-      render: (row) => <span className="text-xs font-medium text-slate-600 whitespace-nowrap">{row.createdDate}</span>,
+      render: (row) => (
+        <span className="text-xs font-medium text-slate-600 whitespace-nowrap">
+          {row.createdDate}
+        </span>
+      ),
     },
     {
       key: 'actions',
@@ -331,9 +343,7 @@ export default function JobTypeIndex({ jobTypes, stats, filters }) {
       <ConfirmModal
         open={isToggleModalOpen}
         title={
-          togglingJobType?.status === 'Active'
-            ? t('Deactivate Job Type?')
-            : t('Activate Job Type?')
+          togglingJobType?.status === 'Active' ? t('Deactivate Job Type?') : t('Activate Job Type?')
         }
         message={
           togglingJobType?.status === 'Active'

@@ -2,17 +2,24 @@ import React from 'react';
 import { Link } from '@inertiajs/react';
 import { useTranslation } from '../../Hooks/useTranslation';
 
-export default function LandingNavbar({ auth, canLogin = true, canRegister = true, activePage = 'home' }) {
+export default function LandingNavbar({
+  auth,
+  canLogin = true,
+  canRegister = true,
+  activePage = 'home',
+}) {
   const { t } = useTranslation();
 
   return (
     <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 h-20 flex items-center justify-between sticky top-0 z-50">
-
       {/* Original Handygig Logo */}
       <Link href="/" className="flex items-center">
-        <img src="/images/handygig-logo.png" alt="Handygig" className="h-8 sm:h-10 w-auto object-contain" />
+        <img
+          src="/images/handygig-logo.png"
+          alt="Handygig"
+          className="h-8 sm:h-10 w-auto object-contain"
+        />
       </Link>
-
 
       {/* Central Nav Container with White Rounded Card Surround */}
       <nav className="hidden md:flex h-12 items-center gap-1.5 p-1 bg-white rounded-xl border border-slate-200/90 shadow-sm">
@@ -95,7 +102,6 @@ export default function LandingNavbar({ auth, canLogin = true, canRegister = tru
           </>
         )}
       </div>
-
     </div>
   );
 }

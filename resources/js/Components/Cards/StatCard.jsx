@@ -22,12 +22,16 @@ export default function StatCard({
           {label}
         </span>
         {badgeText ? (
-          <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${badgeBgClass}`}>
+          <span
+            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${badgeBgClass}`}
+          >
             {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
             {badgeText}
           </span>
         ) : Icon ? (
-          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl ${iconBgClass} ${iconColorClass}`}>
+          <div
+            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl ${iconBgClass} ${iconColorClass}`}
+          >
             <Icon className="h-4.5 w-4.5" />
           </div>
         ) : null}
@@ -52,4 +56,3 @@ export default function StatCard({
     </div>
   );
 }
-

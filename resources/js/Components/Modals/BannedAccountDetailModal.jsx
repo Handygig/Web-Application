@@ -67,7 +67,8 @@ export default function BannedAccountDetailModal({
             <div>
               <h3 className="text-xl font-bold text-slate-900">{t('Account & Ban Details')}</h3>
               <p className="text-xs text-slate-500">
-                {t('Moderation overview for')} <span className="font-semibold text-slate-800">{account.full_name}</span>
+                {t('Moderation overview for')}{' '}
+                <span className="font-semibold text-slate-800">{account.full_name}</span>
               </p>
             </div>
           </div>
@@ -138,15 +139,21 @@ export default function BannedAccountDetailModal({
               </div>
               <div>
                 <span className="block text-slate-400 font-medium">{t('Registration Date')}</span>
-                <span className="font-semibold text-slate-800">{account.joinedDate || 'Nov 14, 2024'}</span>
+                <span className="font-semibold text-slate-800">
+                  {account.joinedDate || 'Nov 14, 2024'}
+                </span>
               </div>
               <div>
                 <span className="block text-slate-400 font-medium">{t('Last Login')}</span>
-                <span className="font-semibold text-slate-800">{account.lastLogin || 'Aug 10, 2026'}</span>
+                <span className="font-semibold text-slate-800">
+                  {account.lastLogin || 'Aug 10, 2026'}
+                </span>
               </div>
               <div>
                 <span className="block text-slate-400 font-medium">{t('Previous Violations')}</span>
-                <span className="font-semibold text-red-600">{account.previousViolations ?? 1}</span>
+                <span className="font-semibold text-red-600">
+                  {account.previousViolations ?? 1}
+                </span>
               </div>
             </div>
 
@@ -154,11 +161,15 @@ export default function BannedAccountDetailModal({
               <div className="pt-2 border-t border-slate-200/60 grid grid-cols-2 gap-2 text-xs">
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Business Category')}</span>
-                  <span className="font-semibold text-slate-800">{account.category || 'General Service'}</span>
+                  <span className="font-semibold text-slate-800">
+                    {account.category || 'General Service'}
+                  </span>
                 </div>
                 <div>
                   <span className="block text-slate-400 font-medium">{t('Location')}</span>
-                  <span className="font-semibold text-slate-800">{account.location || 'New York, NY'}</span>
+                  <span className="font-semibold text-slate-800">
+                    {account.location || 'New York, NY'}
+                  </span>
                 </div>
               </div>
             )}
@@ -177,7 +188,9 @@ export default function BannedAccountDetailModal({
               </div>
               <div>
                 <span className="block text-slate-400 font-medium">{t('Banned By')}</span>
-                <span className="font-semibold text-slate-800">{account.bannedBy || 'Admin Alex'}</span>
+                <span className="font-semibold text-slate-800">
+                  {account.bannedBy || 'Admin Alex'}
+                </span>
               </div>
               <div>
                 <span className="block text-slate-400 font-medium">{t('Banned Date')}</span>
@@ -186,13 +199,15 @@ export default function BannedAccountDetailModal({
               <div>
                 <span className="block text-slate-400 font-medium">{t('Expiry Status')}</span>
                 <span className="font-bold text-red-600">
-                  {isTemporary ? (account.expiryNotice || 'Expires in 12 days') : t('Permanent')}
+                  {isTemporary ? account.expiryNotice || 'Expires in 12 days' : t('Permanent')}
                 </span>
               </div>
             </div>
 
             <div className="pt-2 border-t border-red-100/60">
-              <span className="block text-xs font-semibold text-slate-400 mb-1">{t('Primary Ban Reason')}</span>
+              <span className="block text-xs font-semibold text-slate-400 mb-1">
+                {t('Primary Ban Reason')}
+              </span>
               <span className="inline-block rounded-lg bg-red-100/80 px-2.5 py-1 text-xs font-bold text-red-800 border border-red-200">
                 {account.reason}
               </span>
@@ -207,7 +222,9 @@ export default function BannedAccountDetailModal({
         <div className="mt-6">
           <div className="flex items-center gap-2 mb-3">
             <History className="h-4 w-4 text-slate-500" />
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('Ban History')}</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              {t('Ban History')}
+            </h4>
           </div>
 
           <div className="overflow-x-auto rounded-xl border border-slate-100">
@@ -222,15 +239,17 @@ export default function BannedAccountDetailModal({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
-                {(account.history || [
-                  {
-                    date: account.bannedDate,
-                    action: 'Account Banned',
-                    banType: account.banType,
-                    reason: account.reason,
-                    admin: account.bannedBy || 'Admin Alex',
-                  },
-                ]).map((h, idx) => (
+                {(
+                  account.history || [
+                    {
+                      date: account.bannedDate,
+                      action: 'Account Banned',
+                      banType: account.banType,
+                      reason: account.reason,
+                      admin: account.bannedBy || 'Admin Alex',
+                    },
+                  ]
+                ).map((h, idx) => (
                   <tr key={idx} className="hover:bg-slate-50/50">
                     <td className="py-2 px-3 font-medium text-slate-900">{h.date}</td>
                     <td className="py-2 px-3 font-semibold text-slate-800">{h.action}</td>

@@ -82,7 +82,10 @@ export default forwardRef(function SelectInput(
   return (
     <div className={`flex flex-col relative ${className}`}>
       {label && (
-        <label htmlFor={id} className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+        <label
+          htmlFor={id}
+          className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5"
+        >
           {toTitleCase(label)}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -105,9 +108,7 @@ export default forwardRef(function SelectInput(
               />
             </Popover.Button>
 
-            <Popover.Panel
-              className="absolute left-0 right-0 top-full mt-1.5 z-[200] rounded-2xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-2xl transition duration-100 ease-out"
-            >
+            <Popover.Panel className="absolute left-0 right-0 top-full mt-1.5 z-[200] rounded-2xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-2xl transition duration-100 ease-out">
               {searchable && (
                 <div className="relative mb-2 px-1">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -132,7 +133,8 @@ export default forwardRef(function SelectInput(
                   <div className="px-3 py-2 text-sm text-slate-400 italic">No options found</div>
                 ) : (
                   filteredOptions.map((opt, idx) => {
-                    const isSelected = String(opt.value).toLowerCase() === String(value || '').toLowerCase();
+                    const isSelected =
+                      String(opt.value).toLowerCase() === String(value || '').toLowerCase();
                     return (
                       <button
                         key={idx}

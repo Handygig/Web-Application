@@ -54,7 +54,6 @@ export default function Register() {
         </div>
 
         <div className="relative z-10 max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-4 lg:py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center flex-1">
-
           {/* Left Side Tagline & Stats */}
           <div className="lg:col-span-7 text-white flex flex-col gap-6 text-left pb-8 lg:pb-0 -mt-6 lg:-mt-14">
             <div className="flex items-center gap-2">
@@ -70,7 +69,9 @@ export default function Register() {
             </h1>
 
             <p className="text-slate-200 text-base sm:text-lg max-w-xl leading-relaxed tracking-wide">
-              {t('Getting a new job is never easy. Check what new jobs we have in store for you on Handygig.')}
+              {t(
+                'Getting a new job is never easy. Check what new jobs we have in store for you on Handygig.'
+              )}
             </p>
 
             <div className="flex items-center gap-10 pt-4">
@@ -78,19 +79,25 @@ export default function Register() {
                 <p className="text-4xl sm:text-5xl font-bold tracking-wide text-white">
                   200<span className="text-emerald-400">M</span>
                 </p>
-                <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">{t('Active Jobs')}</p>
+                <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">
+                  {t('Active Jobs')}
+                </p>
               </div>
               <div>
                 <p className="text-4xl sm:text-5xl font-bold tracking-wide text-white">
                   40<span className="text-emerald-400">K</span>
                 </p>
-                <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">{t('Startups')}</p>
+                <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">
+                  {t('Startups')}
+                </p>
               </div>
               <div>
                 <p className="text-4xl sm:text-5xl font-bold tracking-wide text-white">
                   340<span className="text-emerald-400">K</span>
                 </p>
-                <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">{t('Talents')}</p>
+                <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">
+                  {t('Talents')}
+                </p>
               </div>
             </div>
           </div>
@@ -98,7 +105,6 @@ export default function Register() {
           {/* Right Side Floating Registration Card (Matches Login Card Width: lg:col-span-5 & Padding p-8 sm:p-10) */}
           <div className="lg:col-span-5 w-full z-20">
             <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl text-slate-900 border border-slate-100 flex flex-col gap-4">
-
               <div className="flex flex-col text-left">
                 <h2 className="text-2xl sm:text-3xl font-bold text-[#1B2021] tracking-tight">
                   {t('Create Account')}
@@ -191,7 +197,6 @@ export default function Register() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

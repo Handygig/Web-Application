@@ -14,7 +14,9 @@ export default function AppLayout({ children }) {
   const userRoles = auth?.user?.roles?.map((r) => r.name) ?? [];
   const role = userRoles.includes('admin') ? 'admin' : 'company';
 
-  const [theme, setTheme] = useState(() => localStorage.getItem('handygig-theme') || 'theme-earthy');
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem('handygig-theme') || 'theme-earthy'
+  );
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -31,7 +33,9 @@ export default function AppLayout({ children }) {
         return 'theme-earthy';
       });
     };
-    const handleThemeSet = (e) => { if (e.detail) setTheme(e.detail); };
+    const handleThemeSet = (e) => {
+      if (e.detail) setTheme(e.detail);
+    };
     window.addEventListener('handygig-toggle-theme', handleThemeToggle);
     window.addEventListener('handygig-set-theme', handleThemeSet);
     return () => {
@@ -61,15 +65,15 @@ export default function AppLayout({ children }) {
   const filterNavItems = (items) =>
     items
       .filter((item) => !item.permission || userPermissions[item.permission])
-      .map((item) =>
-        item.children ? { ...item, children: filterNavItems(item.children) } : item,
-      )
+      .map((item) => (item.children ? { ...item, children: filterNavItems(item.children) } : item))
       .filter((item) => !item.children || item.children.length > 0);
 
-  const navCategories = rawNavCategories.map((group) => ({
-    category: group.category,
-    items: filterNavItems(group.items || []),
-  })).filter((group) => group.items.length > 0);
+  const navCategories = rawNavCategories
+    .map((group) => ({
+      category: group.category,
+      items: filterNavItems(group.items || []),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <div className="relative isolate h-screen overflow-hidden bg-shell-gradient font-sans transition-colors duration-350">
@@ -79,13 +83,21 @@ export default function AppLayout({ children }) {
           theme={theme}
           onThemeToggle={() =>
             setTheme((current) =>
-              current === 'theme-earthy' ? 'theme-green' : current === 'theme-green' ? 'theme-darkblue' : 'theme-earthy'
+              current === 'theme-earthy'
+                ? 'theme-green'
+                : current === 'theme-green'
+                  ? 'theme-darkblue'
+                  : 'theme-earthy'
             )
           }
         />
 
         <div className="relative flex flex-1 overflow-hidden">
-          <Sidebar open={mobileOpen} onClose={() => setMobileOpen(false)} navCategories={navCategories} />
+          <Sidebar
+            open={mobileOpen}
+            onClose={() => setMobileOpen(false)}
+            navCategories={navCategories}
+          />
           <main className="scrollbar-none flex-1 overflow-y-auto p-6">{children}</main>
         </div>
       </div>

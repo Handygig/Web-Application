@@ -80,49 +80,56 @@ export default function ProviderBanned({ bannedUsers }) {
     const total = bannedList.length;
     const providers = bannedList.filter((b) => b.accountType === 'Provider').length;
     const customers = bannedList.filter((b) => b.accountType === 'Customer').length;
-    const thisMonth = bannedList.filter((b) => b.bannedDate?.includes('Aug') || b.bannedDate?.includes('2026')).length;
+    const thisMonth = bannedList.filter(
+      (b) => b.bannedDate?.includes('Aug') || b.bannedDate?.includes('2026')
+    ).length;
     return { total, providers, customers, thisMonth };
   }, [bannedList]);
 
   // Filtering & Sorting
   const filteredAccounts = useMemo(() => {
-    return bannedList.filter((acc) => {
-      // Account type filter
-      if (accountTypeFilter !== 'all' && acc.accountType.toLowerCase() !== accountTypeFilter.toLowerCase()) {
-        return false;
-      }
-
-      // Ban type filter
-      if (banTypeFilter !== 'all' && acc.banType.toLowerCase() !== banTypeFilter.toLowerCase()) {
-        return false;
-      }
-
-      // Reason filter
-      if (reasonFilter !== 'all' && acc.reason !== reasonFilter) {
-        return false;
-      }
-
-      // Search query
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        const matchesName = acc.full_name.toLowerCase().includes(q);
-        const matchesEmail = acc.email.toLowerCase().includes(q);
-        const matchesPhone = acc.phone && acc.phone.includes(q);
-        const matchesId = acc.accountId && acc.accountId.toLowerCase().includes(q);
-        const matchesBusiness = acc.businessName && acc.businessName.toLowerCase().includes(q);
-
-        if (!matchesName && !matchesEmail && !matchesPhone && !matchesId && !matchesBusiness) {
+    return bannedList
+      .filter((acc) => {
+        // Account type filter
+        if (
+          accountTypeFilter !== 'all' &&
+          acc.accountType.toLowerCase() !== accountTypeFilter.toLowerCase()
+        ) {
           return false;
         }
-      }
 
-      return true;
-    }).sort((a, b) => {
-      if (sortOption === 'oldest') return a.id - b.id;
-      if (sortOption === 'name-asc') return a.full_name.localeCompare(b.full_name);
-      if (sortOption === 'name-desc') return b.full_name.localeCompare(a.full_name);
-      return b.id - a.id; // newest default
-    });
+        // Ban type filter
+        if (banTypeFilter !== 'all' && acc.banType.toLowerCase() !== banTypeFilter.toLowerCase()) {
+          return false;
+        }
+
+        // Reason filter
+        if (reasonFilter !== 'all' && acc.reason !== reasonFilter) {
+          return false;
+        }
+
+        // Search query
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase().trim();
+          const matchesName = acc.full_name.toLowerCase().includes(q);
+          const matchesEmail = acc.email.toLowerCase().includes(q);
+          const matchesPhone = acc.phone && acc.phone.includes(q);
+          const matchesId = acc.accountId && acc.accountId.toLowerCase().includes(q);
+          const matchesBusiness = acc.businessName && acc.businessName.toLowerCase().includes(q);
+
+          if (!matchesName && !matchesEmail && !matchesPhone && !matchesId && !matchesBusiness) {
+            return false;
+          }
+        }
+
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortOption === 'oldest') return a.id - b.id;
+        if (sortOption === 'name-asc') return a.full_name.localeCompare(b.full_name);
+        if (sortOption === 'name-desc') return b.full_name.localeCompare(a.full_name);
+        return b.id - a.id; // newest default
+      });
   }, [bannedList, accountTypeFilter, banTypeFilter, reasonFilter, searchQuery, sortOption]);
 
   useEffect(() => {
@@ -171,7 +178,11 @@ export default function ProviderBanned({ bannedUsers }) {
       setTimeout(() => setToastMessage(''), 4000);
 
       try {
-        router.put(route('admin.providers.toggle-active', unbanningAccount.id), {}, { preserveScroll: true });
+        router.put(
+          route('admin.providers.toggle-active', unbanningAccount.id),
+          {},
+          { preserveScroll: true }
+        );
       } catch (e) {}
     }, 400);
   };
@@ -198,7 +209,9 @@ export default function ProviderBanned({ bannedUsers }) {
         {/* 1. Page Header */}
         <PageHeader
           title={t('Banned Accounts')}
-          description={t('View and manage accounts that have been banned or suspended from the platform.')}
+          description={t(
+            'View and manage accounts that have been banned or suspended from the platform.'
+          )}
         />
 
         {/* 2. Summary Statistics Cards */}
@@ -208,7 +221,9 @@ export default function ProviderBanned({ bannedUsers }) {
               <ShieldAlert className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Total Banned')}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                {t('Total Banned')}
+              </p>
               <p className="text-2xl font-bold text-slate-900 mt-0.5">{stats.total}</p>
             </div>
           </div>
@@ -218,7 +233,9 @@ export default function ProviderBanned({ bannedUsers }) {
               <Briefcase className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Banned Providers')}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                {t('Banned Providers')}
+              </p>
               <p className="text-2xl font-bold text-slate-900 mt-0.5">{stats.providers}</p>
             </div>
           </div>
@@ -228,7 +245,9 @@ export default function ProviderBanned({ bannedUsers }) {
               <Users className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Banned Customers')}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                {t('Banned Customers')}
+              </p>
               <p className="text-2xl font-bold text-slate-900 mt-0.5">{stats.customers}</p>
             </div>
           </div>
@@ -238,7 +257,9 @@ export default function ProviderBanned({ bannedUsers }) {
               <Calendar className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Banned This Month')}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                {t('Banned This Month')}
+              </p>
               <p className="text-2xl font-bold text-slate-900 mt-0.5">{stats.thisMonth}</p>
             </div>
           </div>
@@ -263,7 +284,10 @@ export default function ProviderBanned({ bannedUsers }) {
 
             {/* Clear filters & Sorting dropdown */}
             <div className="flex items-center gap-3 self-end md:self-auto">
-              {(searchQuery || accountTypeFilter !== 'all' || banTypeFilter !== 'all' || reasonFilter !== 'all') && (
+              {(searchQuery ||
+                accountTypeFilter !== 'all' ||
+                banTypeFilter !== 'all' ||
+                reasonFilter !== 'all') && (
                 <button
                   type="button"
                   onClick={handleClearFilters}
@@ -346,7 +370,9 @@ export default function ProviderBanned({ bannedUsers }) {
         {error ? (
           <div className="flex flex-col items-center justify-center p-8 rounded-2xl border border-red-200 bg-red-50/50 text-center">
             <AlertCircle className="h-10 w-10 text-red-500 mb-3" />
-            <h3 className="text-lg font-bold text-slate-900">{t('Unable to load banned accounts.')}</h3>
+            <h3 className="text-lg font-bold text-slate-900">
+              {t('Unable to load banned accounts.')}
+            </h3>
             <p className="text-sm text-slate-600 mt-1 mb-4">{error}</p>
             <button
               type="button"
@@ -362,7 +388,10 @@ export default function ProviderBanned({ bannedUsers }) {
           <TableCard>
             <div className="p-6 space-y-4 animate-pulse">
               {[1, 2, 3, 4].map((n) => (
-                <div key={n} className="flex items-center justify-between gap-4 py-3 border-b border-slate-100">
+                <div
+                  key={n}
+                  className="flex items-center justify-between gap-4 py-3 border-b border-slate-100"
+                >
                   <div className="h-10 w-10 rounded-full bg-slate-200"></div>
                   <div className="h-4 bg-slate-200 rounded w-1/4"></div>
                   <div className="h-4 bg-slate-200 rounded w-1/6"></div>
@@ -425,7 +454,9 @@ export default function ProviderBanned({ bannedUsers }) {
                               {initials}
                             </div>
                             <div className="min-w-0">
-                              <span className="block font-semibold text-slate-900 truncate">{acc.full_name}</span>
+                              <span className="block font-semibold text-slate-900 truncate">
+                                {acc.full_name}
+                              </span>
                               {acc.businessName && (
                                 <span className="block text-xs font-medium text-theme-accent truncate">
                                   {acc.businessName}
@@ -473,10 +504,14 @@ export default function ProviderBanned({ bannedUsers }) {
                         </td>
 
                         {/* Banned Date */}
-                        <td className="px-5 py-4 text-xs font-medium text-slate-600">{acc.bannedDate}</td>
+                        <td className="px-5 py-4 text-xs font-medium text-slate-600">
+                          {acc.bannedDate}
+                        </td>
 
                         {/* Banned By */}
-                        <td className="px-5 py-4 text-xs font-medium text-slate-600">{acc.bannedBy || 'Admin'}</td>
+                        <td className="px-5 py-4 text-xs font-medium text-slate-600">
+                          {acc.bannedBy || 'Admin'}
+                        </td>
 
                         {/* Status */}
                         <td className="px-5 py-4">

@@ -76,7 +76,9 @@ export default function CustomerFormModal({
                   {isEditing ? t('Edit Customer Profile') : t('Add New Customer')}
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5 leading-normal">
-                  {isEditing ? t('Update customer account information.') : t('Register a new customer account in the system.')}
+                  {isEditing
+                    ? t('Update customer account information.')
+                    : t('Register a new customer account in the system.')}
                 </p>
               </div>
 

@@ -62,9 +62,13 @@ export default function CustomerSuspendModal({
               </div>
 
               <div className="flex-1 min-w-0">
-                <h3 className="text-xl font-bold text-slate-900">{t('Suspend Customer Account?')}</h3>
+                <h3 className="text-xl font-bold text-slate-900">
+                  {t('Suspend Customer Account?')}
+                </h3>
                 <p className="mt-1 text-xs text-slate-500 leading-relaxed">
-                  {t('Are you sure you want to suspend this customer\'s account?')} <span className="font-semibold text-slate-800">{customer.full_name}</span> {t('will temporarily lose account access.')}
+                  {t("Are you sure you want to suspend this customer's account?")}{' '}
+                  <span className="font-semibold text-slate-800">{customer.full_name}</span>{' '}
+                  {t('will temporarily lose account access.')}
                 </p>
               </div>
 

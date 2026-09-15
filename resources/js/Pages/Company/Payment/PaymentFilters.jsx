@@ -1,5 +1,14 @@
 import React from 'react';
-import { Search, CreditCard, Calendar, ChevronDown, LayoutGrid, List, RefreshCw, X } from 'lucide-react';
+import {
+  Search,
+  CreditCard,
+  Calendar,
+  ChevronDown,
+  LayoutGrid,
+  List,
+  RefreshCw,
+  X,
+} from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
 export default function PaymentFilters({
@@ -19,10 +28,7 @@ export default function PaymentFilters({
   const { t } = useTranslation();
 
   const hasActiveFilters =
-    searchTerm !== '' ||
-    statusFilter !== 'all' ||
-    methodFilter !== 'all' ||
-    dateFilter !== 'all';
+    searchTerm !== '' || statusFilter !== 'all' || methodFilter !== 'all' || dateFilter !== 'all';
 
   return (
     <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
@@ -48,7 +54,6 @@ export default function PaymentFilters({
 
       {/* Filter Controls & Export */}
       <div className="flex flex-wrap items-center gap-3 justify-between lg:justify-end">
-        
         {/* Method Filter */}
         <div className="relative flex items-center">
           <CreditCard className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
@@ -109,7 +114,7 @@ export default function PaymentFilters({
             <List className="w-4 h-4" />
             <span className="hidden sm:inline">{t('Table')}</span>
           </button>
-          
+
           <button
             onClick={() => setViewMode('grid')}
             title={t('Grid View')}

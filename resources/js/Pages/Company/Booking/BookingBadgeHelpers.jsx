@@ -1,5 +1,14 @@
 import React from 'react';
-import { AlertCircle, Clock, CheckCircle2, XCircle, Wrench, Zap, Flame, ShieldAlert } from 'lucide-react';
+import {
+  AlertCircle,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Wrench,
+  Zap,
+  Flame,
+  ShieldAlert,
+} from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
 export function StatusBadge({ status }) {
@@ -79,12 +88,28 @@ export function UrgencyBadge({ urgency }) {
 export function CategoryBadge({ category }) {
   switch (category?.toLowerCase()) {
     case 'plumbing':
-      return <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-50 text-sky-700 border border-sky-200 whitespace-nowrap">Plumbing</span>;
+      return (
+        <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-50 text-sky-700 border border-sky-200 whitespace-nowrap">
+          Plumbing
+        </span>
+      );
     case 'hvac':
-      return <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-700 border border-teal-200 whitespace-nowrap">HVAC</span>;
+      return (
+        <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-700 border border-teal-200 whitespace-nowrap">
+          HVAC
+        </span>
+      );
     case 'electrical':
-      return <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">Electrical</span>;
+      return (
+        <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">
+          Electrical
+        </span>
+      );
     default:
-      return <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 whitespace-nowrap">{category}</span>;
+      return (
+        <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 whitespace-nowrap">
+          {category}
+        </span>
+      );
   }
 }

@@ -159,7 +159,9 @@ export default function PropertyTypeFormModal({
                       : 'border-slate-200 focus:border-theme-accent focus:ring-1 focus:ring-theme-accent'
                   }`}
                 />
-                {errors.name && <p className="mt-1 text-xs font-medium text-red-500">{errors.name}</p>}
+                {errors.name && (
+                  <p className="mt-1 text-xs font-medium text-red-500">{errors.name}</p>
+                )}
               </div>
 
               {/* Description */}

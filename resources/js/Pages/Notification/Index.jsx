@@ -66,7 +66,9 @@ export default function NotificationIndex({ notifications: initialNotifications 
               {t('Notifications & Activity Feed')}
             </h1>
             <p className="text-sm font-medium text-slate-500 mt-1">
-              {t('Stay up to date with your system alerts, customer requests, and provider updates.')}
+              {t(
+                'Stay up to date with your system alerts, customer requests, and provider updates.'
+              )}
             </p>
           </div>
 
@@ -123,7 +125,9 @@ export default function NotificationIndex({ notifications: initialNotifications 
               </div>
               <h3 className="text-base font-bold text-slate-900">{t('No Notifications')}</h3>
               <p className="mt-1 text-xs text-slate-500 max-w-sm">
-                {t('You are all caught up! There are no unread or pending notifications in this category.')}
+                {t(
+                  'You are all caught up! There are no unread or pending notifications in this category.'
+                )}
               </p>
             </div>
           ) : (
@@ -155,7 +159,9 @@ export default function NotificationIndex({ notifications: initialNotifications 
                           {t('New')}
                         </span>
                       )}
-                      <span className="text-[11px] font-semibold text-slate-400">• {n.created_at}</span>
+                      <span className="text-[11px] font-semibold text-slate-400">
+                        • {n.created_at}
+                      </span>
                     </div>
 
                     <p className="mt-1 text-xs text-slate-600 leading-relaxed">{n.description}</p>

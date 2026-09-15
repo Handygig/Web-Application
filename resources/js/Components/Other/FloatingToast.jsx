@@ -32,8 +32,8 @@ export default function FloatingToast({
           isDeleteSuccess
             ? 'text-red-600'
             : isStandardSuccess
-            ? 'text-emerald-700'
-            : 'text-rose-700'
+              ? 'text-emerald-700'
+              : 'text-rose-700'
         }`}
         role="alert"
       >
@@ -57,8 +57,8 @@ export default function FloatingToast({
               isDeleteSuccess
                 ? 'text-red-600'
                 : isStandardSuccess
-                ? 'text-emerald-700'
-                : 'text-rose-700'
+                  ? 'text-emerald-700'
+                  : 'text-rose-700'
             }`}
           >
             {typeof message === 'string' ? message : t('Successfully deleted')}
