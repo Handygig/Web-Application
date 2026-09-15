@@ -11,160 +11,82 @@ export default function Welcome({ canLogin, canRegister }) {
 
   const categories = [
     {
-      name: t('Plumbing & Piping'),
-      jobs: '122 Active Jobs',
+      name: t('Accounting & Finance'),
+      jobs: t('122 Active Jobs'),
+      desc: t('You can view all popular jobs according your future careers.'),
       icon: (
-        <svg
-          className="w-8 h-8 text-theme-accent"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-          />
+        <svg className="w-9 h-9 text-theme-accent fill-current" viewBox="0 0 24 24">
+          <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM7 7H17V9H7V7ZM17 17H7V15H17V17ZM17 13H7V11H17V13Z" />
         </svg>
       ),
     },
     {
-      name: t('Electrical Wiring'),
-      jobs: '98 Active Jobs',
+      name: t('Plumbing & Piping'),
+      jobs: t('98 Active Jobs'),
+      desc: t('You can view all popular jobs according your future careers.'),
       icon: (
-        <svg
-          className="w-8 h-8 text-theme-accent"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M13 10V3L4 14h7v7l9-11h-7z"
-          />
+        <svg className="w-9 h-9 text-theme-accent fill-current" viewBox="0 0 24 24">
+          <path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96zM12 18c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" />
+        </svg>
+      ),
+    },
+    {
+      name: t('Electrical & Power'),
+      jobs: t('75 Active Jobs'),
+      desc: t('You can view all popular jobs according your future careers.'),
+      icon: (
+        <svg className="w-9 h-9 text-theme-accent fill-current" viewBox="0 0 24 24">
+          <path d="M7 2v11h3v9l7-12h-4l4-8z" />
         </svg>
       ),
     },
     {
       name: t('Carpentry & Woodwork'),
-      jobs: '75 Active Jobs',
+      jobs: t('64 Active Jobs'),
+      desc: t('You can view all popular jobs according your future careers.'),
       icon: (
-        <svg
-          className="w-8 h-8 text-theme-accent"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M11 4a2 2 0 114 0v1a2 2 0 01-2 2h-1.5a2.5 2.5 0 00-2.5 2.5V11H5v-1a4 4 0 014-4V4zM4 14h16v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6z"
-          />
+        <svg className="w-9 h-9 text-theme-accent fill-current" viewBox="0 0 24 24">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
         </svg>
       ),
     },
     {
       name: t('HVAC & Cooling'),
-      jobs: '64 Active Jobs',
+      jobs: t('110 Active Jobs'),
+      desc: t('You can view all popular jobs according your future careers.'),
       icon: (
-        <svg
-          className="w-8 h-8 text-theme-accent"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-          />
+        <svg className="w-9 h-9 text-theme-accent fill-current" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
         </svg>
       ),
     },
     {
       name: t('Painting & Decorating'),
-      jobs: '110 Active Jobs',
+      jobs: t('85 Active Jobs'),
+      desc: t('You can view all popular jobs according your future careers.'),
       icon: (
-        <svg
-          className="w-8 h-8 text-theme-accent"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
-          />
-        </svg>
-      ),
-    },
-    {
-      name: t('Appliance Repair'),
-      jobs: '85 Active Jobs',
-      icon: (
-        <svg
-          className="w-8 h-8 text-theme-accent"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-          />
+        <svg className="w-9 h-9 text-theme-accent fill-current" viewBox="0 0 24 24">
+          <path d="M18 4V3c0-.55-.45-1-1-1H7c-.55 0-1 .45-1 1v1H4c-.55 0-1 .45-1 1v4c0 2.21 1.79 4 4 4h2v7c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-7h2c2.21 0 4-1.79 4-4V5c0-.55-.45-1-1-1h-2z" />
         </svg>
       ),
     },
     {
       name: t('Roofing & Exterior'),
-      jobs: '42 Active Jobs',
+      jobs: t('42 Active Jobs'),
+      desc: t('You can view all popular jobs according your future careers.'),
       icon: (
-        <svg
-          className="w-8 h-8 text-theme-accent"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-          />
+        <svg className="w-9 h-9 text-theme-accent fill-current" viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
         </svg>
       ),
     },
     {
       name: t('Locksmith & Security'),
-      jobs: '56 Active Jobs',
+      jobs: t('56 Active Jobs'),
+      desc: t('You can view all popular jobs according your future careers.'),
       icon: (
-        <svg
-          className="w-8 h-8 text-theme-accent"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-          />
+        <svg className="w-9 h-9 text-theme-accent fill-current" viewBox="0 0 24 24">
+          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
         </svg>
       ),
     },
@@ -438,11 +360,11 @@ export default function Welcome({ canLogin, canRegister }) {
       {/* Explore Top Categories Section */}
       <section id="categories" className="py-20 bg-emerald-950/5">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-3xl font-extrabold text-slate-900 mb-3">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">
               {t('Explore Top Categories')}
             </h2>
-            <p className="text-slate-600 text-sm leading-relaxed">
+            <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
               {t(
                 'Browse handyman job categories and connect directly with skilled workers across various trades.'
               )}
@@ -453,16 +375,22 @@ export default function Welcome({ canLogin, canRegister }) {
             {categories.map((cat, idx) => (
               <div
                 key={idx}
-                className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition duration-200 flex flex-col gap-3 group"
+                className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 ease-out flex flex-col justify-between items-start text-left group cursor-pointer"
               >
-                <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center group-hover:scale-105 transition transform">
-                  {cat.icon}
+                <div>
+                  <div className="mb-3.5 flex items-center justify-start transition-transform duration-300 group-hover:scale-110 origin-left">
+                    {cat.icon}
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-2xl tracking-tight leading-snug mb-2">
+                    {cat.name}
+                  </h3>
+                  <p className="text-slate-500 text-base leading-relaxed mb-4 font-normal">
+                    {cat.desc}
+                  </p>
                 </div>
-                <h3 className="font-bold text-slate-900 text-lg mt-2">{cat.name}</h3>
-                <p className="text-slate-500 text-xs leading-relaxed">
-                  {t('Find available jobs and skilled handymen according to your service needs.')}
-                </p>
-                <span className="text-xs font-semibold text-theme-accent mt-2">{cat.jobs}</span>
+                <span className="text-base font-bold text-theme-accent tracking-tight">
+                  {cat.jobs}
+                </span>
               </div>
             ))}
           </div>
