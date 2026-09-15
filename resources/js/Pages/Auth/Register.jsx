@@ -53,9 +53,9 @@ export default function Register() {
           />
         </div>
 
-        <div className="relative z-10 max-w-7xl w-full mx-auto px-6 py-8 lg:py-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center flex-1">
+        <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 py-4 lg:py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center flex-1">
           {/* Left Side Tagline & Stats */}
-          <div className="lg:col-span-6 text-white flex flex-col gap-6 text-left pb-8 lg:pb-0 -mt-6 lg:-mt-14">
+          <div className="lg:col-span-7 text-white flex flex-col gap-5 text-left pb-4 lg:pb-0 -mt-2 lg:-mt-6">
             <div className="flex items-center gap-2">
               <span className="h-0.5 w-6 bg-emerald-400"></span>
               <span className="text-emerald-400 text-sm font-semibold tracking-wider">
@@ -63,58 +63,58 @@ export default function Register() {
               </span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-6xl font-extrabold tracking-wide leading-[1.12]">
+            <h1 className="text-4xl sm:text-5xl lg:text-5xl font-extrabold tracking-wide leading-[1.12]">
               {t('Real Jobs, Real People,')}{' '}
               <span className="block text-white tracking-wide">{t('Real Success')}</span>
             </h1>
 
-            <p className="text-slate-200 text-base max-w-lg leading-relaxed tracking-wide">
+            <p className="text-slate-200 text-sm sm:text-base max-w-lg leading-relaxed tracking-wide">
               {t('Getting a new job is never easy. Check what new jobs we have in store for you on Handygig.')}
             </p>
 
-            <div className="flex items-center gap-10 pt-4">
+            <div className="flex items-center gap-8 pt-2">
               <div>
-                <p className="text-4xl font-bold tracking-wide text-white">200<span className="text-emerald-400">M</span></p>
-                <p className="text-xs text-slate-300 font-medium mt-1 tracking-wide">{t('Active Jobs')}</p>
+                <p className="text-3xl sm:text-4xl font-bold tracking-wide text-white">200<span className="text-emerald-400">M</span></p>
+                <p className="text-xs text-slate-300 font-medium mt-0.5 tracking-wide">{t('Active Jobs')}</p>
               </div>
               <div>
-                <p className="text-4xl font-bold tracking-wide text-white">40<span className="text-emerald-400">K</span></p>
-                <p className="text-xs text-slate-300 font-medium mt-1 tracking-wide">{t('Startups')}</p>
+                <p className="text-3xl sm:text-4xl font-bold tracking-wide text-white">40<span className="text-emerald-400">K</span></p>
+                <p className="text-xs text-slate-300 font-medium mt-0.5 tracking-wide">{t('Startups')}</p>
               </div>
               <div>
-                <p className="text-4xl font-bold tracking-wide text-white">340<span className="text-emerald-400">K</span></p>
-                <p className="text-xs text-slate-300 font-medium mt-1 tracking-wide">{t('Talents')}</p>
+                <p className="text-3xl sm:text-4xl font-bold tracking-wide text-white">340<span className="text-emerald-400">K</span></p>
+                <p className="text-xs text-slate-300 font-medium mt-0.5 tracking-wide">{t('Talents')}</p>
               </div>
             </div>
           </div>
 
-          {/* Right Side Floating Registration Card */}
-          <div className="lg:col-span-6 w-full z-20">
-            <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl text-slate-900 border border-slate-100 flex flex-col gap-6">
+          {/* Right Side Floating Registration Card (Matches Login Card Width: lg:col-span-5) */}
+          <div className="lg:col-span-5 w-full z-20">
+            <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-2xl text-slate-900 border border-slate-100 flex flex-col gap-4">
               <div className="flex flex-col text-left">
-                <h1 className="text-3xl sm:text-[40px] font-bold text-[#1B2021] leading-[1.2] mb-2 tracking-tight">
-                  {t('Grow Your Career With')} <span className="text-theme-accent">Handygig</span>
-                </h1>
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#1B2021] tracking-tight">
+                  {t('Create Account')}
+                </h2>
               </div>
 
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                 <TextInput
                   label={t('Full Name')}
                   value={data.full_name}
                   onChange={(e) => setData('full_name', e.target.value)}
                   error={errors.full_name}
-                  placeholder={t('Enter your full name')}
+                  placeholder={t('Full name')}
                   required
                 />
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <TextInput
                     label={t('Email Address')}
                     type="email"
                     value={data.email}
                     onChange={(e) => setData('email', e.target.value)}
                     error={errors.email}
-                    placeholder={t('Enter your email')}
+                    placeholder={t('Email')}
                     required
                   />
 
@@ -124,7 +124,7 @@ export default function Register() {
                     value={data.phone}
                     onChange={(e) => setData('phone', e.target.value)}
                     error={errors.phone}
-                    placeholder={t('Enter phone number')}
+                    placeholder={t('Phone')}
                     required
                   />
                 </div>
@@ -138,14 +138,14 @@ export default function Register() {
                   placeholder={null}
                 />
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <TextInput
                     label={t('Password')}
                     type="password"
                     value={data.password}
                     onChange={(e) => setData('password', e.target.value)}
                     error={errors.password}
-                    placeholder={t('Create password')}
+                    placeholder={t('Password')}
                     required
                   />
 
@@ -155,7 +155,7 @@ export default function Register() {
                     value={data.password_confirmation}
                     onChange={(e) => setData('password_confirmation', e.target.value)}
                     error={errors.password_confirmation}
-                    placeholder={t('Confirm password')}
+                    placeholder={t('Confirm')}
                     required
                   />
                 </div>
@@ -163,7 +163,7 @@ export default function Register() {
                 <button
                   type="submit"
                   disabled={processing}
-                  className="w-full py-4 px-6 mt-2 rounded-xl bg-theme-accent hover:bg-theme-accent-hover text-white font-bold text-base transition shadow-lg shadow-emerald-900/20 disabled:opacity-50"
+                  className="w-full py-3 px-5 mt-1 rounded-xl bg-theme-accent hover:bg-theme-accent-hover text-white font-bold text-sm transition shadow-md shadow-emerald-900/20 disabled:opacity-50"
                 >
                   {processing ? t('Creating Account...') : t('Create Account')}
                 </button>
@@ -183,6 +183,7 @@ export default function Register() {
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );
