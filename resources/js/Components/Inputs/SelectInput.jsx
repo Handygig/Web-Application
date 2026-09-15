@@ -1,7 +1,7 @@
 import { toTitleCase } from '@/Utils/helper';
 import React, { forwardRef, useState } from 'react';
 import { Popover } from '@headlessui/react';
-import { ChevronDown, Search } from 'lucide-react';
+import { ChevronDown, Search, Check } from 'lucide-react';
 
 export default forwardRef(function SelectInput(
   {
@@ -10,20 +10,22 @@ export default forwardRef(function SelectInput(
     required = false,
     error,
     children,
+    options: optionsProp,
     className = '',
     searchable = false,
     onSearchChange,
     loading = false,
     value,
     onChange,
+    placeholder,
     ...props
   },
   ref
 ) {
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Extract option elements from children
-  const options = React.Children.toArray(children).reduce((acc, child) => {
+  // Extract option elements from props or children
+  const optionsFromChildren = React.Children.toArray(children).reduce((acc, child) => {
     if (React.isValidElement(child)) {
       if (child.type === 'option') {
         acc.push({
@@ -45,14 +47,18 @@ export default forwardRef(function SelectInput(
     return acc;
   }, []);
 
-  const placeholderOption = options.find((opt) => opt.value === '');
-  const selectOptions = options.filter((opt) => opt.value !== '');
-  const selectedOption = selectOptions.find(
-    (opt) => String(opt.value) === String(value) && value !== ''
+  const rawOptions = optionsProp && optionsProp.length > 0 ? optionsProp : optionsFromChildren;
+  const selectOptions = rawOptions.map((opt) =>
+    typeof opt === 'object' ? opt : { value: opt, label: String(opt) }
   );
+
+  const selectedOption = selectOptions.find(
+    (opt) => String(opt.value).toLowerCase() === String(value || '').toLowerCase()
+  );
+
   const displayText = selectedOption
     ? selectedOption.label
-    : placeholderOption?.label || 'Select...';
+    : placeholder || (selectOptions[0] ? selectOptions[0].label : 'Select...');
 
   const filteredOptions = searchable
     ? selectOptions.filter((opt) =>
@@ -74,9 +80,9 @@ export default forwardRef(function SelectInput(
   };
 
   return (
-    <div className={`flex flex-col gap-2 ${className}`}>
+    <div className={`flex flex-col relative ${className}`}>
       {label && (
-        <label htmlFor={id} className="block text-xs font-medium text-slate-700 tracking-wider">
+        <label htmlFor={id} className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
           {toTitleCase(label)}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -85,30 +91,12 @@ export default forwardRef(function SelectInput(
       <Popover className="relative w-full">
         {({ open, close }) => (
           <>
-            <style
-              dangerouslySetInnerHTML={{
-                __html: `
-              .custom-select-scrollbar::-webkit-scrollbar {
-                width: 6px;
-              }
-              .custom-select-scrollbar::-webkit-scrollbar-track {
-                background: transparent;
-              }
-              .custom-select-scrollbar::-webkit-scrollbar-thumb {
-                background-color: rgba(156, 163, 175, 0.4);
-                border-radius: 9999px;
-              }
-              .custom-select-scrollbar::-webkit-scrollbar-thumb:hover {
-                background-color: rgba(156, 163, 175, 0.6);
-              }
-            `,
-              }}
-            />
             <Popover.Button
               ref={ref}
               id={id}
-              className={`flex w-full items-center justify-between rounded-[4px] border border-[#7A7E884D] bg-transparent px-4 py-3 text-sm text-slate-700 shadow-sm focus:border-theme-accent focus:bg-white/40 focus:outline-none focus:ring-1 focus:ring-theme-accent transition-all ${
-                error ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10' : ''
+              type="button"
+              className={`flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 shadow-2xs focus:border-theme-accent focus:bg-white focus:outline-none focus:ring-1 focus:ring-theme-accent transition-all cursor-pointer ${
+                error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
             >
               <span className="truncate">{displayText}</span>
@@ -118,13 +106,7 @@ export default forwardRef(function SelectInput(
             </Popover.Button>
 
             <Popover.Panel
-              anchor="bottom start"
-              transition
-              className="z-50 min-w-[var(--button-width)] rounded-xl border border-slate-200 bg-white p-2 text-slate-800 shadow-2xl [--anchor-gap:6px] transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
-              onClose={() => {
-                setSearchQuery('');
-                onSearchChange?.('');
-              }}
+              className="absolute left-0 right-0 top-full mt-1.5 z-[200] rounded-2xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-2xl transition duration-100 ease-out"
             >
               {searchable && (
                 <div className="relative mb-2 px-1">
@@ -143,26 +125,27 @@ export default forwardRef(function SelectInput(
                 </div>
               )}
 
-              <div className="max-h-[200px] overflow-y-auto custom-select-scrollbar flex flex-col gap-0.5">
+              <div className="max-h-[200px] overflow-y-auto flex flex-col gap-1 p-0.5">
                 {loading ? (
                   <div className="px-3 py-2 text-sm text-slate-400">Loading...</div>
                 ) : filteredOptions.length === 0 ? (
                   <div className="px-3 py-2 text-sm text-slate-400 italic">No options found</div>
                 ) : (
                   filteredOptions.map((opt, idx) => {
-                    const isSelected = String(opt.value) === String(value);
+                    const isSelected = String(opt.value).toLowerCase() === String(value || '').toLowerCase();
                     return (
                       <button
                         key={idx}
                         type="button"
                         onClick={() => handleSelect(opt.value, close)}
-                        className={`w-full text-left rounded-lg px-3 py-2 text-sm transition-colors ${
+                        className={`w-full flex items-center justify-between rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
                           isSelected
-                            ? 'bg-theme-accent text-white font-medium'
-                            : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900'
+                            ? 'bg-theme-accent text-white font-semibold'
+                            : 'hover:bg-slate-50 text-slate-700 hover:text-slate-900'
                         }`}
                       >
-                        {opt.label}
+                        <span className="truncate">{opt.label}</span>
+                        {isSelected && <Check className="h-4 w-4 shrink-0 text-white" />}
                       </button>
                     );
                   })

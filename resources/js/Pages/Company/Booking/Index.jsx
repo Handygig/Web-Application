@@ -361,7 +361,8 @@ export default function BookingIndex() {
         />
 
         {/* 2. SUMMARY METRICS CARDS */}
-        <BookingMetrics metrics={metrics} />
+        <BookingMetrics metrics={metrics} onFilterSelect={setStatusFilter} />
+
 
         {/* 3. FILTERS & CONTROLS */}
         <div className="space-y-3">

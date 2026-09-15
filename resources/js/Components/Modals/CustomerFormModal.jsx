@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Plus, Edit2, User, Mail, Phone, MapPin } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
+import SelectInput from '@/Components/Inputs/SelectInput';
 
 export default function CustomerFormModal({
   open = false,
@@ -66,34 +67,29 @@ export default function CustomerFormModal({
           <div
             role="dialog"
             aria-modal="true"
-            className="relative z-[100] w-full max-w-xl overflow-hidden rounded-[24px] bg-white p-6 sm:p-8 shadow-[0_24px_80px_rgba(15,23,42,0.25)] border border-slate-100 transition-all my-8"
+            className="relative z-[100] w-full max-w-xl overflow-visible rounded-[24px] bg-white p-6 sm:p-8 shadow-[0_24px_80px_rgba(15,23,42,0.25)] border border-slate-100 transition-all my-8"
             onMouseDown={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-theme-accent/10 text-theme-accent">
-                  {isEditing ? <Edit2 className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-slate-900">
-                    {isEditing ? t('Edit Customer Profile') : t('Add New Customer')}
-                  </h3>
-                  <p className="text-xs text-slate-500">
-                    {isEditing ? t('Update customer account information.') : t('Register a new customer account in the system.')}
-                  </p>
-                </div>
+            <div className="flex items-start justify-between pb-4 border-b border-slate-100">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900 leading-tight">
+                  {isEditing ? t('Edit Customer Profile') : t('Add New Customer')}
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5 leading-normal">
+                  {isEditing ? t('Update customer account information.') : t('Register a new customer account in the system.')}
+                </p>
               </div>
 
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
+                className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition -mr-1 -mt-1"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+            <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
                   {t('Full Name')} *
@@ -147,35 +143,25 @@ export default function CustomerFormModal({
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                    {t('Account Status')}
-                  </label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="w-full appearance-none rounded-xl border border-slate-200 bg-white pl-3.5 pr-9 py-2.5 text-sm text-slate-800 bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[length:14px_14px] bg-[right_10px_center] bg-no-repeat cursor-pointer focus:border-theme-accent focus:outline-none"
-                  >
-                    <option value="Active">{t('Active')}</option>
-                    <option value="Inactive">{t('Inactive')}</option>
-                    <option value="Suspended">{t('Suspended')}</option>
-                    <option value="Banned">{t('Banned')}</option>
-                  </select>
-                </div>
+                <SelectInput
+                  label={t('Account Status')}
+                  value={formData.status}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                >
+                  <option value="Active">{t('Active')}</option>
+                  <option value="Inactive">{t('Inactive')}</option>
+                  <option value="Suspended">{t('Suspended')}</option>
+                  <option value="Banned">{t('Banned')}</option>
+                </SelectInput>
 
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                    {t('Customer Type')}
-                  </label>
-                  <select
-                    value={formData.customerType}
-                    onChange={(e) => setFormData({ ...formData, customerType: e.target.value })}
-                    className="w-full appearance-none rounded-xl border border-slate-200 bg-white pl-3.5 pr-9 py-2.5 text-sm text-slate-800 bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[length:14px_14px] bg-[right_10px_center] bg-no-repeat cursor-pointer focus:border-theme-accent focus:outline-none"
-                  >
-                    <option value="Individual">{t('Individual')}</option>
-                    <option value="Business">{t('Business')}</option>
-                  </select>
-                </div>
+                <SelectInput
+                  label={t('Customer Type')}
+                  value={formData.customerType}
+                  onChange={(e) => setFormData({ ...formData, customerType: e.target.value })}
+                >
+                  <option value="Individual">{t('Individual')}</option>
+                  <option value="Business">{t('Business')}</option>
+                </SelectInput>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
