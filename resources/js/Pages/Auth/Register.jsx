@@ -53,9 +53,10 @@ export default function Register() {
           />
         </div>
 
-        <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 py-4 lg:py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center flex-1">
+        <div className="relative z-10 max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-4 lg:py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center flex-1">
+
           {/* Left Side Tagline & Stats */}
-          <div className="lg:col-span-7 text-white flex flex-col gap-5 text-left pb-4 lg:pb-0 -mt-2 lg:-mt-6">
+          <div className="lg:col-span-7 text-white flex flex-col gap-6 text-left pb-8 lg:pb-0 -mt-6 lg:-mt-14">
             <div className="flex items-center gap-2">
               <span className="h-0.5 w-6 bg-emerald-400"></span>
               <span className="text-emerald-400 text-sm font-semibold tracking-wider">
@@ -63,34 +64,41 @@ export default function Register() {
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-5xl font-extrabold tracking-wide leading-[1.12]">
+            <h1 className="text-5xl sm:text-6xl lg:text-6xl font-extrabold tracking-wide leading-[1.12]">
               {t('Real Jobs, Real People,')}{' '}
               <span className="block text-white tracking-wide">{t('Real Success')}</span>
             </h1>
 
-            <p className="text-slate-200 text-sm sm:text-base max-w-lg leading-relaxed tracking-wide">
+            <p className="text-slate-200 text-base sm:text-lg max-w-xl leading-relaxed tracking-wide">
               {t('Getting a new job is never easy. Check what new jobs we have in store for you on Handygig.')}
             </p>
 
-            <div className="flex items-center gap-8 pt-2">
+            <div className="flex items-center gap-10 pt-4">
               <div>
-                <p className="text-3xl sm:text-4xl font-bold tracking-wide text-white">200<span className="text-emerald-400">M</span></p>
-                <p className="text-xs text-slate-300 font-medium mt-0.5 tracking-wide">{t('Active Jobs')}</p>
+                <p className="text-4xl sm:text-5xl font-bold tracking-wide text-white">
+                  200<span className="text-emerald-400">M</span>
+                </p>
+                <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">{t('Active Jobs')}</p>
               </div>
               <div>
-                <p className="text-3xl sm:text-4xl font-bold tracking-wide text-white">40<span className="text-emerald-400">K</span></p>
-                <p className="text-xs text-slate-300 font-medium mt-0.5 tracking-wide">{t('Startups')}</p>
+                <p className="text-4xl sm:text-5xl font-bold tracking-wide text-white">
+                  40<span className="text-emerald-400">K</span>
+                </p>
+                <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">{t('Startups')}</p>
               </div>
               <div>
-                <p className="text-3xl sm:text-4xl font-bold tracking-wide text-white">340<span className="text-emerald-400">K</span></p>
-                <p className="text-xs text-slate-300 font-medium mt-0.5 tracking-wide">{t('Talents')}</p>
+                <p className="text-4xl sm:text-5xl font-bold tracking-wide text-white">
+                  340<span className="text-emerald-400">K</span>
+                </p>
+                <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">{t('Talents')}</p>
               </div>
             </div>
           </div>
 
-          {/* Right Side Floating Registration Card (Matches Login Card Width: lg:col-span-5) */}
+          {/* Right Side Floating Registration Card (Matches Login Card Width: lg:col-span-5 & Padding p-8 sm:p-10) */}
           <div className="lg:col-span-5 w-full z-20">
-            <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-2xl text-slate-900 border border-slate-100 flex flex-col gap-4">
+            <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl text-slate-900 border border-slate-100 flex flex-col gap-4">
+
               <div className="flex flex-col text-left">
                 <h2 className="text-2xl sm:text-3xl font-bold text-[#1B2021] tracking-tight">
                   {t('Create Account')}

@@ -42,7 +42,8 @@ export default function Login() {
         />
       </div>
 
-      <div className="relative z-10 max-w-7xl w-full mx-auto px-6 py-8 lg:py-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center flex-1">
+      <div className="relative z-10 max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-8 lg:py-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center flex-1">
+
         {/* Left Side Hero Content & Key Metrics */}
         <div className="lg:col-span-7 text-white flex flex-col gap-6 text-left pb-8 lg:pb-0 -mt-6 lg:-mt-14">
           <div className="flex items-center gap-2">

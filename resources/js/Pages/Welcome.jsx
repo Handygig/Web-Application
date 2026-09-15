@@ -143,19 +143,15 @@ export default function Welcome({ canLogin, canRegister }) {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
+    <div className="min-h-screen text-slate-800 flex flex-col font-sans">
       {/* Header */}
       <LandingNavbar auth={auth} canLogin={canLogin} canRegister={canRegister} activePage="home" />
 
       {/* Hero Section */}
-      <section className="bg-white py-16 md:py-24 border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="flex flex-col gap-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-theme-accent-10 text-theme-accent text-xs font-semibold tracking-wide uppercase max-w-max">
-              🔧 {t('#1 Handyman Service Marketplace')}
-            </div>
-
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
+      <section className="bg-white py-6 md:py-10 border-b border-slate-100 overflow-hidden">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          <div className="lg:col-span-6 flex flex-col gap-6 text-left pt-4 lg:pt-10">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
               {t('Find Trusted')}{' '}
               <span className="text-theme-accent">
                 {t('Handyman Experts')}
@@ -163,76 +159,109 @@ export default function Welcome({ canLogin, canRegister }) {
               {t('For Your Home')}
             </h1>
 
-            <p className="text-slate-600 text-lg leading-relaxed max-w-xl">
+            <p className="text-slate-600 text-lg md:text-xl leading-relaxed max-w-2xl">
               {t(
                 'Connect with verified local professionals for plumbing, electrical, carpentry, HVAC, and home repairs. Post a job request or apply as a service provider today.'
               )}
             </p>
 
             {/* Quick Search Bar */}
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-3">
-              <div className="flex-1 flex items-center gap-2 px-3 bg-white rounded-xl border border-slate-200">
-                <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-3 w-full max-w-2xl">
+              <div className="flex-1 flex items-center gap-2.5 px-3.5 bg-white rounded-xl border border-slate-200">
+                <svg className="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
                   type="text"
                   placeholder={t('Search service, job title or skill...')}
-                  className="w-full py-3 bg-transparent text-sm focus:outline-none text-slate-800 placeholder-slate-400 border-0 focus:ring-0"
+                  className="w-full py-3.5 bg-transparent text-base focus:outline-none text-slate-800 placeholder-slate-400 border-0 focus:ring-0"
                 />
               </div>
               <Link
                 href={auth.user ? "/dashboard" : "/register"}
-                className="px-6 py-3 bg-theme-accent hover:bg-theme-accent-hover text-white text-sm font-semibold rounded-xl text-center transition flex items-center justify-center gap-2 shadow-md shadow-emerald-900/10"
+                className="px-7 py-3.5 bg-theme-accent hover:bg-theme-accent-hover text-white text-base font-bold rounded-xl text-center transition flex items-center justify-center gap-2 shadow-md shadow-emerald-900/10 shrink-0"
               >
                 {t('Search Jobs')}
               </Link>
             </div>
 
-            <div className="flex items-center gap-8 pt-4">
+            <div className="flex flex-wrap items-center gap-8 sm:gap-10 pt-3">
               <div>
-                <p className="text-2xl font-bold text-slate-900">12k+</p>
-                <p className="text-xs text-slate-500 font-medium">{t('Verified Handymen')}</p>
+                <p className="text-3xl font-extrabold text-slate-900">12k+</p>
+                <p className="text-sm text-slate-500 font-semibold mt-0.5">{t('Verified Handymen')}</p>
               </div>
-              <div className="h-8 w-px bg-slate-200" />
+              <div className="h-9 w-px bg-slate-200 hidden sm:block" />
               <div>
-                <p className="text-2xl font-bold text-slate-900">45k+</p>
-                <p className="text-xs text-slate-500 font-medium">{t('Jobs Completed')}</p>
+                <p className="text-3xl font-extrabold text-slate-900">45k+</p>
+                <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-0.5">{t('Jobs Completed')}</p>
               </div>
-              <div className="h-8 w-px bg-slate-200" />
+              <div className="h-9 w-px bg-slate-200 hidden sm:block" />
               <div>
-                <p className="text-2xl font-bold text-slate-900">99%</p>
-                <p className="text-xs text-slate-500 font-medium">{t('Satisfaction Rate')}</p>
+                <p className="text-3xl font-extrabold text-slate-900">99%</p>
+                <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-0.5">{t('Satisfaction Rate')}</p>
               </div>
             </div>
           </div>
 
-          <div className="relative flex justify-center">
-            <div className="w-full max-w-lg h-[460px] rounded-3xl overflow-hidden bg-gradient-to-tr from-emerald-800 to-emerald-950 p-2 shadow-2xl relative">
-              <div className="w-full h-full rounded-2xl overflow-hidden relative bg-slate-800">
-                <img
-                  src="/images/handygig-logo-1.png"
-                  alt="Handygig Marketplace"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex flex-col justify-end p-8 text-white">
-                  <span className="px-3 py-1 bg-emerald-500/20 backdrop-blur-md border border-emerald-400/30 text-emerald-300 text-xs font-semibold rounded-full w-max mb-2">
-                    {t('Top Rated Service')}
-                  </span>
-                  <h3 className="text-2xl font-bold">{t('On-Demand Skilled Professionals')}</h3>
-                  <p className="text-slate-300 text-sm mt-1">
-                    {t('Book certified technicians & skilled trade workers with transparent pricing.')}
-                  </p>
+          {/* Asymmetric 4-Image Grid with Hover Micro-Animations */}
+          <div className="lg:col-span-6 relative flex items-start justify-center lg:justify-end lg:pl-4 p-2">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 w-full max-w-2xl items-start">
+              {/* Row 1 Col 1: Circular Profile Image */}
+              <div className="flex justify-end items-start">
+                <div className="group w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full overflow-hidden shadow-xl shrink-0 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl cursor-pointer">
+                  <img
+                    src="/images/landing/hero-01.jpeg"
+                    alt="Handyman Professional"
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
                 </div>
+              </div>
+
+              {/* Row 1 Col 2: Tall Rounded Rectangle */}
+              <div className="flex justify-start items-start">
+                <div className="group w-40 h-64 sm:w-56 sm:h-80 md:w-64 md:h-96 rounded-[28px] sm:rounded-[40px] overflow-hidden shadow-xl shrink-0 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl cursor-pointer">
+                  <img
+                    src="/images/landing/hero-02.jpeg"
+                    alt="Service Team Discussion"
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                </div>
+              </div>
+
+              {/* Row 2 Col 1: Extra Tall Rounded Rectangle */}
+              <div className="flex justify-end items-start -mt-12 sm:-mt-20 md:-mt-28">
+                <div className="group w-40 h-64 sm:w-56 sm:h-80 md:w-64 md:h-96 rounded-[28px] sm:rounded-[40px] overflow-hidden shadow-xl shrink-0 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl cursor-pointer">
+                  <img
+                    src="/images/landing/hero-03.jpeg"
+                    alt="Skilled Worker at Job"
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                </div>
+              </div>
+
+              {/* Row 2 Col 2: Circular Profile Image with decorative dots */}
+              <div className="flex justify-start items-start relative">
+                <div className="group w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full overflow-hidden shadow-xl z-10 shrink-0 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl cursor-pointer">
+                  <img
+                    src="/images/landing/hero-04.jpeg"
+                    alt="Customer Service Specialist"
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                </div>
+                {/* Decorative background dot grid */}
+                <div className="absolute -bottom-3 -right-3 w-20 h-20 sm:w-28 sm:h-28 bg-[radial-gradient(#cbd5e1_2px,transparent_2px)] [background-size:10px_10px] -z-0 opacity-60" />
               </div>
             </div>
           </div>
+
+
+
         </div>
       </section>
 
       {/* Trusted Companies Banner */}
       <section className="bg-emerald-900 text-white py-10">
-        <div className="max-w-7xl mx-auto px-6 text-center">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 text-center">
           <p className="text-sm font-medium text-emerald-200 mb-6 uppercase tracking-wider">
             {t('The fastest-growing home service companies trust Handygig')}
           </p>
@@ -248,7 +277,7 @@ export default function Welcome({ canLogin, canRegister }) {
 
       {/* Featured Jobs Section */}
       <section id="featured-jobs" className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <h2 className="text-3xl font-extrabold text-slate-900 mb-3">
               {t('Featured Gigs & Job Opportunities')}
@@ -304,7 +333,7 @@ export default function Welcome({ canLogin, canRegister }) {
 
       {/* Explore Top Categories Section */}
       <section id="categories" className="py-20 bg-emerald-950/5">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <h2 className="text-3xl font-extrabold text-slate-900 mb-3">
               {t('Explore Top Categories')}
@@ -338,7 +367,7 @@ export default function Welcome({ canLogin, canRegister }) {
 
       {/* Trusted & Popular Job Portal Section */}
       <section id="why-us" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="relative flex justify-center">
             <div className="w-full max-w-md h-[480px] rounded-t-full rounded-b-3xl bg-emerald-100 p-3 shadow-lg relative overflow-hidden">
               <div className="w-full h-full rounded-t-full rounded-b-2xl bg-white border border-slate-200 flex flex-col items-center justify-center p-8 text-center">
@@ -414,7 +443,7 @@ export default function Welcome({ canLogin, canRegister }) {
 
       {/* Best Platform Experience Showcase Section */}
       <section className="py-20 bg-slate-50 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="flex flex-col gap-6 text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-theme-accent text-xs font-semibold tracking-wide uppercase max-w-max">
               {t('Our Showcase')}
@@ -479,7 +508,7 @@ export default function Welcome({ canLogin, canRegister }) {
 
       {/* Footer */}
       <footer className="w-full bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-theme-accent flex items-center justify-center text-white font-bold">
@@ -520,7 +549,7 @@ export default function Welcome({ canLogin, canRegister }) {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 border-t border-slate-800 pt-6 text-center text-xs text-slate-500">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 border-t border-slate-800 pt-6 text-center text-xs text-slate-500">
           &copy; {new Date().getFullYear()} Handygig. {t('All rights reserved.')}
         </div>
       </footer>
