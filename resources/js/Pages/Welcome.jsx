@@ -399,96 +399,81 @@ export default function Welcome({ canLogin, canRegister }) {
 
       {/* Trusted & Popular Job Portal Section */}
       <section id="why-us" className="py-20 bg-white">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="relative flex justify-center">
-            <div className="w-full max-w-md h-[480px] rounded-t-full rounded-b-3xl bg-emerald-100 p-3 shadow-lg relative overflow-hidden">
-              <div className="w-full h-full rounded-t-full rounded-b-2xl bg-white border border-slate-200 flex flex-col items-center justify-center p-8 text-center">
-                <div className="w-20 h-20 rounded-full bg-emerald-100 text-theme-accent flex items-center justify-center mb-6">
-                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                    />
-                  </svg>
-                </div>
-                <span className="px-3 py-1 bg-emerald-100 text-theme-accent text-xs font-bold rounded-full mb-3 uppercase">
-                  {t('Advanced Features')}
-                </span>
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                  {t('Verified Quality Work')}
-                </h3>
-                <p className="text-slate-600 text-sm">
-                  {t(
-                    'All handyman professionals are identity-verified with background checks and client ratings.'
-                  )}
-                </p>
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          {/* Left Column: Arch Image & Decorative Dot Grids */}
+          <div className="lg:col-span-6 relative flex justify-center lg:justify-start pl-6 sm:pl-10 lg:pl-12">
+            <div className="relative w-full max-w-[360px] sm:max-w-[420px] md:max-w-[460px] z-0">
+              {/* Top-Left Amber Dot Grid */}
+              <div className="absolute -top-6 -left-6 sm:-top-8 sm:-left-8 w-36 h-56 sm:w-44 sm:h-64 z-0 pointer-events-none">
+                <svg className="w-full h-full" viewBox="0 0 140 190" fill="none">
+                  <pattern id="amber-dot-grid" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+                    <circle cx="2.5" cy="2.5" r="1.6" fill="#f59e0b" />
+                  </pattern>
+                  <rect width="100%" height="100%" fill="url(#amber-dot-grid)" />
+                </svg>
+              </div>
+
+              {/* Arch Dome Image Container */}
+              <div className="w-full h-[430px] sm:h-[530px] md:h-[590px] rounded-t-[190px] sm:rounded-t-[230px] rounded-b-none overflow-hidden shadow-2xl relative z-10">
+                <img
+                  src="/images/landing/aboutus.jpeg"
+                  alt={t('About Us - Handygig')}
+                  className="w-full h-full object-cover object-center transition-transform duration-700 ease-out hover:scale-105"
+                />
+              </div>
+
+              {/* Bottom-Right Green Dot Grid */}
+              <div className="absolute -bottom-10 -right-6 sm:-bottom-14 sm:-right-8 w-36 h-44 sm:w-44 sm:h-52 z-0 pointer-events-none">
+                <svg className="w-full h-full" viewBox="0 0 140 170" fill="none">
+                  <pattern id="green-dot-grid" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+                    <circle cx="2.5" cy="2.5" r="1.6" fill="#059669" />
+                  </pattern>
+                  <rect width="100%" height="100%" fill="url(#green-dot-grid)" />
+                </svg>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold tracking-wide uppercase max-w-max">
-              {t('Why Choose Handygig')}
-            </div>
+          {/* Right Column: Text & Features List */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left pl-0 lg:pl-4">
+            <span className="inline-block px-4 py-1.5 rounded-lg bg-amber-100/70 text-amber-600 text-sm font-semibold mb-4">
+              {t('Advanced Features')}
+            </span>
 
-            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
-              {t('Trusted & Popular Handyman Service Portal')}
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight mb-4">
+              {t('Trusted & Popular')} <br />
+              {t('Job Portal')}
             </h2>
 
-            <p className="text-slate-600 text-sm leading-relaxed">
-              {t(
-                'We make it seamless to request home service jobs, receive instant provider quotations, track assignments, and make secure payments.'
-              )}
+            <p className="text-slate-500 text-base leading-relaxed mb-8 max-w-xl">
+              {t('At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores')}
             </p>
 
-            <div className="flex flex-col gap-4 mt-2">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 text-theme-accent flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
-                  ✓
+            <div className="flex flex-col gap-6 w-full">
+              {[
+                { title: t('#1 Quality Job') },
+                { title: t('Top Companies') },
+                { title: t('International Jobs') },
+                { title: t('No Extra Charges') },
+              ].map((feat, idx) => (
+                <div key={idx} className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 shrink-0 flex items-center justify-center mt-0.5">
+                    <div className="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-white shadow-sm">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 text-lg sm:text-xl">
+                      {feat.title}
+                    </h4>
+                    <p className="text-slate-500 text-sm leading-relaxed mt-1">
+                      {t('At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores')}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 text-base">
-                    {t('#1 Quality Jobs & Providers')}
-                  </h4>
-                  <p className="text-slate-500 text-xs mt-0.5">
-                    {t(
-                      'Access vetted individual technicians and certified handyman service companies.'
-                    )}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 text-theme-accent flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
-                  ✓
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 text-base">
-                    {t('Top Service Companies')}
-                  </h4>
-                  <p className="text-slate-500 text-xs mt-0.5">
-                    {t('Manage employee assignments, work orders, and client quotations easily.')}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 text-theme-accent flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
-                  ✓
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 text-base">
-                    {t('Fair & Transparent Pricing')}
-                  </h4>
-                  <p className="text-slate-500 text-xs mt-0.5">
-                    {t(
-                      'No hidden charges. Clear platform fees, quotations, and instant secure payment releases.'
-                    )}
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
