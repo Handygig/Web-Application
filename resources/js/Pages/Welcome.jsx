@@ -95,51 +95,39 @@ export default function Welcome({ canLogin, canRegister }) {
   const featuredJobs = [
     {
       id: 1,
+      image: '/images/landing/jobs/job1.jpeg',
       title: t('Senior Plumbing Specialist'),
-      type: 'Full Time',
-      badge: 'Featured',
-      typeBadgeClass: 'bg-emerald-100 text-emerald-800',
-      badgeClass: 'bg-emerald-100 text-emerald-800',
-      category: 'Plumbing',
-      location: 'New York, NY',
-      budget: '$45 - $65 / hr',
-      skills: ['Pipe Fitting', 'Water Heater', 'Emergency Repair'],
+      desc: t('Professional plumbing repair, pipe installation, and emergency water heater services for residential properties.'),
+      tags: [t('Pipe Fitting'), t('Water Heater'), t('Emergency Repair')],
+      salary: '$45 - $65 / hr',
+      openings: '6 Open',
     },
     {
       id: 2,
+      image: '/images/landing/jobs/job2.jpeg',
       title: t('Residential Electrician'),
-      type: 'Freelancer',
-      badge: 'Urgent',
-      typeBadgeClass: 'bg-sky-100 text-sky-800',
-      badgeClass: 'bg-amber-100 text-amber-800',
-      category: 'Electrical',
-      location: 'Los Angeles, CA',
-      budget: '$50 - $80 / hr',
-      skills: ['Circuit Breakers', 'Rewiring', 'Lighting Setup'],
+      desc: t('Licensed electrician for home wiring, circuit breaker maintenance, and custom interior lighting setups.'),
+      tags: [t('Circuit Breakers'), t('Rewiring'), t('Lighting Setup')],
+      salary: '$50 - $80 / hr',
+      openings: '4 Open',
     },
     {
       id: 3,
+      image: '/images/landing/jobs/job3.jpeg',
       title: t('Master Carpenter'),
-      type: 'Contract',
-      badge: 'Featured',
-      typeBadgeClass: 'bg-purple-100 text-purple-800',
-      badgeClass: 'bg-emerald-100 text-emerald-800',
-      category: 'Carpentry',
-      location: 'Chicago, IL',
-      budget: '$40 - $60 / hr',
-      skills: ['Custom Cabinets', 'Framing', 'Door Installation'],
+      desc: t('Expert custom cabinet building, structural framing, door installation, and fine woodwork finish.'),
+      tags: [t('Custom Cabinets'), t('Framing'), t('Door Installation')],
+      salary: '$40 - $60 / hr',
+      openings: '3 Open',
     },
     {
       id: 4,
+      image: '/images/landing/jobs/job4.jpeg',
       title: t('HVAC Maintenance Tech'),
-      type: 'Part Time',
-      badge: 'Urgent',
-      typeBadgeClass: 'bg-indigo-100 text-indigo-800',
-      badgeClass: 'bg-amber-100 text-amber-800',
-      category: 'HVAC',
-      location: 'Houston, TX',
-      budget: '$35 - $55 / hr',
-      skills: ['AC Repair', 'Duct Inspection', 'Thermostat Setup'],
+      desc: t('Comprehensive AC unit diagnostics, duct inspection, filter replacement, and smart thermostat setup.'),
+      tags: [t('AC Repair'), t('Duct Inspection'), t('Thermostat Setup')],
+      salary: '$35 - $55 / hr',
+      openings: '2 Open',
     },
   ];
 
@@ -290,67 +278,64 @@ export default function Welcome({ canLogin, canRegister }) {
       </section>
 
       {/* Featured Jobs Section */}
-      <section id="featured-jobs" className="py-20 bg-slate-50">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6">
+      <section id="featured-jobs" className="py-20 bg-white">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-3xl font-extrabold text-slate-900 mb-3">
-              {t('Featured Gigs & Job Opportunities')}
+            <h2 className="text-4xl font-extrabold text-slate-900 mb-3 tracking-tight">
+              {t('Featured Jobs')}
             </h2>
-            <p className="text-slate-600 text-sm leading-relaxed">
+            <p className="text-slate-500 text-sm leading-relaxed">
               {t(
-                'Explore active job listings posted by homeowners, commercial properties, and service companies near you.'
+                'Explore top-rated service requests and connect with verified homeowners looking for skilled handyman professionals.'
               )}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
             {featuredJobs.map((job) => (
               <div
                 key={job.id}
-                className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between"
+                className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between relative group cursor-pointer h-full"
               >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-4">
-                    <span
-                      className={`px-2.5 py-1 text-xs font-semibold rounded-md ${job.badgeClass}`}
-                    >
-                      {job.badge}
-                    </span>
-                    <span
-                      className={`px-2.5 py-1 text-xs font-semibold rounded-md ${job.typeBadgeClass}`}
-                    >
-                      {job.type}
-                    </span>
+                <div className="flex flex-col flex-1 items-start text-left">
+                  {/* Organic Image Pushed Upwards to Top of Card */}
+                  <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-[58%_42%_38%_62%/62%_38%_62%_38%] group-hover:rounded-[42%_58%_62%_38%/38%_62%_38%_62%] mb-4 overflow-hidden border-2 border-emerald-100/90 shadow-md flex items-center justify-center bg-slate-50 shrink-0 transition-all duration-700 ease-in-out">
+                    <img
+                      src={job.image}
+                      alt={job.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
                   </div>
 
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-theme-accent mb-4 font-bold text-lg">
-                    {job.category[0]}
-                  </div>
+                  {/* Left-Aligned Job Title */}
+                  <h3 className="font-bold text-slate-900 text-lg mb-2 text-left group-hover:text-[#059669] transition-colors leading-snug">
+                    {job.title}
+                  </h3>
 
-                  <h3 className="font-bold text-slate-900 text-lg mb-1">{job.title}</h3>
-                  <p className="text-xs text-slate-500 mb-3">
-                    {job.location} •{' '}
-                    <span className="font-semibold text-emerald-700">{job.budget}</span>
+                  {/* Left-Aligned Description */}
+                  <p className="text-slate-500 text-xs text-left leading-relaxed mb-4">
+                    {job.desc}
                   </p>
 
+                  {/* Max 2 Skill Tags Under Description */}
                   <div className="flex flex-wrap gap-1.5 mb-6">
-                    {job.skills.map((skill, sIdx) => (
+                    {job.tags.slice(0, 2).map((tag, tIdx) => (
                       <span
-                        key={sIdx}
-                        className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[11px] rounded"
+                        key={tIdx}
+                        className="px-2.5 py-1 bg-slate-100 text-slate-600 text-[11px] font-medium rounded-md"
                       >
-                        {skill}
+                        {tag}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <Link
-                  href={auth.user ? '/dashboard' : '/register'}
-                  className="w-full py-2.5 rounded-xl bg-theme-accent hover:bg-theme-accent-hover text-white text-xs font-semibold text-center transition"
-                >
-                  {t('Apply Now')}
-                </Link>
+                {/* Bottom Row: Salary */}
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 mt-auto w-full">
+                  <span className="font-extrabold text-slate-900 text-base">
+                    {job.salary}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
