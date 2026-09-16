@@ -7,7 +7,12 @@ export default function Welcome({ canLogin, canRegister }) {
   const { t } = useTranslation();
   const { auth } = usePage().props;
 
-  const trustedBrands = ['HandyCorp', 'HomeFix', 'BuildCraft', 'FixItAll', 'EliteService'];
+  const companyLogos = [
+    { name: 'Ace Hardware', src: '/images/landing/companies/ace.svg' },
+    { name: 'Angi', src: '/images/landing/companies/Angi-logo-Orange.svg' },
+    { name: 'Handygig Green', src: '/images/landing/companies/logo_green.svg' },
+    { name: 'Mr. Handyman', src: '/images/landing/companies/mr%20handyman.svg' },
+  ];
 
   const categories = [
     {
@@ -259,20 +264,26 @@ export default function Welcome({ canLogin, canRegister }) {
       </section>
 
       {/* Trusted Companies Banner */}
-      <section className="bg-emerald-900 text-white py-10">
+      <section className="bg-emerald-900 text-white py-12 overflow-hidden">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 text-center">
-          <p className="text-sm font-medium text-emerald-200 mb-6 uppercase tracking-wider">
+          <p className="text-xs sm:text-sm font-semibold text-emerald-200/90 mb-8 uppercase tracking-widest">
             {t('The fastest-growing home service companies trust Handygig')}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-10 md:gap-16 opacity-80">
-            {trustedBrands.map((brand, idx) => (
-              <span
-                key={idx}
-                className="text-2xl font-bold tracking-wider text-emerald-100 font-mono"
-              >
-                {brand}
-              </span>
-            ))}
+          <div className="relative overflow-hidden w-full [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className="animate-marquee items-center gap-16 sm:gap-24 md:gap-32 pr-16 sm:pr-24 md:pr-32">
+              {[...companyLogos, ...companyLogos, ...companyLogos, ...companyLogos].map((logo, idx) => (
+                <div
+                  key={idx}
+                  className="h-12 sm:h-14 shrink-0 flex items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer group"
+                >
+                  <img
+                    src={logo.src}
+                    alt={logo.name}
+                    className="h-10 sm:h-12 w-auto max-w-[200px] object-contain grayscale opacity-80 brightness-0 invert group-hover:grayscale-0 group-hover:opacity-100 group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -280,11 +291,11 @@ export default function Welcome({ canLogin, canRegister }) {
       {/* Featured Jobs Section */}
       <section id="featured-jobs" className="py-20 bg-white">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-4xl font-extrabold text-slate-900 mb-3 tracking-tight">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">
               {t('Featured Jobs')}
             </h2>
-            <p className="text-slate-500 text-sm leading-relaxed">
+            <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
               {t(
                 'Explore top-rated service requests and connect with verified homeowners looking for skilled handyman professionals.'
               )}
