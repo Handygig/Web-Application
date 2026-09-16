@@ -603,89 +603,256 @@ export default function Welcome({ canLogin, canRegister }) {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="w-full bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-theme-accent flex items-center justify-center text-white font-bold">
-                S
-              </div>
-              <span className="font-bold text-xl text-white">Handygig</span>
-            </div>
-            <p className="text-xs leading-relaxed text-slate-400">
-              {t(
-                'The premier marketplace connecting homeowners & businesses with trusted handyman professionals.'
-              )}
+      {/* Contact Us Section */}
+      <section id="contact" className="py-20 bg-slate-50 border-t border-slate-200/80">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">
+              {t("Let's Talk")}
+            </h2>
+            <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
+              {t('Have questions, feedback, or a project in mind? We would love to hear from you.')}
             </p>
           </div>
 
-          <div>
-            <h4 className="font-bold text-white mb-3 text-sm">{t('For Customers')}</h4>
-            <ul className="flex flex-col gap-2 text-xs">
-              <li>
-                <a href="#categories" className="hover:text-white transition">
-                  {t('Browse Categories')}
+          {/* Single Unified Contact Us Card */}
+          <div className="bg-white rounded-3xl p-6 sm:p-8 lg:p-10 border border-slate-200/80 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+            {/* Left Side: Map Container */}
+            <div className="lg:col-span-5 rounded-2xl overflow-hidden border border-slate-200/80 relative min-h-[380px] sm:min-h-[420px] bg-slate-50">
+              <iframe
+                title="Handygig Location Map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126743.58638734267!2d79.78065005!3d6.9270786!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593cf65a1e9d%3A0xe13db4b6e82845c0!2sColombo!5e0!3m2!1sen!2slk!4v1700000000000!5m2!1sen!2slk"
+                width="100%"
+                height="100%"
+                style={{ border: 0, minHeight: '380px' }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-full"
+              ></iframe>
+            </div>
+
+            {/* Right Side: Contact Form */}
+            <div className="lg:col-span-7 flex flex-col justify-between py-2">
+              <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">
+                      {t("WHAT'S YOUR FIRST NAME")}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="John"
+                      className="w-full border-0 border-b border-slate-300 focus:border-theme-accent focus:ring-0 px-0 py-2.5 text-sm text-slate-800 placeholder-slate-400 bg-transparent transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">
+                      {t("WHAT'S YOUR LAST NAME")}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Doe"
+                      className="w-full border-0 border-b border-slate-300 focus:border-theme-accent focus:ring-0 px-0 py-2.5 text-sm text-slate-800 placeholder-slate-400 bg-transparent transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">
+                      {t('YOUR EMAIL')}
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="john@example.com"
+                      className="w-full border-0 border-b border-slate-300 focus:border-theme-accent focus:ring-0 px-0 py-2.5 text-sm text-slate-800 placeholder-slate-400 bg-transparent transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">
+                      {t('YOUR MOBILE NUMBER')}
+                    </label>
+                    <input
+                      type="tel"
+                      placeholder="+1 (555) 000-0000"
+                      className="w-full border-0 border-b border-slate-300 focus:border-theme-accent focus:ring-0 px-0 py-2.5 text-sm text-slate-800 placeholder-slate-400 bg-transparent transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">
+                    {t('TELL US ABOUT YOUR PROJECT OR INQUIRY')}
+                  </label>
+                  <textarea
+                    rows="3"
+                    placeholder="Describe your service request or question..."
+                    className="w-full border-0 border-b border-slate-300 focus:border-theme-accent focus:ring-0 px-0 py-2 text-sm text-slate-800 placeholder-slate-400 bg-transparent resize-none transition-colors"
+                  ></textarea>
+                </div>
+
+                <div className="pt-2 flex justify-end">
+                  <button
+                    type="submit"
+                    className="w-full sm:w-auto px-8 py-3.5 bg-theme-accent hover:bg-theme-accent-hover text-white font-bold text-sm tracking-wide rounded-xl shadow-md hover:shadow-lg transition-all"
+                  >
+                    {t('SEND MESSAGE')}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="w-full bg-[#2a2f38] text-slate-300 pt-16 pb-6 border-t border-slate-700/50">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 sm:gap-8 pb-16 border-b border-slate-700/60">
+          {/* Column 1: Brand & Address & Socials */}
+          <div className="lg:col-span-4 flex flex-col items-start pr-0 lg:pr-4">
+            <div className="flex items-center gap-3 mb-4">
+              <img
+                src="/images/handygig-logo.png"
+                alt="Handygig Logo"
+                className="h-11 sm:h-12 w-auto grayscale brightness-200 opacity-90"
+              />
+            </div>
+            <p className="text-sm text-slate-400 leading-relaxed mb-5 font-normal max-w-sm">
+              {t('The premier marketplace connecting homeowners & businesses with trusted handyman professionals.')}
+            </p>
+
+            {/* Social Media Links */}
+            <div className="flex items-center gap-4">
+              {[
+                {
+                  name: 'Instagram',
+                  hoverColor: 'hover:text-[#E4405F]',
+                  icon: (
+                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                    </svg>
+                  ),
+                },
+                {
+                  name: 'Facebook',
+                  hoverColor: 'hover:text-[#1877F2]',
+                  icon: (
+                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                    </svg>
+                  ),
+                },
+                {
+                  name: 'LinkedIn',
+                  hoverColor: 'hover:text-[#0A66C2]',
+                  icon: (
+                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                    </svg>
+                  ),
+                },
+                {
+                  name: 'X',
+                  hoverColor: 'hover:text-white',
+                  icon: (
+                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  ),
+                },
+              ].map((soc, sIdx) => (
+                <a
+                  key={sIdx}
+                  href="#why-us"
+                  className={`text-slate-400 ${soc.hoverColor} transition-colors duration-200 cursor-pointer`}
+                  aria-label={soc.name}
+                >
+                  {soc.icon}
                 </a>
-              </li>
-              <li>
-                <a href="#featured-jobs" className="hover:text-white transition">
-                  {t('Post a Job')}
-                </a>
-              </li>
-              <li>
-                <Link href="/login" className="hover:text-white transition">
-                  {t('Customer Portal')}
-                </Link>
-              </li>
+              ))}
+            </div>
+          </div>
+
+          {/* Column 2: Quick Links */}
+          <div className="lg:col-span-3">
+            <h4 className="font-bold text-white mb-4 text-base tracking-wide">{t('Quick Links')}</h4>
+            <ul className="flex flex-col gap-3.5 text-sm text-slate-400 font-normal">
+              <li><a href="#featured-jobs" className="hover:text-white transition">{t('Browse Jobs')}</a></li>
+              <li><a href="#categories" className="hover:text-white transition">{t('Explore Categories')}</a></li>
+              <li><a href="#why-us" className="hover:text-white transition">{t('Why Choose Us')}</a></li>
+              <li><Link href={auth.user ? '/dashboard' : '/login'} className="hover:text-white transition">{t('Account Dashboard')}</Link></li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="font-bold text-white mb-3 text-sm">{t('For Handymen')}</h4>
-            <ul className="flex flex-col gap-2 text-xs">
-              <li>
-                <a href="#featured-jobs" className="hover:text-white transition">
-                  {t('Browse Gigs')}
-                </a>
-              </li>
-              <li>
-                <Link href="/register" className="hover:text-white transition">
-                  {t('Register as Provider')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/login" className="hover:text-white transition">
-                  {t('Provider Dashboard')}
-                </Link>
-              </li>
+          {/* Column 3: Legal & Support */}
+          <div className="lg:col-span-2">
+            <h4 className="font-bold text-white mb-4 text-base tracking-wide">{t('Support')}</h4>
+            <ul className="flex flex-col gap-3.5 text-sm text-slate-400 font-normal">
+              <li><a href="#why-us" className="hover:text-white transition">{t('Help & FAQs')}</a></li>
+              <li><a href="#why-us" className="hover:text-white transition">{t('Terms of Service')}</a></li>
+              <li><a href="#why-us" className="hover:text-white transition">{t('Privacy Policy')}</a></li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="font-bold text-white mb-3 text-sm">{t('Support')}</h4>
-            <ul className="flex flex-col gap-2 text-xs">
-              <li>
-                <a href="#why-us" className="hover:text-white transition">
-                  {t('Help & FAQs')}
-                </a>
-              </li>
-              <li>
-                <a href="#why-us" className="hover:text-white transition">
-                  {t('Terms & Conditions')}
-                </a>
-              </li>
-              <li>
-                <a href="#why-us" className="hover:text-white transition">
-                  {t('Privacy Policy')}
-                </a>
-              </li>
-            </ul>
+          {/* Column 4: Download Apps */}
+          <div className="lg:col-span-3 flex flex-col gap-2 max-w-[200px]">
+            <h4 className="font-bold text-white mb-2 text-base tracking-wide">{t('Download Apps')}</h4>
+
+            {/* Google Play Store Card */}
+            <a
+              href="#"
+              className="px-3.5 py-2 bg-slate-800/80 hover:bg-[#059669] border border-slate-700/60 hover:border-emerald-500 rounded-lg flex items-center gap-2.5 text-left transition-all duration-200 group shadow-sm"
+            >
+              <svg className="w-5 h-5 fill-slate-300 group-hover:fill-emerald-200 shrink-0 transition-all duration-200" viewBox="0 0 24 24">
+                <path d="M3.609 1.814L13.792 12 3.61 22.186c-.198-.18-.31-.434-.31-.714V2.528c0-.28.112-.534.309-.714zM15.206 13.414l2.76 2.76-13.063 7.54 10.303-10.3zM19.262 10.457c.484.28.788.796.788 1.543 0 .747-.304 1.263-.788 1.543l-1.996 1.152L14.499 12l2.767-2.696 1.996 1.153zM15.206 10.586L4.903.286l13.063 7.54-2.76 2.76z" />
+              </svg>
+              <div className="flex flex-col leading-none">
+                <span className="text-[9px] uppercase font-semibold text-slate-400 group-hover:text-emerald-100 tracking-wider mb-0.5">
+                  GET IT ON
+                </span>
+                <span className="text-xs font-bold text-white tracking-tight">
+                  Google Play
+                </span>
+              </div>
+            </a>
+
+            {/* Apple App Store Card */}
+            <a
+              href="#"
+              className="px-3.5 py-2 bg-slate-800/80 hover:bg-[#059669] border border-slate-700/60 hover:border-emerald-500 rounded-lg flex items-center gap-2.5 text-left transition-all duration-200 group shadow-sm"
+            >
+              <svg className="w-5 h-5 fill-slate-300 group-hover:fill-white shrink-0 transition-all duration-200" viewBox="0 0 24 24">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.13c.64-.78 1.08-1.86.96-2.95-.93.04-2.07.62-2.74 1.4-.6.7-.1.3 1.88-.96 2.96 1.04-.04 2.15-.65 2.74-1.41z" />
+              </svg>
+              <div className="flex flex-col leading-none">
+                <span className="text-[9px] uppercase font-semibold text-slate-400 group-hover:text-emerald-100 tracking-wider mb-0.5">
+                  GET IT ON
+                </span>
+                <span className="text-xs font-bold text-white tracking-tight">
+                  App Store
+                </span>
+              </div>
+            </a>
           </div>
         </div>
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 border-t border-slate-800 pt-6 text-center text-xs text-slate-500">
-          &copy; {new Date().getFullYear()} Handygig. {t('All rights reserved.')}
+        {/* Bottom Bar: Centered Designed & Developed Credit */}
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12 pt-6 text-center text-sm text-slate-400 font-normal">
+          <p>
+            &copy; {new Date().getFullYear()} Handygig. {t('Designed & Developed by')}{' '}
+            <a
+              href="https://nuralislabs.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-300 hover:text-emerald-400 underline transition-colors"
+            >
+              Nuralis Labs
+            </a>
+            .
+          </p>
         </div>
       </footer>
     </div>
