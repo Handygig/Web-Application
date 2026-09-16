@@ -43,7 +43,7 @@ export default function LandingNavbar({
           {t('About')}
         </a>
         <a
-          href="/#why-us"
+          href="/#contact"
           className="px-4 h-10 flex items-center justify-center rounded-lg text-xs font-bold uppercase tracking-wider text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
         >
           {t('Contact Us')}

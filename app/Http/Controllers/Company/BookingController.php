@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Company\CompanyBookingResource;
 use App\Models\JobRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -14,24 +15,23 @@ class BookingController extends Controller
 {
     public function index(Request $request): Response
     {
-        return Inertia::render('Company/Booking/Index');
+        $user = auth()->user();
+        $query = JobRequest::with(['customer.user', 'serviceCategory']);
+
+        if ($user && $user->company) {
+            $query->where('company_id', $user->company->id);
+        }
+
+        $bookings = $query->latest()->paginate(10)->withQueryString();
+
+        return Inertia::render('Company/Booking/Index', [
+            'bookings' => CompanyBookingResource::collection($bookings),
+        ]);
     }
 
     public function destroy(Request $request, string $id): JsonResponse|RedirectResponse
     {
         $user = auth()->user();
-
-        if (! $user || ! $user->hasRole('company')) {
-            if ($request->wantsJson() || $request->is('api/*')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => __('Unauthorized access.'),
-                ], 403);
-            }
-
-            abort(403, __('Unauthorized access.'));
-        }
-
         $booking = JobRequest::find($id);
 
         if ($booking) {
