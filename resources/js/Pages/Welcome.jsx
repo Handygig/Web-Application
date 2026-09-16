@@ -480,75 +480,127 @@ export default function Welcome({ canLogin, canRegister }) {
       </section>
 
       {/* Best Platform Experience Showcase Section */}
-      <section className="py-20 bg-slate-50 border-t border-slate-100">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="flex flex-col gap-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-theme-accent text-xs font-semibold tracking-wide uppercase max-w-max">
+      <section className="py-20 bg-white">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          {/* Left Column: Text & Features Grid */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
+            <span className="inline-block px-4 py-1.5 rounded-md bg-[#e6f4f1] text-[#059669] text-sm font-semibold mb-4">
               {t('Our Showcase')}
-            </div>
+            </span>
 
-            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
-              {t('Best Service & Job Search Platform Experience')}
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.2] mb-5">
+              {t('Best Job Search platform')} <br />
+              {t('Experience for you')}
             </h2>
 
-            <p className="text-slate-600 text-sm leading-relaxed">
+            <p className="text-slate-500 text-sm sm:text-base leading-relaxed mb-8 max-w-xl">
               {t(
-                'Whether you need an urgent plumbing repair or want to grow your handyman business as a contractor, Handygig delivers an intuitive experience.'
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
               )}
             </p>
 
-            <div className="grid grid-cols-2 gap-4 my-2">
-              <div className="flex items-center gap-2 text-slate-800 text-sm font-semibold">
-                <span className="text-theme-accent">✓</span> {t('Residential & Commercial Jobs')}
+            {/* 2-Column Checkmark Features Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 mb-10 w-full max-w-xl">
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 text-[#059669] shrink-0 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-slate-700 font-medium text-sm sm:text-base">
+                  {t('Corporate Business jobs')}
+                </span>
               </div>
-              <div className="flex items-center gap-2 text-slate-800 text-sm font-semibold">
-                <span className="text-theme-accent">✓</span> {t('Company Showcase')}
+
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 text-[#059669] shrink-0 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-slate-700 font-medium text-sm sm:text-base">
+                  {t('Company Showcase')}
+                </span>
               </div>
-              <div className="flex items-center gap-2 text-slate-800 text-sm font-semibold">
-                <span className="text-theme-accent">✓</span> {t('Instant Job Quotations')}
+
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 text-[#059669] shrink-0 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-slate-700 font-medium text-sm sm:text-base">
+                  {t('Creative Services')}
+                </span>
               </div>
-              <div className="flex items-center gap-2 text-slate-800 text-sm font-semibold">
-                <span className="text-theme-accent">✓</span> {t('Easy Credentials Check')}
+
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 text-[#059669] shrink-0 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-slate-700 font-medium text-sm sm:text-base">
+                  {t('Easy To Upload Resume')}
+                </span>
               </div>
-              <div className="flex items-center gap-2 text-slate-800 text-sm font-semibold">
-                <span className="text-theme-accent">✓</span> {t('Secure Payment Escrow')}
+
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 text-[#059669] shrink-0 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-slate-700 font-medium text-sm sm:text-base">
+                  {t('Online E-commerce')}
+                </span>
               </div>
-              <div className="flex items-center gap-2 text-slate-800 text-sm font-semibold">
-                <span className="text-theme-accent">✓</span> {t('Hire Expert Candidates')}
+
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 text-[#059669] shrink-0 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-slate-700 font-medium text-sm sm:text-base">
+                  {t('Hire Expert Candidates')}
+                </span>
               </div>
             </div>
 
             <div>
               <Link
                 href={auth.user ? '/dashboard' : '/register'}
-                className="px-8 py-3.5 bg-theme-accent hover:bg-theme-accent-hover text-white text-sm font-semibold rounded-xl inline-block transition shadow-md shadow-emerald-950/10"
+                className="px-8 py-3.5 bg-[#059669] hover:bg-[#047857] text-white text-base font-semibold rounded-lg inline-block transition shadow-sm"
               >
                 {t('Explore More Jobs')}
               </Link>
             </div>
           </div>
 
-          <div className="relative flex justify-center">
-            <div className="w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-emerald-200/50 p-6 flex items-center justify-center relative">
-              <div className="w-full h-full rounded-full bg-white shadow-xl flex flex-col items-center justify-center p-8 text-center border border-slate-100">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 text-theme-accent flex items-center justify-center mb-4">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="font-bold text-slate-900 text-lg mb-1">
-                  {t('Mobile & Web Access')}
-                </h3>
-                <p className="text-xs text-slate-500">
-                  {t(
-                    'Manage service requests, chat with providers, and inspect job status on any device.'
-                  )}
-                </p>
+          {/* Right Column: Showcase Image & Floating Circular Cards */}
+          <div className="lg:col-span-6 relative flex justify-center items-center">
+            <div className="relative w-full max-w-[540px] flex justify-center items-center">
+              {/* Main Showcase Image */}
+              <img
+                src="/images/landing/showcase.png"
+                alt={t('Platform Experience Showcase')}
+                className="w-full h-auto object-contain"
+              />
+
+              {/* Floating Circular Component 1 (Top-Left) */}
+              <div className="absolute top-[8%] left-[7%] sm:left-[8%] w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white shadow-xl bg-white flex items-center justify-center transition-transform duration-300 hover:scale-110 z-20 animate-bounce [animation-duration:2.5s]">
+                <img
+                  src="/images/landing/circular-1.jpeg"
+                  alt={t('Showcase Badge 1')}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Floating Circular Component 2 (Top-Right) */}
+              <div className="absolute top-[8%] right-[10%] sm:right-[12%] w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white shadow-xl bg-white flex items-center justify-center transition-transform duration-300 hover:scale-110 z-20 animate-bounce [animation-duration:2.5s]">
+                <img
+                  src="/images/landing/circular-2.jpeg"
+                  alt={t('Showcase Badge 2')}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Floating Circular Component 3 (Bottom-Right/Center) */}
+              <div className="absolute bottom-[8%] right-[22%] sm:right-[24%] w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white shadow-xl bg-white flex items-center justify-center transition-transform duration-300 hover:scale-110 z-20 animate-bounce [animation-duration:2.5s]">
+                <img
+                  src="/images/landing/circular-3.jpeg"
+                  alt={t('Showcase Badge 3')}
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
