@@ -19,6 +19,7 @@ import CreateBookingModal from './CreateBookingModal';
 import AssignTechModal from './AssignTechModal';
 
 import { initialBookingsData, initialTechniciansList } from './mockBookings';
+import { useCompanyTechnicians } from '@/Hooks/useCompanyTechnicians';
 
 const BOOKINGS_STORAGE_KEY = 'company_bookings_data_v1';
 
@@ -45,7 +46,9 @@ export default function BookingIndex() {
       localStorage.setItem(BOOKINGS_STORAGE_KEY, JSON.stringify(bookings));
     }
   }, [bookings]);
-  const [technicians] = useState(initialTechniciansList);
+
+  // Reactive Technicians Hook - syncs with Employee Management in real time
+  const { activeTechnicians: technicians } = useCompanyTechnicians(initialTechniciansList);
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
@@ -143,6 +146,8 @@ export default function BookingIndex() {
 
   const handleAssignTech = (bookingId, techId) => {
     const techObj = technicians.find((t) => t.id === techId) || null;
+    const fullName = techObj ? (techObj.name || `${techObj.firstName || ''} ${techObj.lastName || ''}`.trim()) : null;
+    const roleName = techObj ? (techObj.role || techObj.roleTitle || techObj.specialization || 'Technician') : null;
 
     setBookings((prev) =>
       prev.map((b) => {
@@ -155,8 +160,8 @@ export default function BookingIndex() {
           assignedTech: techObj
             ? {
                 id: techObj.id,
-                name: techObj.name,
-                role: techObj.role,
+                name: fullName,
+                role: roleName,
                 avatar: techObj.avatar,
               }
             : null,
@@ -166,7 +171,7 @@ export default function BookingIndex() {
             {
               status: techObj ? 'Technician Assigned' : 'Unassigned',
               time: 'Just Now',
-              note: techObj ? `Assigned to ${techObj.name}` : 'Returned to dispatch queue',
+              note: techObj ? `Assigned to ${fullName}` : 'Returned to dispatch queue',
             },
           ],
         };

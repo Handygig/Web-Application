@@ -171,14 +171,15 @@ export default function BookingTable({
               </tr>
             ) : (
               paginatedBookings.map((booking) => {
-                const isUnassigned = !booking.assignedTech;
+                const techName = booking.assignedTech?.name || (booking.assignedTech?.firstName ? `${booking.assignedTech.firstName} ${booking.assignedTech.lastName}`.trim() : null);
+                const techRole = booking.assignedTech?.role || booking.assignedTech?.roleTitle || booking.assignedTech?.specialization || t('Technician');
+                const isUnassigned = !booking.assignedTech || !techName;
                 const currentStatus = localStatuses[booking.id] || booking.status || 'scheduled';
                 const currentPriority = localPriorities[booking.id] || booking.urgency || booking.priority || 'Normal';
 
                 const statusConfig = getStatusConfig(currentStatus);
                 const priorityConfig = getPriorityConfig(currentPriority);
 
-                const techName = booking.assignedTech?.name;
                 const techInitials = techName
                   ? techName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
                   : 'T';
@@ -233,23 +234,28 @@ export default function BookingTable({
                     {/* 3. Assigned Technician */}
                     <td className="px-6 py-4 align-middle">
                       {isUnassigned ? (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onOpenAssignModal?.(booking);
-                          }}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200/80 rounded-xl text-xs font-bold transition-all whitespace-nowrap"
-                        >
-                          <UserPlus className="w-3.5 h-3.5 text-amber-600" />
-                          <span>{t('Assign Tech')}</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-400 font-medium italic">
+                            {t('Unassigned')}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenAssignModal?.(booking);
+                            }}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200/80 rounded-lg text-xs font-bold transition-all whitespace-nowrap"
+                          >
+                            <UserPlus className="w-3.5 h-3.5 text-amber-600" />
+                            <span>{t('Assign')}</span>
+                          </button>
+                        </div>
                       ) : (
                         <div className="flex items-center gap-3">
-                          {booking.assignedTech.avatar ? (
+                          {booking.assignedTech?.avatar_url || booking.assignedTech?.avatar || booking.assignedTech?.profile_image ? (
                             <img
-                              src={booking.assignedTech.avatar}
-                              alt={booking.assignedTech.name}
+                              src={booking.assignedTech.avatar_url || booking.assignedTech.avatar || booking.assignedTech.profile_image}
+                              alt={techName}
                               className="w-9 h-9 rounded-full object-cover border border-slate-200 shrink-0"
                             />
                           ) : (
@@ -259,10 +265,10 @@ export default function BookingTable({
                           )}
                           <div className="min-w-0">
                             <p className="font-bold text-slate-900 text-sm truncate max-w-[150px]">
-                              {booking.assignedTech.name}
+                              {techName}
                             </p>
                             <p className="text-xs text-slate-400 truncate max-w-[150px]">
-                              {booking.assignedTech.role || t('Technician')}
+                              {techRole}
                             </p>
                           </div>
                         </div>
