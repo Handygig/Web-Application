@@ -6,20 +6,18 @@ import {
   Smartphone,
   Banknote,
   Building,
-  CheckCircle2,
-  Clock,
-  RefreshCw,
   ChevronLeft,
   ChevronRight,
-  UserCheck,
+  AlertTriangle,
+  RotateCcw,
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
 export default function PaymentTable({
-  transactions,
-  viewMode,
+  transactions = [],
   onViewInvoice,
   onDownloadReceipt,
+  onReversePayment,
 }) {
   const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,14 +38,14 @@ export default function PaymentTable({
       case 'stripe':
       case 'card':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200/70 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/70 whitespace-nowrap">
             <CreditCard className="w-3.5 h-3.5" />
             {t('Stripe / Card')}
           </span>
         );
       case 'apple_pay':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-300/80 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-300/80 whitespace-nowrap">
             <Smartphone className="w-3.5 h-3.5 text-slate-900" />
             {t('Apple Pay')}
           </span>
@@ -55,21 +53,21 @@ export default function PaymentTable({
       case 'cod':
       case 'cash':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200/70 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/70 whitespace-nowrap">
             <Banknote className="w-3.5 h-3.5 text-emerald-600" />
             {t('Cash on Delivery')}
           </span>
         );
       case 'bank_transfer':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-sky-50 text-sky-800 border border-sky-200/70 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-sky-50 text-sky-800 border border-sky-200/70 whitespace-nowrap">
             <Building className="w-3.5 h-3.5 text-sky-600" />
             {t('Bank Transfer')}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 whitespace-nowrap">
             <CreditCard className="w-3.5 h-3.5" />
             {method}
           </span>
@@ -77,245 +75,224 @@ export default function PaymentTable({
     }
   };
 
-  // Status Badge Renderer
+  // Status Badge Renderer with colored dot indicators (Matching Bookings & Employees status styles)
   const renderStatusBadge = (status) => {
     switch (status) {
       case 'paid':
       case 'settled':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#EBF5EC] text-emerald-800 border border-emerald-200/80 whitespace-nowrap">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+          <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs whitespace-nowrap">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
             {t('Paid & Settled')}
           </span>
         );
       case 'pending':
       case 'pending_settlement':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200/80 whitespace-nowrap">
-            <Clock className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+          <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200/80 shadow-2xs whitespace-nowrap">
+            <span className="h-2 w-2 rounded-full bg-amber-500 shrink-0 animate-pulse" />
             {t('Pending Settlement')}
           </span>
         );
       case 'disbursed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-800 border border-purple-200/80 whitespace-nowrap">
-            <UserCheck className="w-3.5 h-3.5 text-purple-600" />
+          <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200/80 shadow-2xs whitespace-nowrap">
+            <span className="h-2 w-2 rounded-full bg-purple-500 shrink-0" />
             {t('Disbursed to Tech')}
           </span>
         );
       case 'refunded':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200/80 whitespace-nowrap">
-            <RefreshCw className="w-3.5 h-3.5 text-rose-600" />
+          <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200/80 shadow-2xs whitespace-nowrap">
+            <span className="h-2 w-2 rounded-full bg-rose-500 shrink-0" />
             {t('Refunded')}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 whitespace-nowrap">
+          <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 whitespace-nowrap">
+            <span className="h-2 w-2 rounded-full bg-slate-400 shrink-0" />
             {status}
           </span>
         );
     }
   };
 
-  if (transactions.length === 0) {
-    return (
-      <div className="bg-white rounded-2xl border border-[#E2E4D9] p-12 shadow-sm text-center">
-        <div className="w-16 h-16 bg-[#F9FAF7] rounded-full flex items-center justify-center mx-auto text-gray-400 mb-4 border border-[#E2E4D9]">
-          <FileText className="w-8 h-8 text-gray-400" />
-        </div>
-        <h4 className="text-lg font-bold text-gray-900">{t('No transactions found')}</h4>
-        <p className="text-xs text-gray-500 max-w-md mx-auto mt-1">
-          {t('Try adjusting your search criteria, payment method filters, or date range selection.')}
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-4">
-      {viewMode === 'table' ? (
-        /* TABLE CONTAINER & WRAPPER */
-        <div className="bg-white rounded-2xl border border-[#E2E4D9] shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse table-fixed">
-              <thead>
-                <tr className="bg-[#F9FAF7] border-b border-[#E2E4D9] text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  <th className="py-3.5 px-6 w-48">{t('Transaction & Job Ref')}</th>
-                  <th className="py-3.5 px-6 w-52">{t('Customer & Date')}</th>
-                  <th className="py-3.5 px-6 w-44">{t('Payment Method')}</th>
-                  <th className="py-3.5 px-6 w-36 text-right">{t('Gross Amount')}</th>
-                  <th className="py-3.5 px-6 w-44 text-right">{t('Platform Fee & Net')}</th>
-                  <th className="py-3.5 px-6 w-44">{t('Payment Status')}</th>
-                  <th className="py-3.5 px-6 w-36 text-right">{t('Actions')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F0F2EA] text-sm">
-                {paginatedTxns.map((txn) => (
-                  <tr
-                    key={txn.id}
-                    className="hover:bg-[#FAFBF7] transition-colors group"
-                  >
-                    {/* Transaction ID & Job Ref */}
-                    <td className="py-4 px-6 align-middle">
-                      <div className="space-y-1">
-                        <span className="font-mono text-xs font-bold text-[#5E6933] bg-[#EBF5EC] px-2.5 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap inline-block">
-                          {txn.id}
-                        </span>
-                        <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                          <span className="font-bold text-gray-900 whitespace-nowrap">{txn.jobId}</span>
-                          <span className="text-gray-300">•</span>
-                          <span className="truncate max-w-[140px] text-gray-500" title={txn.serviceName}>
-                            {txn.serviceName}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Customer & Date */}
-                    <td className="py-4 px-6 align-middle">
-                      <div className="space-y-0.5">
-                        <div className="font-semibold text-gray-900 text-sm">{txn.customerName}</div>
-                        <div className="text-xs text-gray-500 whitespace-nowrap">{txn.customerPhone}</div>
-                        <div className="text-xs text-gray-400 whitespace-nowrap">{txn.timestamp}</div>
-                      </div>
-                    </td>
-
-                    {/* Payment Method */}
-                    <td className="py-4 px-6 align-middle">{renderMethodBadge(txn.method)}</td>
-
-                    {/* Gross Amount */}
-                    <td className="py-4 px-6 align-middle text-right">
-                      <div className="text-sm font-bold text-gray-900 whitespace-nowrap">
-                        {formattedCurrency(txn.grossAmount)}
-                      </div>
-                    </td>
-
-                    {/* Platform Fee & Net Payout */}
-                    <td className="py-4 px-6 align-middle text-right">
-                      <div className="text-xs text-rose-600 font-medium whitespace-nowrap">
-                        -{formattedCurrency(txn.platformFee)} ({txn.commissionPercentage || '10'}%)
-                      </div>
-                      <div className="font-extrabold text-[#5E6933] text-sm mt-0.5 whitespace-nowrap">
-                        {formattedCurrency(txn.netPayout)} <span className="text-[10px] text-gray-400 font-normal">({t('Net')})</span>
-                      </div>
-                    </td>
-
-                    {/* Payment Status */}
-                    <td className="py-4 px-6 align-middle">{renderStatusBadge(txn.status)}</td>
-
-                    {/* Actions */}
-                    <td className="py-4 px-6 align-middle text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => onViewInvoice(txn)}
-                          className="px-3 py-1.5 bg-white border border-[#E2E4D9] hover:bg-[#5E6933] hover:text-white hover:border-[#5E6933] text-gray-700 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 shadow-2xs whitespace-nowrap"
-                        >
-                          <FileText className="w-3.5 h-3.5" />
-                          <span>{t('Invoice')}</span>
-                        </button>
-                        <button
-                          onClick={() => onDownloadReceipt(txn)}
-                          className="p-1.5 bg-white border border-[#E2E4D9] hover:bg-gray-100 text-gray-600 rounded-lg transition-all shadow-2xs"
-                          title={t('Download Receipt')}
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* TABLE FOOTER / PAGINATION */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#F9FAF7] px-6 py-3.5 border-t border-[#E2E4D9] text-xs text-gray-600">
-            <div className="whitespace-nowrap">
-              {t('Showing')} <span className="font-bold text-gray-900">{(currentPage - 1) * itemsPerPage + 1}</span>–
-              <span className="font-bold text-gray-900">
-                {Math.min(currentPage * itemsPerPage, transactions.length)}
-              </span>{' '}
-              {t('of')} <span className="font-bold text-gray-900">{transactions.length}</span> {t('transactions')}
-            </div>
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1.5 bg-white border border-[#E2E4D9] text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-1"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                <span>{t('Previous')}</span>
-              </button>
-              <span className="px-3 py-1 font-semibold text-gray-800">
-                {currentPage} / {totalPages}
-              </span>
-              <button
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1.5 bg-white border border-[#E2E4D9] text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-1"
-              >
-                <span>{t('Next')}</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : (
-        /* GRID VIEW */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {paginatedTxns.map((txn) => (
-            <div
-              key={txn.id}
-              className="bg-white rounded-2xl border border-[#E2E4D9] p-5 shadow-sm space-y-4 hover:border-[#5E6933]/50 transition-all"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="font-mono text-xs font-bold text-[#5E6933] bg-[#EBF5EC] px-2.5 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap">
-                    {txn.id}
-                  </span>
-                  <div className="text-xs font-bold text-gray-900 mt-1.5 whitespace-nowrap">{txn.jobId}</div>
-                </div>
-                {renderStatusBadge(txn.status)}
-              </div>
-
-              <div>
-                <h5 className="font-bold text-gray-900 text-sm truncate">{txn.serviceName}</h5>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  {txn.customerName} • {txn.timestamp}
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-[#F0F2EA] flex items-center justify-between">
-                <div>
-                  <div className="text-[11px] font-semibold uppercase text-gray-400">{t('Gross Charged')}</div>
-                  <div className="text-base font-extrabold text-gray-900">
-                    {formattedCurrency(txn.grossAmount)}
+    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[850px]">
+          <thead>
+            <tr className="bg-slate-50/60 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <th className="px-6 py-4">{t('Transaction & Job Ref')}</th>
+              <th className="px-6 py-4">{t('Customer & Date')}</th>
+              <th className="px-6 py-4">{t('Payment Method')}</th>
+              <th className="px-6 py-4 text-right">{t('Gross Amount')}</th>
+              <th className="px-6 py-4 text-right">{t('Platform Fee & Net')}</th>
+              <th className="px-6 py-4">{t('Payment Status')}</th>
+              <th className="px-6 py-4 text-right">{t('Actions')}</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 text-sm">
+            {transactions.length === 0 ? (
+              <tr>
+                <td colSpan="7" className="px-6 py-12 text-center text-slate-400 font-medium">
+                  <div className="flex flex-col items-center justify-center space-y-2">
+                    <AlertTriangle className="w-8 h-8 text-slate-300" />
+                    <p>{t('No transactions found matching your search or filters.')}</p>
                   </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-[11px] font-semibold uppercase text-gray-400">{t('Company Net')}</div>
-                  <div className="text-base font-extrabold text-[#5E6933]">
-                    {formattedCurrency(txn.netPayout)}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-1">
-                {renderMethodBadge(txn.method)}
-                <button
-                  onClick={() => onViewInvoice(txn)}
-                  className="px-3 py-1.5 bg-white border border-[#E2E4D9] hover:bg-[#5E6933] hover:text-white text-gray-700 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 shadow-2xs"
+                </td>
+              </tr>
+            ) : (
+              paginatedTxns.map((txn) => (
+                <tr
+                  key={txn.id}
+                  className="hover:bg-slate-50/70 transition-colors cursor-pointer group"
+                  onClick={() => onViewInvoice?.(txn)}
                 >
-                  <FileText className="w-3.5 h-3.5" />
-                  {t('Invoice')}
-                </button>
-              </div>
-            </div>
-          ))}
+                  {/* 1. Transaction ID & Job Ref */}
+                  <td className="px-6 py-4 align-middle whitespace-nowrap">
+                    <div className="space-y-1">
+                      <span className="font-mono text-xs font-bold text-slate-900 bg-slate-100 px-2.5 py-0.5 rounded-md border border-slate-200/80 inline-block">
+                        {txn.id}
+                      </span>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                        <span className="font-bold text-slate-800">{txn.jobId}</span>
+                        <span className="text-slate-300">•</span>
+                        <span className="truncate max-w-[150px]" title={txn.serviceName}>
+                          {txn.serviceName}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* 2. Customer & Date */}
+                  <td className="px-6 py-4 align-middle">
+                    <div className="space-y-0.5">
+                      <div className="font-bold text-slate-900 text-sm">{txn.customerName}</div>
+                      <div className="text-xs text-slate-500 font-medium">{txn.customerPhone}</div>
+                      <div className="text-xs text-slate-400 font-medium">{txn.timestamp}</div>
+                    </div>
+                  </td>
+
+                  {/* 3. Payment Method */}
+                  <td className="px-6 py-4 align-middle whitespace-nowrap">
+                    {renderMethodBadge(txn.method)}
+                  </td>
+
+                  {/* 4. Gross Amount */}
+                  <td className="px-6 py-4 align-middle text-right whitespace-nowrap">
+                    <div className="text-sm font-bold text-slate-900">
+                      {formattedCurrency(txn.grossAmount)}
+                    </div>
+                  </td>
+
+                  {/* 5. Platform Fee & Net Payout */}
+                  <td className="px-6 py-4 align-middle text-right whitespace-nowrap">
+                    <div className="text-xs text-rose-600 font-semibold">
+                      -{formattedCurrency(txn.platformFee)} ({txn.commissionPercentage || '10'}%)
+                    </div>
+                    <div className="font-extrabold text-slate-900 text-sm mt-0.5">
+                      {formattedCurrency(txn.netPayout)} <span className="text-[10px] text-slate-400 font-normal">({t('Net')})</span>
+                    </div>
+                  </td>
+
+                  {/* 6. Payment Status */}
+                  <td className="px-6 py-4 align-middle whitespace-nowrap">
+                    {renderStatusBadge(txn.status)}
+                  </td>
+
+                  {/* 7. Actions */}
+                  <td className="px-6 py-4 align-middle text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-1">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onViewInvoice?.(txn);
+                        }}
+                        className="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 shadow-2xs"
+                        title={t('View Invoice')}
+                      >
+                        <FileText className="w-3.5 h-3.5 text-slate-500" />
+                        <span>{t('Invoice')}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDownloadReceipt?.(txn);
+                        }}
+                        className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                        title={t('Download Receipt')}
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
+
+                      {txn.status !== 'refunded' && txn.status !== 'reversed' ? (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onReversePayment?.(txn);
+                          }}
+                          className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors"
+                          title={t('Reverse Payment')}
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <span className="px-2 py-1 text-[10px] font-bold text-slate-400 bg-slate-100 rounded-md border border-slate-200/80">
+                          {t('Reversed')}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* TABLE FOOTER / PAGINATION */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/60 px-6 py-3.5 border-t border-slate-100 text-xs text-slate-600">
+        <div className="whitespace-nowrap">
+          {t('Showing')}{' '}
+          <span className="font-bold text-slate-900">
+            {transactions.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}
+          </span>
+          –
+          <span className="font-bold text-slate-900">
+            {Math.min(currentPage * itemsPerPage, transactions.length)}
+          </span>{' '}
+          {t('of')} <span className="font-bold text-slate-900">{transactions.length}</span> {t('transactions')}
         </div>
-      )}
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-1 shadow-2xs"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            <span>{t('Previous')}</span>
+          </button>
+          <span className="px-3 py-1 font-semibold text-slate-800">
+            {currentPage} / {totalPages}
+          </span>
+          <button
+            type="button"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages || totalPages === 0}
+            className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-1 shadow-2xs"
+          >
+            <span>{t('Next')}</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

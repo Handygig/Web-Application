@@ -14,7 +14,7 @@ export default function PaymentMetrics({ metrics }) {
       <StatCard
         icon={DollarSign}
         label={t('Total Net Revenue')}
-        value={formattedCurrency(metrics?.netRevenue ?? 32450.0)}
+        value={formattedCurrency(metrics?.netRevenue ?? 0)}
         iconBgClass="bg-indigo-50"
         iconColorClass="text-theme-accent"
         ringClass="ring-indigo-50/50"
@@ -23,7 +23,7 @@ export default function PaymentMetrics({ metrics }) {
       <StatCard
         icon={Wallet}
         label={t('Pending Payouts')}
-        value={formattedCurrency(metrics?.pendingPayouts ?? 4820.0)}
+        value={formattedCurrency(metrics?.pendingPayouts ?? 0)}
         iconBgClass="bg-amber-50"
         iconColorClass="text-amber-600"
         ringClass="ring-amber-50/50"
@@ -32,7 +32,7 @@ export default function PaymentMetrics({ metrics }) {
       <StatCard
         icon={Receipt}
         label={t('Disbursed to Techs')}
-        value={formattedCurrency(metrics?.disbursedToTechs ?? 18240.0)}
+        value={formattedCurrency(metrics?.disbursedToTechs ?? 0)}
         iconBgClass="bg-emerald-50"
         iconColorClass="text-emerald-600"
         ringClass="ring-emerald-50/50"
@@ -41,7 +41,7 @@ export default function PaymentMetrics({ metrics }) {
       <StatCard
         icon={Percent}
         label={t('Platform Fees')}
-        value={formattedCurrency(metrics?.platformFees ?? 3605.0)}
+        value={formattedCurrency(metrics?.platformFees ?? 0)}
         iconBgClass="bg-purple-50"
         iconColorClass="text-purple-600"
         ringClass="ring-purple-50/50"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, CreditCard, Calendar, ChevronDown, LayoutGrid, List, RefreshCw, X } from 'lucide-react';
+import { Search, CreditCard, Calendar, Tag, ChevronDown, RefreshCw, X, Download } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
 export default function PaymentFilters({
@@ -11,8 +11,6 @@ export default function PaymentFilters({
   setMethodFilter,
   dateFilter,
   setDateFilter,
-  viewMode,
-  setViewMode,
   onExportCSV,
   onResetFilters,
 }) {
@@ -26,7 +24,7 @@ export default function PaymentFilters({
 
   return (
     <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-      {/* Search Box */}
+      {/* Search Input Box */}
       <div className="relative flex-1">
         <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
         <input
@@ -38,6 +36,7 @@ export default function PaymentFilters({
         />
         {searchTerm && (
           <button
+            type="button"
             onClick={() => setSearchTerm('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 rounded-full hover:bg-slate-200/50"
           >
@@ -46,16 +45,33 @@ export default function PaymentFilters({
         )}
       </div>
 
-      {/* Filter Controls & Export */}
+      {/* Filter Dropdown Triggers & Export Action */}
       <div className="flex flex-wrap items-center gap-3 justify-between lg:justify-end">
         
+        {/* Status Filter */}
+        <div className="relative flex items-center">
+          <Tag className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
+          >
+            <option value="all">{t('Status: All')}</option>
+            <option value="paid">{t('Paid / Settled')}</option>
+            <option value="pending">{t('Pending')}</option>
+            <option value="disbursed">{t('Disbursed')}</option>
+            <option value="refunded">{t('Refunded')}</option>
+          </select>
+          <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 pointer-events-none" />
+        </div>
+
         {/* Method Filter */}
         <div className="relative flex items-center">
           <CreditCard className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
           <select
             value={methodFilter}
             onChange={(e) => setMethodFilter(e.target.value)}
-            className="pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
+            className="pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
           >
             <option value="all">{t('Method: All')}</option>
             <option value="stripe">{t('Stripe / Card')}</option>
@@ -72,7 +88,7 @@ export default function PaymentFilters({
           <select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
+            className="pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
           >
             <option value="all">{t('Date: All Time')}</option>
             <option value="today">{t('Today')}</option>
@@ -86,43 +102,27 @@ export default function PaymentFilters({
         {/* Reset Filters button if active */}
         {hasActiveFilters && (
           <button
+            type="button"
             onClick={onResetFilters}
-            className="px-3 py-2 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 hover:bg-amber-100 rounded-2xl transition-all flex items-center gap-1.5"
+            className="px-3.5 py-2.5 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 hover:bg-amber-100 rounded-2xl transition-all flex items-center gap-1.5"
             title={t('Reset Filters')}
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            {t('Reset')}
+            <span>{t('Reset')}</span>
           </button>
         )}
 
-        {/* View Mode Toggle */}
-        <div className="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200/80">
-          <button
-            onClick={() => setViewMode('table')}
-            title={t('Table View')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              viewMode === 'table'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            <List className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('Table')}</span>
-          </button>
-          
-          <button
-            onClick={() => setViewMode('grid')}
-            title={t('Grid View')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              viewMode === 'grid'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            <LayoutGrid className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('Grid')}</span>
-          </button>
-        </div>
+        {/* CSV Export Button */}
+        <button
+          type="button"
+          onClick={onExportCSV}
+          className="px-4 py-2.5 text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-2xl transition-all flex items-center gap-2 shadow-2xs"
+          title={t('Export Financial CSV')}
+        >
+          <Download className="w-4 h-4 text-slate-500" />
+          <span>{t('Export CSV')}</span>
+        </button>
+
       </div>
     </div>
   );
