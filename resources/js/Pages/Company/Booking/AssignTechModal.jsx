@@ -12,6 +12,10 @@ export default function AssignTechModal({
   const { t } = useTranslation();
   const [selectedTechId, setSelectedTechId] = useState(booking?.assignedTech?.id || '');
 
+  const activeTechnicians = (technicians || []).filter(
+    (tech) => tech.status !== 'inactive' && tech.status !== 'deleted'
+  );
+
   if (!isOpen || !booking) return null;
 
   const handleConfirm = () => {
@@ -77,9 +81,15 @@ export default function AssignTechModal({
             </div>
 
             {/* List of Technicians */}
-            {technicians.map((tech) => {
+            {activeTechnicians.map((tech) => {
               const isSelected = selectedTechId === tech.id;
               const isAvailable = tech.status === 'available';
+              const techName = tech.name || `${tech.firstName || ''} ${tech.lastName || ''}`.trim();
+              const techRole = tech.role || tech.roleTitle || tech.specialization || t('Technician');
+              const techAvatar = tech.avatar_url || tech.avatar || tech.profile_image || null;
+              const techInitials = techName
+                ? techName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+                : 'T';
 
               return (
                 <div
@@ -92,20 +102,26 @@ export default function AssignTechModal({
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <img
-                      src={tech.avatar}
-                      alt={tech.name}
-                      className="w-10 h-10 rounded-full object-cover border border-slate-200 shrink-0"
-                    />
+                    {techAvatar ? (
+                      <img
+                        src={techAvatar}
+                        alt={techName}
+                        className="w-10 h-10 rounded-full object-cover border border-slate-200 shrink-0"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-theme-accent/10 text-theme-accent font-bold text-xs flex items-center justify-center shrink-0 border border-theme-accent/20">
+                        {techInitials}
+                      </div>
+                    )}
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="font-extrabold text-sm text-slate-900">{tech.name}</p>
+                        <p className="font-extrabold text-sm text-slate-900">{techName}</p>
                         <span className="flex items-center text-amber-500 font-bold text-xs">
                           <Star className="w-3.5 h-3.5 fill-amber-400" />
-                          {tech.rating}
+                          {tech.rating || 5.0}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">{tech.role} • {tech.specialization}</p>
+                      <p className="text-xs text-slate-500 font-medium">{techRole} • {tech.specialization}</p>
                     </div>
                   </div>
 

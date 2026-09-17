@@ -181,14 +181,25 @@ export default function BookingDetailsDrawer({
                 </div>
               ) : (
                 <div className="flex items-center gap-3">
-                  <img
-                    src={booking.assignedTech.avatar}
-                    alt={booking.assignedTech.name}
-                    className="w-11 h-11 rounded-full object-cover border border-slate-200 shadow-xs"
-                  />
+                  {booking.assignedTech?.avatar_url || booking.assignedTech?.avatar || booking.assignedTech?.profile_image ? (
+                    <img
+                      src={booking.assignedTech.avatar_url || booking.assignedTech.avatar || booking.assignedTech.profile_image}
+                      alt={booking.assignedTech.name || 'Technician'}
+                      className="w-11 h-11 rounded-full object-cover border border-slate-200 shadow-xs shrink-0"
+                    />
+                  ) : (
+                    <div className="w-11 h-11 rounded-full bg-theme-accent/10 text-theme-accent font-bold text-xs flex items-center justify-center shrink-0 border border-theme-accent/20">
+                      {(booking.assignedTech?.name || 'Technician')
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .slice(0, 2)
+                        .toUpperCase()}
+                    </div>
+                  )}
                   <div>
-                    <p className="font-extrabold text-slate-900 text-sm">{booking.assignedTech.name}</p>
-                    <p className="text-xs text-slate-500 font-medium">{booking.assignedTech.role}</p>
+                    <p className="font-extrabold text-slate-900 text-sm">{booking.assignedTech?.name || 'Technician'}</p>
+                    <p className="text-xs text-slate-500 font-medium">{booking.assignedTech?.role || t('Technician')}</p>
                   </div>
                 </div>
               )}
