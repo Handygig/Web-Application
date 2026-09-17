@@ -1,53 +1,67 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Head, usePage } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import PageHeader from '@/Components/Other/PageHeader';
 import StatCard from '@/Components/Cards/StatCard';
-import TabSwitch from '@/Components/Other/TabSwitch';
 import TableCard from '@/Components/Cards/TableCard';
+import DeleteConfirmationModal from '@/Components/Modals/DeleteConfirmationModal';
+import FloatingToast from '@/Components/Other/FloatingToast';
 import {
   Users,
-  UserCheck,
   Clock,
   Star,
   Search,
   Filter,
   Plus,
-  Edit2,
+  Pencil,
   Trash2,
-  Calendar,
   Briefcase,
   Phone,
-  Mail,
-  LayoutGrid,
-  List,
-  CheckCircle2,
   X,
   ChevronDown,
-  ShieldCheck,
-  DollarSign,
-  AlertCircle,
-  MoreVertical,
-  Activity,
-  Award,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  AlertTriangle,
   Zap,
-  MapPin,
-  RefreshCw,
+  Droplets,
+  Wind,
+  Wrench,
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
+import EmployeeDetailsDrawer from './EmployeeDetailsDrawer';
+import EmployeeFormDrawer from './EmployeeFormDrawer';
+import { useCompanyTechnicians } from '@/Hooks/useCompanyTechnicians';
+
 export default function EmployeeIndex() {
   const { t } = useTranslation();
-  const { auth } = usePage().props;
+  const { auth, flash } = usePage().props;
 
-  // Mock initial technicians dataset
+  // Toast Notification State (Matching Bookings Page)
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (msg, type = 'success') => {
+    setToastMessage({ msg, type });
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  useEffect(() => {
+    if (flash?.success) {
+      showToast(flash.success, 'success');
+    } else if (flash?.error) {
+      showToast(flash.error, 'error');
+    }
+  }, [flash]);
+
+  // Initial technicians dataset
   const initialTechnicians = [
     {
       id: 'TECH-101',
       firstName: 'David',
       lastName: 'Miller',
       email: 'david.m@apexservices.com',
-      phone: '+1 (555) 234-5678',
+      phone: '+94 77 234 5678',
       specialization: 'Plumbing',
       roleTitle: 'Master Plumber',
       status: 'on_shift_job', // 'on_shift_job', 'available', 'off_duty', 'on_break'
@@ -60,6 +74,8 @@ export default function EmployeeIndex() {
         'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80',
       location: 'Downtown District 4',
       joinedDate: 'Jan 2024',
+      emergencyContact: 'Sarah Miller — +94 71 987 1234 (Spouse)',
+      certifications: 'Master Plumber License #LK-884, Backflow Prevention Certified.',
       recentJobs: [
         {
           id: 'JOB-4089',
@@ -89,7 +105,7 @@ export default function EmployeeIndex() {
       firstName: 'Alex',
       lastName: 'Rivera',
       email: 'alex.r@apexservices.com',
-      phone: '+1 (555) 876-5432',
+      phone: '+94 77 876 5432',
       specialization: 'HVAC',
       roleTitle: 'Lead HVAC Specialist',
       status: 'on_shift_job',
@@ -102,6 +118,8 @@ export default function EmployeeIndex() {
         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
       location: 'Northside Suburbs',
       joinedDate: 'Mar 2024',
+      emergencyContact: 'Carlos Rivera — +94 71 321 7654 (Brother)',
+      certifications: 'EPA Universal HVAC Certification, NATE Certified.',
       recentJobs: [
         {
           id: 'JOB-4084',
@@ -124,7 +142,7 @@ export default function EmployeeIndex() {
       firstName: 'James',
       lastName: 'Wilson',
       email: 'james.w@apexservices.com',
-      phone: '+1 (555) 345-6789',
+      phone: '+94 77 345 6789',
       specialization: 'Electrical',
       roleTitle: 'Master Electrician',
       status: 'available',
@@ -137,6 +155,8 @@ export default function EmployeeIndex() {
         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
       location: 'Commercial Zone West',
       joinedDate: 'Nov 2023',
+      emergencyContact: 'Martha Wilson — +94 71 876 1234 (Mother)',
+      certifications: 'Commercial Master Electrician License #EL-9901.',
       recentJobs: [
         {
           id: 'JOB-4081',
@@ -159,7 +179,7 @@ export default function EmployeeIndex() {
       firstName: 'Sam',
       lastName: 'Patel',
       email: 'sam.p@apexservices.com',
-      phone: '+1 (555) 901-2345',
+      phone: '+94 77 901 2345',
       specialization: 'Plumbing',
       roleTitle: 'Plumbing Specialist',
       status: 'on_shift_job',
@@ -172,6 +192,8 @@ export default function EmployeeIndex() {
         'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
       location: 'Westside Avenue',
       joinedDate: 'May 2024',
+      emergencyContact: 'Priya Patel — +94 71 234 9988 (Wife)',
+      certifications: 'Journeyman Plumber License #PL-3312.',
       recentJobs: [
         {
           id: 'JOB-4078',
@@ -187,7 +209,7 @@ export default function EmployeeIndex() {
       firstName: 'Elena',
       lastName: 'Gomez',
       email: 'elena.g@apexservices.com',
-      phone: '+1 (555) 654-9870',
+      phone: '+94 77 654 9870',
       specialization: 'General Repair',
       roleTitle: 'Senior Maintenance Tech',
       status: 'available',
@@ -200,6 +222,8 @@ export default function EmployeeIndex() {
         'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
       location: 'Central Plaza',
       joinedDate: 'Feb 2024',
+      emergencyContact: 'Luis Gomez — +94 71 443 8877 (Father)',
+      certifications: 'OSHA 30 Maintenance Certification, Multi-Trade Skilled.',
       recentJobs: [
         {
           id: 'JOB-4033',
@@ -215,7 +239,7 @@ export default function EmployeeIndex() {
       firstName: 'Marcus',
       lastName: 'Vance',
       email: 'marcus.v@apexservices.com',
-      phone: '+1 (555) 432-1098',
+      phone: '+94 77 432 1098',
       specialization: 'HVAC',
       roleTitle: 'HVAC Technician',
       status: 'available',
@@ -228,6 +252,8 @@ export default function EmployeeIndex() {
         'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
       location: 'Eastside Sector',
       joinedDate: 'Jun 2024',
+      emergencyContact: 'Tanya Vance — +94 71 112 9900 (Sister)',
+      certifications: 'HVAC Duct & Air Flow Diagnostics Certified.',
       recentJobs: [
         {
           id: 'JOB-4019',
@@ -243,7 +269,7 @@ export default function EmployeeIndex() {
       firstName: 'Sophia',
       lastName: 'Chen',
       email: 'sophia.c@apexservices.com',
-      phone: '+1 (555) 789-0123',
+      phone: '+94 77 789 0123',
       specialization: 'Electrical',
       roleTitle: 'Electrical Specialist',
       status: 'available',
@@ -256,6 +282,8 @@ export default function EmployeeIndex() {
         'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
       location: 'Tech Corridor',
       joinedDate: 'Jan 2024',
+      emergencyContact: 'Kevin Chen — +94 71 776 5544 (Husband)',
+      certifications: 'Residential & EV Charger Installation Specialist.',
       recentJobs: [
         {
           id: 'JOB-4022',
@@ -271,7 +299,7 @@ export default function EmployeeIndex() {
       firstName: 'Robert',
       lastName: 'Taylor',
       email: 'robert.t@apexservices.com',
-      phone: '+1 (555) 321-6549',
+      phone: '+94 77 321 6549',
       specialization: 'Roofing',
       roleTitle: 'Roofing & Gutter Expert',
       status: 'on_break',
@@ -284,6 +312,8 @@ export default function EmployeeIndex() {
         'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
       location: 'Southside Heights',
       joinedDate: 'Jul 2024',
+      emergencyContact: 'Laura Taylor — +94 71 334 1122 (Mother)',
+      certifications: 'Commercial Roofing & Waterproofing Specialist.',
       recentJobs: [],
     },
     {
@@ -291,7 +321,7 @@ export default function EmployeeIndex() {
       firstName: 'Lucas',
       lastName: 'Bennett',
       email: 'lucas.b@apexservices.com',
-      phone: '+1 (555) 890-1234',
+      phone: '+94 77 890 1234',
       specialization: 'Plumbing',
       roleTitle: 'Junior Plumber',
       status: 'off_duty',
@@ -304,6 +334,8 @@ export default function EmployeeIndex() {
         'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
       location: 'Suburban North',
       joinedDate: 'Aug 2024',
+      emergencyContact: 'George Bennett — +94 71 998 1122 (Father)',
+      certifications: 'Apprentice Plumber License #AP-7041.',
       recentJobs: [],
     },
     {
@@ -311,7 +343,7 @@ export default function EmployeeIndex() {
       firstName: 'Hannah',
       lastName: 'Abbott',
       email: 'hannah.a@apexservices.com',
-      phone: '+1 (555) 456-7890',
+      phone: '+94 77 456 7890',
       specialization: 'HVAC',
       roleTitle: 'HVAC Diagnostics Tech',
       status: 'off_duty',
@@ -324,35 +356,30 @@ export default function EmployeeIndex() {
         'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
       location: 'Downtown East',
       joinedDate: 'Apr 2024',
+      emergencyContact: 'Neville Abbott — +94 71 667 8899 (Brother)',
+      certifications: 'Commercial HVAC Diagnostics & System Balancing.',
       recentJobs: [],
     },
   ];
 
-  // State Management
-  const [technicians, setTechnicians] = useState(initialTechnicians);
+  // State Management with reactive custom hook & localStorage persistence
+  const { technicians, activeTechnicians, setTechnicians } = useCompanyTechnicians(initialTechnicians);
+
+  // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [skillFilter, setSkillFilter] = useState('all');
-  const [viewMode, setViewMode] = useState('table'); // 'table' or 'grid'
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Modal States
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Side Drawer States (Matching Bookings Page)
+  const [selectedEmployeeForDetails, setSelectedEmployeeForDetails] = useState(null);
+  const [isDetailsDrawerOpen, setIsDetailsDrawerOpen] = useState(false);
+
   const [editingTech, setEditingTech] = useState(null);
-  const [selectedTechForSchedule, setSelectedTechForSchedule] = useState(null);
-  const [deletingTech, setDeletingTech] = useState(null);
+  const [isFormDrawerOpen, setIsFormDrawerOpen] = useState(false);
 
-  // Form State for Add / Edit Modal
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    specialization: 'Plumbing',
-    roleTitle: '',
-    hourlyRate: '45.00',
-    shiftAssignment: 'Morning Shift (08:00 - 16:00)',
-    status: 'available',
-  });
+  // Delete Modal State
+  const [deletingTech, setDeletingTech] = useState(null);
 
   // Calculate Key Metrics
   const totalStaff = technicians.length;
@@ -361,15 +388,14 @@ export default function EmployeeIndex() {
   ).length;
   const availableForDispatch = technicians.filter((t) => t.status === 'available').length;
   const avgRating = useMemo(() => {
-    if (!technicians.length) return '0.0';
-    const sum = technicians.reduce((acc, curr) => acc + curr.rating, 0);
-    return (sum / technicians.length).toFixed(1);
-  }, [technicians]);
+    if (!activeTechnicians.length) return '0.0';
+    const sum = activeTechnicians.reduce((acc, curr) => acc + curr.rating, 0);
+    return (sum / activeTechnicians.length).toFixed(1);
+  }, [activeTechnicians]);
 
   // Filtered Technicians List
   const filteredTechnicians = useMemo(() => {
-    return technicians.filter((tech) => {
-      // Search text match (Name, Employee ID, Specialization, Role)
+    return activeTechnicians.filter((tech) => {
       const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
         !q ||
@@ -381,7 +407,6 @@ export default function EmployeeIndex() {
         tech.phone.includes(q) ||
         tech.email.toLowerCase().includes(q);
 
-      // Status filter
       let matchesStatus = true;
       if (statusFilter === 'on_shift') {
         matchesStatus =
@@ -406,75 +431,79 @@ export default function EmployeeIndex() {
     });
   }, [technicians, searchQuery, statusFilter, skillFilter]);
 
-  // Handle Add New Open
-  const handleOpenAddModal = () => {
+  // Pagination calculations
+  const itemsPerPage = 8;
+  const totalPages = Math.ceil(filteredTechnicians.length / itemsPerPage) || 1;
+  const paginatedTechnicians = useMemo(() => {
+    return filteredTechnicians.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+  }, [filteredTechnicians, currentPage, itemsPerPage]);
+
+  // Status Change Handler for Dropdown Pill
+  const handleStatusChange = (techId, newStatus) => {
+    setTechnicians((prev) =>
+      prev.map((t) => {
+        if (t.id !== techId) return t;
+        const updated = { ...t, status: newStatus };
+        if (selectedEmployeeForDetails && selectedEmployeeForDetails.id === techId) {
+          setSelectedEmployeeForDetails(updated);
+        }
+        return updated;
+      })
+    );
+  };
+
+  // Handlers for Drawers
+  const handleOpenAddDrawer = () => {
     setEditingTech(null);
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      specialization: 'Plumbing',
-      roleTitle: 'Plumbing Specialist',
-      hourlyRate: '45.00',
-      shiftAssignment: 'Morning Shift (08:00 - 16:00)',
-      status: 'available',
-    });
-    setIsModalOpen(true);
+    setIsFormDrawerOpen(true);
   };
 
-  // Handle Edit Open
-  const handleOpenEditModal = (tech) => {
+  const handleOpenEditDrawer = (tech) => {
     setEditingTech(tech);
-    setFormData({
-      firstName: tech.firstName,
-      lastName: tech.lastName,
-      email: tech.email,
-      phone: tech.phone,
-      specialization: tech.specialization,
-      roleTitle: tech.roleTitle,
-      hourlyRate: tech.hourlyRate,
-      shiftAssignment: tech.shiftAssignment,
-      status: tech.status,
-    });
-    setIsModalOpen(true);
+    setIsFormDrawerOpen(true);
   };
 
-  // Form Submit Handler (Add / Edit)
-  const handleSubmitForm = (e) => {
-    e.preventDefault();
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) return;
+  const handleViewDetails = (tech) => {
+    setSelectedEmployeeForDetails(tech);
+    setIsDetailsDrawerOpen(true);
+  };
 
+  const handleSaveTechnician = (savedData) => {
     if (editingTech) {
-      // Update existing
       setTechnicians((prev) =>
-        prev.map((t) =>
-          t.id === editingTech.id
-            ? {
-                ...t,
-                ...formData,
-                roleTitle: formData.roleTitle || `${formData.specialization} Technician`,
-              }
-            : t
-        )
+        prev.map((t) => {
+          if (t.id !== editingTech.id) return t;
+          const updated = {
+            ...t,
+            ...savedData,
+          };
+          if (selectedEmployeeForDetails && selectedEmployeeForDetails.id === t.id) {
+            setSelectedEmployeeForDetails(updated);
+          }
+          return updated;
+        })
       );
+      showToast(t('Employee updated successfully'), 'success');
     } else {
       // Create new auto-generated ID
       const newIdNumber =
         Math.max(...technicians.map((t) => parseInt(t.id.replace('TECH-', ''), 10) || 100)) + 1;
       const newTech = {
         id: `TECH-${newIdNumber}`,
-        ...formData,
-        roleTitle: formData.roleTitle || `${formData.specialization} Technician`,
+        ...savedData,
         activeAssignment: null,
         rating: 5.0,
         completedJobs: 0,
         avatar: `https://images.unsplash.com/photo-${1534528741775 + newIdNumber}?w=150&auto=format&fit=crop&q=80`,
-        location: 'Main Service Hub',
+        location: savedData.location || 'Main Service Hub',
         joinedDate: 'Just Now',
         recentJobs: [],
       };
       setTechnicians((prev) => [newTech, ...prev]);
+      showToast(t('Employee created successfully'), 'success');
     }
 
     setIsModalOpen(false);
@@ -505,37 +534,44 @@ export default function EmployeeIndex() {
     );
   };
 
-  // Confirm Delete
+  // Confirm Delete with Toast Feedback
   const handleDeleteTech = () => {
     if (!deletingTech) return;
     setTechnicians((prev) => prev.filter((t) => t.id !== deletingTech.id));
+    showToast(t('Successfully deleted'), 'delete_success');
     setDeletingTech(null);
   };
 
-  // Helper Badge Renderers
-  const getStatusBadge = (status) => {
+  // Category Icon Renderer
+  const getCategoryIcon = (specialization) => {
+    const cat = specialization?.toLowerCase() || '';
+    if (cat.includes('plumb')) return <Droplets className="w-4 h-4 text-sky-500 shrink-0" />;
+    if (cat.includes('electric')) return <Zap className="w-4 h-4 text-amber-500 shrink-0" />;
+    if (cat.includes('hvac') || cat.includes('air') || cat.includes('heat')) return <Wind className="w-4 h-4 text-teal-500 shrink-0" />;
+    return <Wrench className="w-4 h-4 text-slate-500 shrink-0" />;
+  };
+
+  // Status Badge / Dropdown Config Renderer (matching Bookings design)
+  const getStatusConfig = (status) => {
     switch (status) {
-      case 'on_shift_job':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            {t('On Shift - In Job')}
-          </span>
-        );
       case 'available':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EBF5EC] text-[#2F4F2F] border border-[#C6E2CB] shadow-xs">
-            <span className="w-2 h-2 rounded-full bg-[#4CAF50]" />
-            {t('Available for Job')}
-          </span>
-        );
+        return {
+          label: t('Available'),
+          badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200/80',
+          dotClass: 'bg-emerald-500',
+        };
+      case 'on_shift_job':
+        return {
+          label: t('In Job'),
+          badgeClass: 'bg-sky-50 text-sky-700 border-sky-200/80',
+          dotClass: 'bg-sky-500',
+        };
       case 'on_break':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 shadow-xs">
-            <Clock className="w-3 h-3 text-amber-600" />
-            {t('On Break')}
-          </span>
-        );
+        return {
+          label: t('On Break'),
+          badgeClass: 'bg-amber-50 text-amber-700 border-amber-200/80',
+          dotClass: 'bg-amber-500',
+        };
       case 'off_duty':
       default:
         return (
@@ -601,21 +637,30 @@ export default function EmployeeIndex() {
       <Head title={t('Employee Management')} />
 
       <div className="flex w-full flex-col gap-6">
+        {/* Toast Notifications (Matching Bookings Page) */}
+        <FloatingToast
+          message={toastMessage?.msg}
+          type={toastMessage?.type}
+          onClose={() => setToastMessage(null)}
+        />
+
+        {/* 1. PAGE HEADER */}
         <PageHeader
           title={t('Employee Management')}
           description={t('Manage field service technicians, assignments, and availability.')}
           action={
             <button
               type="button"
-              onClick={handleOpenAddModal}
+              onClick={handleOpenAddDrawer}
               className="bg-theme-accent hover:bg-theme-accent-hover inline-flex items-center gap-2 rounded-[12px] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-theme-accent/15 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Plus className="h-4 w-4" />
-              {t('Add New Technician')}
+              <Plus className="w-4 h-4" />
+              <span>{t('Add New Technician')}</span>
             </button>
           }
         />
 
+        {/* 2. SUMMARY METRICS CARDS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           <StatCard
             icon={Users}
@@ -654,9 +699,10 @@ export default function EmployeeIndex() {
           />
         </div>
 
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 pb-3">
-            <TabSwitch tabs={employeeTabs} activeTab={statusFilter} onChange={setStatusFilter} />
+        {/* 3. FILTERS & CONTROLS */}
+        <div className="space-y-3">
+          {/* Results Counter directly above filter bar */}
+          <div className="flex items-center justify-between px-1">
             <div className="text-xs text-slate-500 font-medium">
               {t('Showing')}{' '}
               <span className="font-bold text-slate-900">{filteredTechnicians.length}</span>{' '}
@@ -664,7 +710,7 @@ export default function EmployeeIndex() {
             </div>
           </div>
 
-          {/* 3. SEARCH & FILTER CONTROLS BAR */}
+          {/* Filter & Search Bar */}
           <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
             {/* Search Box */}
             <div className="relative flex-1">
@@ -672,13 +718,20 @@ export default function EmployeeIndex() {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
                 placeholder={t('Search by Name, Employee ID (TECH-101), or Specialty...')}
                 className="w-full pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all outline-none"
               />
               {searchQuery && (
                 <button
-                  onClick={() => setSearchQuery('')}
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setCurrentPage(1);
+                  }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 rounded-full hover:bg-slate-200/50"
                 >
                   <X className="w-4 h-4" />
@@ -693,7 +746,10 @@ export default function EmployeeIndex() {
                 <Filter className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
                 <select
                   value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
                   className="pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
                 >
                   <option value="all">{t('Status: All')}</option>
@@ -711,7 +767,10 @@ export default function EmployeeIndex() {
                 <Briefcase className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
                 <select
                   value={skillFilter}
-                  onChange={(e) => setSkillFilter(e.target.value)}
+                  onChange={(e) => {
+                    setSkillFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
                   className="pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
                 >
                   <option value="all">{t('Skill: All Specialties')}</option>
@@ -723,39 +782,11 @@ export default function EmployeeIndex() {
                 </select>
                 <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 pointer-events-none" />
               </div>
-
-              {/* View Mode Toggle Buttons */}
-              <div className="flex items-center p-1 bg-slate-100 rounded-2xl border border-slate-200/80">
-                <button
-                  onClick={() => setViewMode('table')}
-                  title={t('Table View')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    viewMode === 'table'
-                      ? 'bg-white text-slate-900 shadow-xs'
-                      : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  <List className="w-4 h-4" />
-                  <span className="hidden sm:inline">{t('Table')}</span>
-                </button>
-                <button
-                  onClick={() => setViewMode('grid')}
-                  title={t('Grid View')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    viewMode === 'grid'
-                      ? 'bg-white text-slate-900 shadow-xs'
-                      : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  <LayoutGrid className="w-4 h-4" />
-                  <span className="hidden sm:inline">{t('Grid')}</span>
-                </button>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* 4. TECHNICIAN LIST / GRID / EMPTY STATE IN TABLECARD */}
+        {/* 4. TECHNICIAN DATA TABLE CONTAINER */}
         <TableCard>
           {filteredTechnicians.length === 0 ? (
             <div className="p-8 text-center">
@@ -1312,10 +1343,13 @@ export default function EmployeeIndex() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setSelectedTechForSchedule(null)}
-                  className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all"
+                  type="button"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-1 shadow-2xs"
                 >
-                  <X className="w-5 h-5" />
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>{t('Previous')}</span>
                 </button>
               </div>
 
@@ -1421,15 +1455,44 @@ export default function EmployeeIndex() {
               {/* Modal Footer */}
               <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end">
                 <button
-                  onClick={() => setSelectedTechForSchedule(null)}
-                  className="px-5 py-2.5 rounded-2xl text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-100 transition-all"
+                  type="button"
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages || totalPages === 0}
+                  className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-1 shadow-2xs"
                 >
-                  {t('Close')}
+                  <span>{t('Next')}</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
           </div>
-        )}
+        </TableCard>
+
+        {/* 5. EMPLOYEE VIEW DETAILS SIDE DRAWER */}
+        <EmployeeDetailsDrawer
+          employee={selectedEmployeeForDetails}
+          isOpen={isDetailsDrawerOpen}
+          onClose={() => {
+            setIsDetailsDrawerOpen(false);
+            setSelectedEmployeeForDetails(null);
+          }}
+          onEdit={(tech) => {
+            setIsDetailsDrawerOpen(false);
+            handleOpenEditDrawer(tech);
+          }}
+          onUpdateStatus={handleStatusChange}
+        />
+
+        {/* 6. ADD / EDIT EMPLOYEE SIDE DRAWER */}
+        <EmployeeFormDrawer
+          isOpen={isFormDrawerOpen}
+          onClose={() => {
+            setIsFormDrawerOpen(false);
+            setEditingTech(null);
+          }}
+          onSave={handleSaveTechnician}
+          editingTech={editingTech}
+        />
 
         {/* 7. DELETE CONFIRMATION MODAL */}
         {deletingTech && (

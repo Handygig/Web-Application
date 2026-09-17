@@ -17,6 +17,51 @@ export default function Navbar({ onMenuToggle }) {
   const isAdmin = userRoles.includes('admin');
   const roleName = isAdmin ? 'Administrator' : 'Company Manager';
 
+  // Company Profile Dynamic Synchronization for Navbar
+  const [companyDisplayName, setCompanyDisplayName] = useState('');
+  const [companyDisplayAvatar, setCompanyDisplayAvatar] = useState(null);
+
+  useEffect(() => {
+    if (isAdmin) return;
+
+    const loadCompanyProfile = () => {
+      try {
+        const saved = localStorage.getItem('company_profile_data_v1');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.companyName) setCompanyDisplayName(parsed.companyName);
+          if (parsed.avatarUrl !== undefined) setCompanyDisplayAvatar(parsed.avatarUrl);
+        } else {
+          setCompanyDisplayName('Apex Home & Repair Services');
+        }
+      } catch (e) {
+        console.error('Error loading company profile in navbar:', e);
+      }
+    };
+
+    loadCompanyProfile();
+
+    const handleProfileUpdate = (e) => {
+      if (e.detail?.companyName) setCompanyDisplayName(e.detail.companyName);
+      if (e.detail?.avatarUrl !== undefined) setCompanyDisplayAvatar(e.detail.avatarUrl);
+    };
+
+    window.addEventListener('company-profile-updated', handleProfileUpdate);
+    return () => window.removeEventListener('company-profile-updated', handleProfileUpdate);
+  }, [isAdmin, auth?.user]);
+
+  const displayName = isAdmin
+    ? (auth?.user?.full_name || auth?.user?.name || 'Admin')
+    : (companyDisplayName || 'Apex Home & Repair Services');
+
+  const displayAvatar = isAdmin
+    ? (auth?.user?.image_url || auth?.user?.profile_image)
+    : companyDisplayAvatar;
+
+  const displayInitials = displayName
+    ? displayName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+    : 'AP';
+
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -249,20 +294,20 @@ export default function Navbar({ onMenuToggle }) {
               className="flex items-center gap-2.5 rounded-xl border border-slate-200/80 bg-white/80 p-1 pr-3 text-slate-700 transition-all hover:border-theme-accent/30 hover:bg-white active:scale-95"
               aria-label="User profile"
             >
-              <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-theme-accent-10 text-theme-accent ring-2 ring-white">
-                {auth?.user?.profile_image ? (
+              <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-theme-accent-10 text-theme-accent ring-2 ring-white font-bold text-xs">
+                {displayAvatar ? (
                   <img
-                    src={auth.user.image_url}
-                    alt={auth.user.full_name || auth.user.name}
+                    src={displayAvatar}
+                    alt={displayName}
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <User className="h-4 w-4 stroke-[2]" />
+                  <span>{displayInitials}</span>
                 )}
               </div>
               <div className="hidden flex-col text-left sm:flex">
-                <span className="max-w-[110px] truncate text-xs font-semibold text-slate-800 leading-tight">
-                  {auth?.user?.full_name || auth?.user?.name || 'Admin'}
+                <span className="max-w-[140px] truncate text-xs font-semibold text-slate-800 leading-tight">
+                  {displayName}
                 </span>
                 <span className="text-[10px] font-medium text-slate-400">{roleName}</span>
               </div>
@@ -283,7 +328,13 @@ export default function Navbar({ onMenuToggle }) {
                     </p>
                     <p className="truncate text-[11px] text-slate-400 mt-0.5">{auth.user.email}</p>
                   </div>
-                )}
+                  <p className="font-semibold text-xs text-slate-800 truncate">
+                    {displayName}
+                  </p>
+                  <p className="truncate text-[11px] text-slate-400 mt-0.5">
+                    {auth?.user?.email || 'contact@apexrepairs.com'}
+                  </p>
+                </div>
 
                 <Link
                   href={route((isAdmin ? 'admin' : 'company') + '.profile.index')}

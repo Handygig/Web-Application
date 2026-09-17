@@ -170,6 +170,7 @@ Route::middleware('auth')->group(function () {
         Route::get('payments', [CompanyPaymentController::class, 'index'])->name('payments.index');
         Route::get('payments/create', [CompanyPaymentController::class, 'create'])->name('payments.create');
         Route::post('payments', [CompanyPaymentController::class, 'store'])->name('payments.store');
+        Route::post('payments/{id}/reverse', [CompanyPaymentController::class, 'reverse'])->name('payments.reverse');
         Route::get('payments/{payment}', [CompanyPaymentController::class, 'show'])->name('payments.show');
         Route::get('payments/{payment}/edit', [CompanyPaymentController::class, 'edit'])->name('payments.edit');
         Route::put('payments/{payment}', [CompanyPaymentController::class, 'update'])->name('payments.update');
@@ -178,6 +179,9 @@ Route::middleware('auth')->group(function () {
 
         // Profile
         Route::get('profile', [CompanyProfileController::class, 'index'])->name('profile.index');
+        Route::put('profile', [CompanyProfileController::class, 'update'])->name('profile.update');
+        Route::put('profile/password', [CompanyProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('profile/upload-logo', [CompanyProfileController::class, 'uploadLogo'])->name('profile.upload-logo');
     });
 
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])->name('password.confirm');

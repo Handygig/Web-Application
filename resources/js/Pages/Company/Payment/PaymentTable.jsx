@@ -6,12 +6,10 @@ import {
   Smartphone,
   Banknote,
   Building,
-  CheckCircle2,
-  Clock,
-  RefreshCw,
   ChevronLeft,
   ChevronRight,
-  UserCheck,
+  AlertTriangle,
+  RotateCcw,
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
@@ -35,14 +33,14 @@ export default function PaymentTable({ transactions, viewMode, onViewInvoice, on
       case 'stripe':
       case 'card':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200/70 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/70 whitespace-nowrap">
             <CreditCard className="w-3.5 h-3.5" />
             {t('Stripe / Card')}
           </span>
         );
       case 'apple_pay':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-300/80 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-300/80 whitespace-nowrap">
             <Smartphone className="w-3.5 h-3.5 text-slate-900" />
             {t('Apple Pay')}
           </span>
@@ -50,21 +48,21 @@ export default function PaymentTable({ transactions, viewMode, onViewInvoice, on
       case 'cod':
       case 'cash':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200/70 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/70 whitespace-nowrap">
             <Banknote className="w-3.5 h-3.5 text-emerald-600" />
             {t('Cash on Delivery')}
           </span>
         );
       case 'bank_transfer':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-sky-50 text-sky-800 border border-sky-200/70 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-sky-50 text-sky-800 border border-sky-200/70 whitespace-nowrap">
             <Building className="w-3.5 h-3.5 text-sky-600" />
             {t('Bank Transfer')}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 whitespace-nowrap">
             <CreditCard className="w-3.5 h-3.5" />
             {method}
           </span>
@@ -72,42 +70,43 @@ export default function PaymentTable({ transactions, viewMode, onViewInvoice, on
     }
   };
 
-  // Status Badge Renderer
+  // Status Badge Renderer with colored dot indicators (Matching Bookings & Employees status styles)
   const renderStatusBadge = (status) => {
     switch (status) {
       case 'paid':
       case 'settled':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#EBF5EC] text-emerald-800 border border-emerald-200/80 whitespace-nowrap">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+          <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs whitespace-nowrap">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
             {t('Paid & Settled')}
           </span>
         );
       case 'pending':
       case 'pending_settlement':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200/80 whitespace-nowrap">
-            <Clock className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+          <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200/80 shadow-2xs whitespace-nowrap">
+            <span className="h-2 w-2 rounded-full bg-amber-500 shrink-0 animate-pulse" />
             {t('Pending Settlement')}
           </span>
         );
       case 'disbursed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-800 border border-purple-200/80 whitespace-nowrap">
-            <UserCheck className="w-3.5 h-3.5 text-purple-600" />
+          <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200/80 shadow-2xs whitespace-nowrap">
+            <span className="h-2 w-2 rounded-full bg-purple-500 shrink-0" />
             {t('Disbursed to Tech')}
           </span>
         );
       case 'refunded':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200/80 whitespace-nowrap">
-            <RefreshCw className="w-3.5 h-3.5 text-rose-600" />
+          <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200/80 shadow-2xs whitespace-nowrap">
+            <span className="h-2 w-2 rounded-full bg-rose-500 shrink-0" />
             {t('Refunded')}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 whitespace-nowrap">
+          <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 whitespace-nowrap">
+            <span className="h-2 w-2 rounded-full bg-slate-400 shrink-0" />
             {status}
           </span>
         );
@@ -170,7 +169,8 @@ export default function PaymentTable({ transactions, viewMode, onViewInvoice, on
                           </span>
                         </div>
                       </div>
-                    </td>
+                    </div>
+                  </td>
 
                     {/* Customer & Date */}
                     <td className="py-4 px-6 align-middle">
@@ -187,15 +187,17 @@ export default function PaymentTable({ transactions, viewMode, onViewInvoice, on
                       </div>
                     </td>
 
-                    {/* Payment Method */}
-                    <td className="py-4 px-6 align-middle">{renderMethodBadge(txn.method)}</td>
+                  {/* 3. Payment Method */}
+                  <td className="px-6 py-4 align-middle whitespace-nowrap">
+                    {renderMethodBadge(txn.method)}
+                  </td>
 
-                    {/* Gross Amount */}
-                    <td className="py-4 px-6 align-middle text-right">
-                      <div className="text-sm font-bold text-gray-900 whitespace-nowrap">
-                        {formattedCurrency(txn.grossAmount)}
-                      </div>
-                    </td>
+                  {/* 4. Gross Amount */}
+                  <td className="px-6 py-4 align-middle text-right whitespace-nowrap">
+                    <div className="text-sm font-bold text-slate-900">
+                      {formattedCurrency(txn.grossAmount)}
+                    </div>
+                  </td>
 
                     {/* Platform Fee & Net Payout */}
                     <td className="py-4 px-6 align-middle text-right">
@@ -208,33 +210,64 @@ export default function PaymentTable({ transactions, viewMode, onViewInvoice, on
                       </div>
                     </td>
 
-                    {/* Payment Status */}
-                    <td className="py-4 px-6 align-middle">{renderStatusBadge(txn.status)}</td>
+                  {/* 6. Payment Status */}
+                  <td className="px-6 py-4 align-middle whitespace-nowrap">
+                    {renderStatusBadge(txn.status)}
+                  </td>
 
-                    {/* Actions */}
-                    <td className="py-4 px-6 align-middle text-right">
-                      <div className="flex items-center justify-end gap-2">
+                  {/* 7. Actions */}
+                  <td className="px-6 py-4 align-middle text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-1">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onViewInvoice?.(txn);
+                        }}
+                        className="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 shadow-2xs"
+                        title={t('View Invoice')}
+                      >
+                        <FileText className="w-3.5 h-3.5 text-slate-500" />
+                        <span>{t('Invoice')}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDownloadReceipt?.(txn);
+                        }}
+                        className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                        title={t('Download Receipt')}
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
+
+                      {txn.status !== 'refunded' && txn.status !== 'reversed' ? (
                         <button
-                          onClick={() => onViewInvoice(txn)}
-                          className="px-3 py-1.5 bg-white border border-[#E2E4D9] hover:bg-[#5E6933] hover:text-white hover:border-[#5E6933] text-gray-700 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 shadow-2xs whitespace-nowrap"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onReversePayment?.(txn);
+                          }}
+                          className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors"
+                          title={t('Reverse Payment')}
                         >
-                          <FileText className="w-3.5 h-3.5" />
-                          <span>{t('Invoice')}</span>
+                          <RotateCcw className="w-4 h-4" />
                         </button>
-                        <button
-                          onClick={() => onDownloadReceipt(txn)}
-                          className="p-1.5 bg-white border border-[#E2E4D9] hover:bg-gray-100 text-gray-600 rounded-lg transition-all shadow-2xs"
-                          title={t('Download Receipt')}
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      ) : (
+                        <span className="px-2 py-1 text-[10px] font-bold text-slate-400 bg-slate-100 rounded-md border border-slate-200/80">
+                          {t('Reversed')}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
           {/* TABLE FOOTER / PAGINATION */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#F9FAF7] px-6 py-3.5 border-t border-[#E2E4D9] text-xs text-gray-600">
@@ -332,7 +365,7 @@ export default function PaymentTable({ transactions, viewMode, onViewInvoice, on
             </div>
           ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }

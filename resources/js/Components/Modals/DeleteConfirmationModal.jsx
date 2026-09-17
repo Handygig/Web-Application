@@ -9,6 +9,7 @@ export default function DeleteConfirmationModal({
   onConfirm,
   title,
   description,
+  confirmText,
   isLoading = false,
 }) {
   const { t } = useTranslation();
@@ -100,7 +101,7 @@ export default function DeleteConfirmationModal({
             className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-sm h-11 px-5 bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/20 active:scale-95 transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            <span>{t('Confirm Delete')}</span>
+            <span>{confirmText || t('Confirm Delete')}</span>
           </button>
         </div>
       </div>

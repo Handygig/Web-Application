@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Company\StoreEmployeeRequest;
+use Illuminate\Http\JsonResponse;
 use App\Http\Resources\Company\CompanyEmployeeResource;
 use App\Models\Provider;
 use App\Models\User;
@@ -19,44 +20,57 @@ class EmployeeController extends Controller
     public function index(Request $request): Response
     {
         $user = auth()->user();
-        $query = Provider::with('user');
+        $companyId = $user && $user->company ? $user->company->id : null;
 
-        if ($user && $user->company) {
-            $query->where('company_id', $user->company->id);
-        }
-
-        $employees = $query->latest()->paginate(10)->withQueryString();
+        $employees = Provider::with(['user', 'serviceCategories'])
+            ->when($companyId, fn ($q) => $q->where('company_id', $companyId))
+            ->whereHas('user', fn ($q) => $q->where('status', '!=', 'inactive'))
+            ->get();
 
         return Inertia::render('Company/Employee/Index', [
-            'employees' => CompanyEmployeeResource::collection($employees),
+            'technicians' => $employees,
         ]);
     }
 
-    public function store(StoreEmployeeRequest $request): RedirectResponse
+    public function store(StoreEmployeeRequest $request): JsonResponse|RedirectResponse
     {
         $validated = $request->validated();
-        $company = auth()->user()->company;
+        $user = auth()->user();
 
-        DB::transaction(function () use ($validated, $company) {
-            $user = User::create([
-                'full_name' => $validated['full_name'],
-                'email' => $validated['email'],
-                'phone' => $validated['phone'] ?? null,
-                'password' => Hash::make('Password@123'),
-                'role' => 'provider',
-                'status' => $validated['status'],
+        if ($user && $user->company) {
+            $validated['company_id'] = $user->company->id;
+        }
+
+        $employee = Provider::create($validated);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Employee registered successfully.'),
+                'data' => $employee,
+            ], 201);
+        }
+
+        return redirect()->back()->with('success', __('Employee registered successfully.'));
+    }
+
+    public function destroy(Request $request, string $id): JsonResponse|RedirectResponse
+    {
+        $employee = Provider::with('user')->find($id);
+
+        if ($employee) {
+            if ($employee->user) {
+                $employee->user->update(['status' => 'inactive']);
+            }
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Employee removed successfully.'),
             ]);
+        }
 
-            $user->assignRole('provider');
-
-            Provider::create([
-                'user_id' => $user->id,
-                'company_id' => $company?->id,
-                'provider_type' => 'employee',
-                'approval_status' => 'approved',
-            ]);
-        });
-
-        return redirect()->back()->with('success', __('Employee added successfully.'));
+        return redirect()->back()->with('success', __('Employee removed successfully.'));
     }
 }

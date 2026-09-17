@@ -20,8 +20,6 @@ export default function PaymentFilters({
   setMethodFilter,
   dateFilter,
   setDateFilter,
-  viewMode,
-  setViewMode,
   onExportCSV,
   onResetFilters,
 }) {
@@ -32,7 +30,7 @@ export default function PaymentFilters({
 
   return (
     <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-      {/* Search Box */}
+      {/* Search Input Box */}
       <div className="relative flex-1">
         <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
         <input
@@ -44,6 +42,7 @@ export default function PaymentFilters({
         />
         {searchTerm && (
           <button
+            type="button"
             onClick={() => setSearchTerm('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 rounded-full hover:bg-slate-200/50"
           >
@@ -52,7 +51,7 @@ export default function PaymentFilters({
         )}
       </div>
 
-      {/* Filter Controls & Export */}
+      {/* Filter Dropdown Triggers & Export Action */}
       <div className="flex flex-wrap items-center gap-3 justify-between lg:justify-end">
         {/* Method Filter */}
         <div className="relative flex items-center">
@@ -60,7 +59,7 @@ export default function PaymentFilters({
           <select
             value={methodFilter}
             onChange={(e) => setMethodFilter(e.target.value)}
-            className="pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
+            className="pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
           >
             <option value="all">{t('Method: All')}</option>
             <option value="stripe">{t('Stripe / Card')}</option>
@@ -77,7 +76,7 @@ export default function PaymentFilters({
           <select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
+            className="pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
           >
             <option value="all">{t('Date: All Time')}</option>
             <option value="today">{t('Today')}</option>
@@ -91,12 +90,13 @@ export default function PaymentFilters({
         {/* Reset Filters button if active */}
         {hasActiveFilters && (
           <button
+            type="button"
             onClick={onResetFilters}
-            className="px-3 py-2 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 hover:bg-amber-100 rounded-2xl transition-all flex items-center gap-1.5"
+            className="px-3.5 py-2.5 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 hover:bg-amber-100 rounded-2xl transition-all flex items-center gap-1.5"
             title={t('Reset Filters')}
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            {t('Reset')}
+            <span>{t('Reset')}</span>
           </button>
         )}
 
