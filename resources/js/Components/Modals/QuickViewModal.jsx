@@ -25,7 +25,8 @@ export default function QuickViewModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose, open]);
 
-  if (!open || !data || !mounted || typeof window === 'undefined' || !window.document?.body) return null;
+  if (!open || !data || !mounted || typeof window === 'undefined' || !window.document?.body)
+    return null;
 
   const isCustomer = type === 'customer';
 
@@ -52,7 +53,11 @@ export default function QuickViewModal({
         {/* Header Controls */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-            {isCustomer ? <User className="h-4 w-4 text-theme-accent" /> : <Briefcase className="h-4 w-4 text-theme-accent" />}
+            {isCustomer ? (
+              <User className="h-4 w-4 text-theme-accent" />
+            ) : (
+              <Briefcase className="h-4 w-4 text-theme-accent" />
+            )}
             {isCustomer ? t('Customer Quick View') : t('Provider Quick View')}
           </div>
 
@@ -76,10 +81,14 @@ export default function QuickViewModal({
               {isCustomer ? data.name : data.providerName || data.name}
             </h3>
             {!isCustomer && data.businessName && (
-              <span className="text-xs font-semibold text-theme-accent block">{data.businessName}</span>
+              <span className="text-xs font-semibold text-theme-accent block">
+                {data.businessName}
+              </span>
             )}
             <span className="text-xs font-mono font-medium text-slate-400 block mt-0.5">
-              {isCustomer ? data.customerId || `CUST-${data.id || '102'}` : data.providerId || `PRV-${data.id || '204'}`}
+              {isCustomer
+                ? data.customerId || `CUST-${data.id || '102'}`
+                : data.providerId || `PRV-${data.id || '204'}`}
             </span>
           </div>
         </div>
@@ -91,7 +100,9 @@ export default function QuickViewModal({
               <Mail className="h-3.5 w-3.5 text-slate-400" />
               {t('Email')}
             </span>
-            <span className="font-semibold text-slate-800 truncate max-w-[200px]">{data.email || 'user@example.com'}</span>
+            <span className="font-semibold text-slate-800 truncate max-w-[200px]">
+              {data.email || 'user@example.com'}
+            </span>
           </div>
 
           <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-white">

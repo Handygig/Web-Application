@@ -70,11 +70,15 @@ export default function JobTypeDetailModal({
                       : 'bg-slate-100 text-slate-600 border border-slate-200'
                   }`}
                 >
-                  <span className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`}
+                  />
                   {isActive ? t('Active') : t('Inactive')}
                 </span>
               </div>
-              <p className="mt-1 font-mono text-xs text-slate-400">{jobType.code || `JT-${jobType.id}`}</p>
+              <p className="mt-1 font-mono text-xs text-slate-400">
+                {jobType.code || `JT-${jobType.id}`}
+              </p>
             </div>
           </div>
 
@@ -109,14 +113,18 @@ export default function JobTypeDetailModal({
               <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                 {t('Job Type ID')}
               </span>
-              <span className="font-mono font-bold text-slate-900 text-sm">{jobType.code || `JT-${jobType.id}`}</span>
+              <span className="font-mono font-bold text-slate-900 text-sm">
+                {jobType.code || `JT-${jobType.id}`}
+              </span>
             </div>
 
             <div className="p-4 rounded-xl border border-slate-100 bg-slate-50">
               <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                 {t('Created Date')}
               </span>
-              <span className="font-semibold text-slate-800 text-sm">{jobType.createdDate || jobType.created_at || 'Jan 10, 2025'}</span>
+              <span className="font-semibold text-slate-800 text-sm">
+                {jobType.createdDate || jobType.created_at || 'Jan 10, 2025'}
+              </span>
             </div>
           </div>
         </div>

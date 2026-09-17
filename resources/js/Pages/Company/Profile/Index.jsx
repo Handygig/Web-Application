@@ -46,7 +46,8 @@ const INITIAL_COMPANY_PROFILE = {
   province: 'Western Province',
   postalCode: '00300',
   country: 'Sri Lanka',
-  description: 'Premier home maintenance, electrical, plumbing, and HVAC service provider serving Western Province.',
+  description:
+    'Premier home maintenance, electrical, plumbing, and HVAC service provider serving Western Province.',
   status: 'Active',
   verificationStatus: 'Verified Service Provider',
   avatarUrl: null,
@@ -475,7 +476,11 @@ export default function ProfileIndex() {
             </div>
           </div>
 
-          {fileError && <p className="mt-3 text-xs font-medium text-red-500 text-center sm:text-left">{fileError}</p>}
+          {fileError && (
+            <p className="mt-3 text-xs font-medium text-red-500 text-center sm:text-left">
+              {fileError}
+            </p>
+          )}
         </div>
 
         {/* 2. ORGANIZED NAVIGATION SECTION TABS */}
@@ -500,7 +505,9 @@ export default function ProfileIndex() {
                       : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200/80 hover:bg-slate-50'
                   }`}
                 >
-                  <Icon className={`h-4 w-4 ${isActive ? 'text-theme-accent' : 'text-slate-400'}`} />
+                  <Icon
+                    className={`h-4 w-4 ${isActive ? 'text-theme-accent' : 'text-slate-400'}`}
+                  />
                   <span>{tab.label}</span>
                 </button>
               );
@@ -522,7 +529,9 @@ export default function ProfileIndex() {
             <div className="p-6 sm:p-8 space-y-6">
               <div className="border-b border-slate-100 pb-4">
                 <h3 className="text-lg font-bold text-slate-900">{t('Company Details')}</h3>
-                <p className="text-xs text-slate-500">{t('Manage your business profile, service categories, and contact information.')}</p>
+                <p className="text-xs text-slate-500">
+                  {t('Manage your business profile, service categories, and contact information.')}
+                </p>
               </div>
 
               <form onSubmit={handleSaveProfile} className="space-y-6">
@@ -547,7 +556,9 @@ export default function ProfileIndex() {
                       />
                     </div>
                     {profileErrors.companyName && (
-                      <p className="mt-1 text-xs font-medium text-red-500">{profileErrors.companyName}</p>
+                      <p className="mt-1 text-xs font-medium text-red-500">
+                        {profileErrors.companyName}
+                      </p>
                     )}
                   </div>
 
@@ -641,11 +652,15 @@ export default function ProfileIndex() {
                         onChange={(e) => handleChange('category', e.target.value)}
                         className="w-full appearance-none rounded-xl border border-slate-200 bg-white pl-10 pr-9 py-2.5 h-11 text-sm text-slate-800 bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[length:14px_14px] bg-[right_10px_center] bg-no-repeat cursor-pointer focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 focus:outline-none transition-all"
                       >
-                        <option value="General Maintenance & Repair">{t('General Maintenance & Repair')}</option>
+                        <option value="General Maintenance & Repair">
+                          {t('General Maintenance & Repair')}
+                        </option>
                         <option value="Electrical Services">{t('Electrical Services')}</option>
                         <option value="Plumbing Services">{t('Plumbing Services')}</option>
                         <option value="Cleaning & Sanitation">{t('Cleaning & Sanitation')}</option>
-                        <option value="HVAC & Appliance Repair">{t('HVAC & Appliance Repair')}</option>
+                        <option value="HVAC & Appliance Repair">
+                          {t('HVAC & Appliance Repair')}
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -692,8 +707,12 @@ export default function ProfileIndex() {
           <TableCard>
             <div className="p-6 sm:p-8 space-y-6">
               <div className="border-b border-slate-100 pb-4">
-                <h3 className="text-lg font-bold text-slate-900">{t('Headquarters & Operating Address')}</h3>
-                <p className="text-xs text-slate-500">{t('Update primary location and operational address details.')}</p>
+                <h3 className="text-lg font-bold text-slate-900">
+                  {t('Headquarters & Operating Address')}
+                </h3>
+                <p className="text-xs text-slate-500">
+                  {t('Update primary location and operational address details.')}
+                </p>
               </div>
 
               <form onSubmit={handleSaveProfile} className="space-y-6">
@@ -793,7 +812,9 @@ export default function ProfileIndex() {
             <div className="p-6 sm:p-8 space-y-6">
               <div className="border-b border-slate-100 pb-4">
                 <h3 className="text-lg font-bold text-slate-900">{t('Change Password')}</h3>
-                <p className="text-xs text-slate-500">{t('Ensure your company account is using a long and secure password.')}</p>
+                <p className="text-xs text-slate-500">
+                  {t('Ensure your company account is using a long and secure password.')}
+                </p>
               </div>
 
               <form onSubmit={handleChangePassword} className="max-w-xl space-y-4">
@@ -808,10 +829,9 @@ export default function ProfileIndex() {
                       type={showCurrent ? 'text' : 'password'}
                       required
                       value={passwords.currentPassword}
-                      onChange={(e) => {
-                        setPasswords({ ...passwords, currentPassword: e.target.value });
-                        if (passwordErrors.currentPassword) setPasswordErrors((prev) => ({ ...prev, currentPassword: '' }));
-                      }}
+                      onChange={(e) =>
+                        setPasswords({ ...passwords, currentPassword: e.target.value })
+                      }
                       placeholder="••••••••"
                       className={`w-full rounded-xl border pl-10 pr-10 py-2.5 h-11 text-sm text-slate-800 focus:outline-none transition-all ${
                         passwordErrors.currentPassword
@@ -850,7 +870,8 @@ export default function ProfileIndex() {
                       value={passwords.newPassword}
                       onChange={(e) => {
                         setPasswords({ ...passwords, newPassword: e.target.value });
-                        if (passwordErrors.newPassword) setPasswordErrors((prev) => ({ ...prev, newPassword: '' }));
+                        if (passwordErrors.newPassword)
+                          setPasswordErrors({ ...passwordErrors, newPassword: '' });
                       }}
                       placeholder="••••••••"
                       className={`w-full rounded-xl border pl-10 pr-10 py-2.5 h-11 text-sm text-slate-800 focus:outline-none transition-all ${
@@ -873,7 +894,9 @@ export default function ProfileIndex() {
                     </button>
                   </div>
                   {passwordErrors.newPassword && (
-                    <p className="mt-1 text-xs font-medium text-red-500">{passwordErrors.newPassword}</p>
+                    <p className="mt-1 text-xs font-medium text-red-500">
+                      {passwordErrors.newPassword}
+                    </p>
                   )}
                   <p className="mt-1 text-[11px] text-slate-400">
                     {t('Must be at least 8 characters with uppercase, lowercase, number, and special character.')}
@@ -893,7 +916,8 @@ export default function ProfileIndex() {
                       value={passwords.confirmPassword}
                       onChange={(e) => {
                         setPasswords({ ...passwords, confirmPassword: e.target.value });
-                        if (passwordErrors.confirmPassword) setPasswordErrors((prev) => ({ ...prev, confirmPassword: '' }));
+                        if (passwordErrors.confirmPassword)
+                          setPasswordErrors({ ...passwordErrors, confirmPassword: '' });
                       }}
                       placeholder="••••••••"
                       className={`w-full rounded-xl border pl-10 pr-10 py-2.5 h-11 text-sm text-slate-800 focus:outline-none transition-all ${
@@ -916,7 +940,9 @@ export default function ProfileIndex() {
                     </button>
                   </div>
                   {passwordErrors.confirmPassword && (
-                    <p className="mt-1 text-xs font-medium text-red-500">{passwordErrors.confirmPassword}</p>
+                    <p className="mt-1 text-xs font-medium text-red-500">
+                      {passwordErrors.confirmPassword}
+                    </p>
                   )}
                 </div>
 
@@ -942,7 +968,9 @@ export default function ProfileIndex() {
               <div className="p-6 space-y-4">
                 <div className="border-b border-slate-100 pb-3">
                   <h3 className="text-base font-bold text-slate-900">{t('Account Metadata')}</h3>
-                  <p className="text-xs text-slate-500">{t('Overview of company credentials and system stats.')}</p>
+                  <p className="text-xs text-slate-500">
+                    {t('Overview of company credentials and system stats.')}
+                  </p>
                 </div>
 
                 <div className="space-y-3.5 text-xs">
@@ -953,7 +981,9 @@ export default function ProfileIndex() {
 
                   <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
                     <span className="text-slate-500 font-medium">{t('Registration No')}</span>
-                    <span className="font-mono font-bold text-slate-800">{profile.registrationNumber}</span>
+                    <span className="font-mono font-bold text-slate-800">
+                      {profile.registrationNumber}
+                    </span>
                   </div>
 
                   <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
@@ -979,7 +1009,9 @@ export default function ProfileIndex() {
                   </div>
 
                   <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
-                    <span className="text-slate-500 font-medium">{t('Active Service Listings')}</span>
+                    <span className="text-slate-500 font-medium">
+                      {t('Active Service Listings')}
+                    </span>
                     <span className="font-bold text-slate-800 flex items-center gap-1">
                       <Briefcase className="h-3.5 w-3.5 text-slate-400" />
                       {profile.activeServices || 12}
@@ -1004,11 +1036,30 @@ export default function ProfileIndex() {
               <div className="p-6 space-y-4">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
                   <History className="h-4 w-4 text-theme-accent" />
-                  <h3 className="text-base font-bold text-slate-900">{t('Recent Activity Timeline')}</h3>
+                  <h3 className="text-base font-bold text-slate-900">
+                    {t('Recent Activity Timeline')}
+                  </h3>
                 </div>
 
                 <div className="space-y-4 pl-2 border-l-2 border-slate-100 text-xs">
-                  {activityLogs.map((act, idx) => (
+                  {[
+                    {
+                      time: t('Today, 10:15 AM'),
+                      title: t('Logged into company management portal'),
+                    },
+                    {
+                      time: t('Yesterday, 03:40 PM'),
+                      title: t('Updated operating headquarters address'),
+                    },
+                    {
+                      time: t('Aug 20, 2026'),
+                      title: t('Added 2 new employee technician accounts'),
+                    },
+                    {
+                      time: t('Aug 15, 2026'),
+                      title: t('Company profile verified by system administrator'),
+                    },
+                  ].map((act, idx) => (
                     <div key={idx} className="relative pl-4">
                       <span className="absolute -left-[17px] top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white ring-2 ring-indigo-200">
                         <span className="h-1.5 w-1.5 rounded-full bg-theme-accent" />

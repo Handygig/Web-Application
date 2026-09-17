@@ -173,7 +173,8 @@ export default function DocumentViewerModal({ open = false, document = null, onC
               </div>
               <h4 className="text-xl font-bold text-white mb-1">{document.name}</h4>
               <p className="text-sm text-slate-400 mb-6 max-w-md">
-                {t('Official verification file submitted for review.')} ({document.fileType || 'PDF'}, {document.fileSize || '2.4 MB'})
+                {t('Official verification file submitted for review.')} (
+                {document.fileType || 'PDF'}, {document.fileSize || '2.4 MB'})
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-3">

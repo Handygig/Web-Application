@@ -20,7 +20,7 @@ import {
   PlayCircle,
   CheckCircle,
   XCircle,
-  History
+  History,
 } from 'lucide-react';
 import { StatusBadge, UrgencyBadge, CategoryBadge } from './BookingBadgeHelpers';
 import { useTranslation } from '@/Hooks/useTranslation';
@@ -43,7 +43,6 @@ export default function BookingDetailsDrawer({
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/60 backdrop-blur-xs flex justify-end animate-in fade-in duration-200">
       <div className="w-full max-w-2xl bg-white h-full shadow-2xl overflow-y-auto flex flex-col justify-between animate-in slide-in-from-right duration-300">
-        
         {/* Drawer Header */}
         <div className="p-6 border-b border-slate-100 bg-slate-50/80 sticky top-0 z-20 backdrop-blur-md flex items-center justify-between">
           <div className="space-y-1">
@@ -65,7 +64,6 @@ export default function BookingDetailsDrawer({
 
         {/* Drawer Body Content */}
         <div className="p-6 space-y-6 flex-1">
-          
           {/* Quick Action Bar for Status */}
           <div className="bg-[#EBF5EC] p-4 rounded-2xl border border-[#C6E2CB] flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -124,13 +122,19 @@ export default function BookingDetailsDrawer({
                 <p className="font-extrabold text-slate-900">{booking.customerName}</p>
                 <div className="flex items-center gap-2 text-xs font-medium text-slate-600">
                   <Phone className="w-3.5 h-3.5 text-slate-400" />
-                  <a href={`tel:${booking.customerPhone}`} className="hover:underline text-slate-800">
+                  <a
+                    href={`tel:${booking.customerPhone}`}
+                    className="hover:underline text-slate-800"
+                  >
                     {booking.customerPhone}
                   </a>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-medium text-slate-600">
                   <Mail className="w-3.5 h-3.5 text-slate-400" />
-                  <a href={`mailto:${booking.customerEmail}`} className="hover:underline text-slate-800">
+                  <a
+                    href={`mailto:${booking.customerEmail}`}
+                    className="hover:underline text-slate-800"
+                  >
                     {booking.customerEmail}
                   </a>
                 </div>
@@ -198,8 +202,12 @@ export default function BookingDetailsDrawer({
                     </div>
                   )}
                   <div>
-                    <p className="font-extrabold text-slate-900 text-sm">{booking.assignedTech?.name || 'Technician'}</p>
-                    <p className="text-xs text-slate-500 font-medium">{booking.assignedTech?.role || t('Technician')}</p>
+                    <p className="font-extrabold text-slate-900 text-sm">
+                      {booking.assignedTech.name}
+                    </p>
+                    <p className="text-xs text-slate-500 font-medium">
+                      {booking.assignedTech.role}
+                    </p>
                   </div>
                 </div>
               )}
@@ -246,7 +254,7 @@ export default function BookingDetailsDrawer({
               {/* Map Preview Mock Illustration */}
               <div className="h-44 bg-slate-200/80 relative flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#5E6933_1px,transparent_1px)] [background-size:12px_12px]" />
-                
+
                 {/* Decorative Roads Grid Lines */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="w-full h-0.5 bg-slate-300/80 rotate-12" />
@@ -282,7 +290,8 @@ export default function BookingDetailsDrawer({
                 {t('Field Technician Service Checklist')}
               </h3>
               <span className="text-xs font-bold text-slate-400">
-                {booking.checklist?.filter((c) => c.completed).length || 0} / {booking.checklist?.length || 0} {t('Completed')}
+                {booking.checklist?.filter((c) => c.completed).length || 0} /{' '}
+                {booking.checklist?.length || 0} {t('Completed')}
               </span>
             </div>
 
@@ -292,7 +301,9 @@ export default function BookingDetailsDrawer({
                   key={item.id}
                   onClick={() => onToggleChecklist(booking.id, item.id)}
                   className={`flex items-start gap-3 p-2.5 rounded-xl transition-all cursor-pointer ${
-                    item.completed ? 'bg-emerald-50/60 text-slate-500' : 'bg-white hover:bg-slate-100 text-slate-800 border border-slate-200/60'
+                    item.completed
+                      ? 'bg-emerald-50/60 text-slate-500'
+                      : 'bg-white hover:bg-slate-100 text-slate-800 border border-slate-200/60'
                   }`}
                 >
                   {item.completed ? (
@@ -300,7 +311,9 @@ export default function BookingDetailsDrawer({
                   ) : (
                     <Square className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
                   )}
-                  <span className={`text-xs font-semibold leading-snug ${item.completed ? 'line-through text-slate-400' : ''}`}>
+                  <span
+                    className={`text-xs font-semibold leading-snug ${item.completed ? 'line-through text-slate-400' : ''}`}
+                  >
                     {item.task}
                   </span>
                 </div>
@@ -318,20 +331,26 @@ export default function BookingDetailsDrawer({
             <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-2.5 text-xs">
               <div className="flex justify-between font-medium text-slate-600">
                 <span>{t('Base Service Fee')}</span>
-                <span className="font-bold text-slate-800">${booking.feeBreakdown?.base?.toFixed(2) || '0.00'}</span>
+                <span className="font-bold text-slate-800">
+                  ${booking.feeBreakdown?.base?.toFixed(2) || '0.00'}
+                </span>
               </div>
 
               {booking.feeBreakdown?.urgencySurcharge > 0 && (
                 <div className="flex justify-between font-medium text-amber-700">
                   <span>{t('Urgency Dispatch Surcharge')}</span>
-                  <span className="font-bold">+${booking.feeBreakdown.urgencySurcharge.toFixed(2)}</span>
+                  <span className="font-bold">
+                    +${booking.feeBreakdown.urgencySurcharge.toFixed(2)}
+                  </span>
                 </div>
               )}
 
               {booking.feeBreakdown?.partsMaterials > 0 && (
                 <div className="flex justify-between font-medium text-slate-600">
                   <span>{t('Parts & Materials')}</span>
-                  <span className="font-bold text-slate-800">+${booking.feeBreakdown.partsMaterials.toFixed(2)}</span>
+                  <span className="font-bold text-slate-800">
+                    +${booking.feeBreakdown.partsMaterials.toFixed(2)}
+                  </span>
                 </div>
               )}
 
@@ -342,7 +361,9 @@ export default function BookingDetailsDrawer({
 
               <div className="flex justify-between items-center pt-1 font-semibold text-slate-600 text-[11px]">
                 <span>{t('Payment Method')}</span>
-                <span className="px-2 py-0.5 bg-slate-200/70 rounded text-slate-800">{booking.paymentMethod}</span>
+                <span className="px-2 py-0.5 bg-slate-200/70 rounded text-slate-800">
+                  {booking.paymentMethod}
+                </span>
               </div>
             </div>
           </div>
@@ -369,7 +390,6 @@ export default function BookingDetailsDrawer({
               </div>
             </div>
           )}
-
         </div>
 
         {/* Drawer Footer */}
@@ -381,7 +401,6 @@ export default function BookingDetailsDrawer({
             {t('Close Details')}
           </button>
         </div>
-
       </div>
     </div>
   );

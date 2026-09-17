@@ -309,7 +309,11 @@ export default function ProfileIndex() {
             </div>
           </div>
 
-          {fileError && <p className="mt-3 text-xs font-medium text-red-500 text-center sm:text-left">{fileError}</p>}
+          {fileError && (
+            <p className="mt-3 text-xs font-medium text-red-500 text-center sm:text-left">
+              {fileError}
+            </p>
+          )}
         </div>
 
         {/* 2. ORGANIZED NAVIGATION SECTION TABS */}
@@ -334,7 +338,9 @@ export default function ProfileIndex() {
                       : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200/80 hover:bg-slate-50'
                   }`}
                 >
-                  <Icon className={`h-4 w-4 ${isActive ? 'text-theme-accent' : 'text-slate-400'}`} />
+                  <Icon
+                    className={`h-4 w-4 ${isActive ? 'text-theme-accent' : 'text-slate-400'}`}
+                  />
                   <span>{tab.label}</span>
                 </button>
               );
@@ -356,7 +362,9 @@ export default function ProfileIndex() {
             <div className="p-6 sm:p-8 space-y-6">
               <div className="border-b border-slate-100 pb-4">
                 <h3 className="text-lg font-bold text-slate-900">{t('Personal Information')}</h3>
-                <p className="text-xs text-slate-500">{t('Manage your basic personal profile information.')}</p>
+                <p className="text-xs text-slate-500">
+                  {t('Manage your basic personal profile information.')}
+                </p>
               </div>
 
               <form onSubmit={handleSaveProfile} className="space-y-6">
@@ -381,7 +389,9 @@ export default function ProfileIndex() {
                       />
                     </div>
                     {profileErrors.fullName && (
-                      <p className="mt-1 text-xs font-medium text-red-500">{profileErrors.fullName}</p>
+                      <p className="mt-1 text-xs font-medium text-red-500">
+                        {profileErrors.fullName}
+                      </p>
                     )}
                   </div>
 
@@ -487,8 +497,12 @@ export default function ProfileIndex() {
           <TableCard>
             <div className="p-6 sm:p-8 space-y-6">
               <div className="border-b border-slate-100 pb-4">
-                <h3 className="text-lg font-bold text-slate-900">{t('Address & Location Details')}</h3>
-                <p className="text-xs text-slate-500">{t('Update your primary location and correspondence address.')}</p>
+                <h3 className="text-lg font-bold text-slate-900">
+                  {t('Address & Location Details')}
+                </h3>
+                <p className="text-xs text-slate-500">
+                  {t('Update your primary location and correspondence address.')}
+                </p>
               </div>
 
               <form onSubmit={handleSaveProfile} className="space-y-6">
@@ -588,7 +602,9 @@ export default function ProfileIndex() {
             <div className="p-6 sm:p-8 space-y-6">
               <div className="border-b border-slate-100 pb-4">
                 <h3 className="text-lg font-bold text-slate-900">{t('Change Password')}</h3>
-                <p className="text-xs text-slate-500">{t('Ensure your account is using a long and secure password.')}</p>
+                <p className="text-xs text-slate-500">
+                  {t('Ensure your account is using a long and secure password.')}
+                </p>
               </div>
 
               <form onSubmit={handleChangePassword} className="max-w-xl space-y-4">
@@ -602,7 +618,9 @@ export default function ProfileIndex() {
                     <input
                       type={showCurrent ? 'text' : 'password'}
                       value={passwords.currentPassword}
-                      onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })}
+                      onChange={(e) =>
+                        setPasswords({ ...passwords, currentPassword: e.target.value })
+                      }
                       placeholder="••••••••"
                       className="w-full rounded-xl border border-slate-200 pl-10 pr-10 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none"
                     />
@@ -629,7 +647,8 @@ export default function ProfileIndex() {
                       value={passwords.newPassword}
                       onChange={(e) => {
                         setPasswords({ ...passwords, newPassword: e.target.value });
-                        if (passwordErrors.newPassword) setPasswordErrors({ ...passwordErrors, newPassword: '' });
+                        if (passwordErrors.newPassword)
+                          setPasswordErrors({ ...passwordErrors, newPassword: '' });
                       }}
                       placeholder="••••••••"
                       className={`w-full rounded-xl border pl-10 pr-10 py-2.5 text-sm text-slate-800 focus:outline-none transition-all ${
@@ -647,7 +666,9 @@ export default function ProfileIndex() {
                     </button>
                   </div>
                   {passwordErrors.newPassword && (
-                    <p className="mt-1 text-xs font-medium text-red-500">{passwordErrors.newPassword}</p>
+                    <p className="mt-1 text-xs font-medium text-red-500">
+                      {passwordErrors.newPassword}
+                    </p>
                   )}
                 </div>
 
@@ -664,7 +685,8 @@ export default function ProfileIndex() {
                       value={passwords.confirmPassword}
                       onChange={(e) => {
                         setPasswords({ ...passwords, confirmPassword: e.target.value });
-                        if (passwordErrors.confirmPassword) setPasswordErrors({ ...passwordErrors, confirmPassword: '' });
+                        if (passwordErrors.confirmPassword)
+                          setPasswordErrors({ ...passwordErrors, confirmPassword: '' });
                       }}
                       placeholder="••••••••"
                       className={`w-full rounded-xl border pl-10 pr-10 py-2.5 text-sm text-slate-800 focus:outline-none transition-all ${
@@ -682,7 +704,9 @@ export default function ProfileIndex() {
                     </button>
                   </div>
                   {passwordErrors.confirmPassword && (
-                    <p className="mt-1 text-xs font-medium text-red-500">{passwordErrors.confirmPassword}</p>
+                    <p className="mt-1 text-xs font-medium text-red-500">
+                      {passwordErrors.confirmPassword}
+                    </p>
                   )}
                 </div>
 
@@ -708,7 +732,9 @@ export default function ProfileIndex() {
               <div className="p-6 space-y-4">
                 <div className="border-b border-slate-100 pb-3">
                   <h3 className="text-base font-bold text-slate-900">{t('Account Metadata')}</h3>
-                  <p className="text-xs text-slate-500">{t('Overview of system roles and account permissions.')}</p>
+                  <p className="text-xs text-slate-500">
+                    {t('Overview of system roles and account permissions.')}
+                  </p>
                 </div>
 
                 <div className="space-y-3.5 text-xs">
@@ -747,7 +773,9 @@ export default function ProfileIndex() {
               <div className="p-6 space-y-4">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
                   <History className="h-4 w-4 text-theme-accent" />
-                  <h3 className="text-base font-bold text-slate-900">{t('Recent Activity Timeline')}</h3>
+                  <h3 className="text-base font-bold text-slate-900">
+                    {t('Recent Activity Timeline')}
+                  </h3>
                 </div>
 
                 <div className="space-y-4 pl-2 border-l-2 border-slate-100 text-xs">

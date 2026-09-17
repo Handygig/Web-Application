@@ -2,13 +2,7 @@ import React, { useState } from 'react';
 import { X, UserPlus, ShieldCheck, Star, Clock } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
-export default function AssignTechModal({
-  booking,
-  isOpen,
-  onClose,
-  technicians,
-  onAssignTech,
-}) {
+export default function AssignTechModal({ booking, isOpen, onClose, technicians, onAssignTech }) {
   const { t } = useTranslation();
   const [selectedTechId, setSelectedTechId] = useState(booking?.assignedTech?.id || '');
 
@@ -26,7 +20,6 @@ export default function AssignTechModal({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
       <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
-        
         {/* Header */}
         <div className="p-6 border-b border-slate-100 bg-slate-50/80 flex items-center justify-between">
           <div>
@@ -67,7 +60,9 @@ export default function AssignTechModal({
                 </div>
                 <div>
                   <p className="font-extrabold text-sm text-slate-800">{t('Unassigned')}</p>
-                  <p className="text-xs text-slate-500 font-medium">{t('Keep job in pending dispatch queue')}</p>
+                  <p className="text-xs text-slate-500 font-medium">
+                    {t('Keep job in pending dispatch queue')}
+                  </p>
                 </div>
               </div>
 
@@ -121,7 +116,9 @@ export default function AssignTechModal({
                           {tech.rating || 5.0}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">{techRole} • {tech.specialization}</p>
+                      <p className="text-xs text-slate-500 font-medium">
+                        {tech.role} • {tech.specialization}
+                      </p>
                     </div>
                   </div>
 
@@ -159,7 +156,7 @@ export default function AssignTechModal({
           >
             {t('Cancel')}
           </button>
-          
+
           <button
             type="button"
             onClick={handleConfirm}
@@ -169,7 +166,6 @@ export default function AssignTechModal({
             {t('Confirm Assignment')}
           </button>
         </div>
-
       </div>
     </div>
   );

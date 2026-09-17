@@ -144,7 +144,11 @@ export default function Navbar({ onMenuToggle }) {
 
           {/* Logo */}
           <Link href={route('dashboard')} className="group flex items-center gap-2.5">
-            <img src="/images/handygig-logo.png" alt="Logo" className="h-10 w-auto transition-transform group-hover:scale-105" />
+            <img
+              src="/images/handygig-logo.png"
+              alt="Logo"
+              className="h-10 w-auto transition-transform group-hover:scale-105"
+            />
           </Link>
         </div>
 
@@ -201,8 +205,7 @@ export default function Navbar({ onMenuToggle }) {
                     <Link
                       key={n.id}
                       href={
-                        n.href ||
-                        route((isAdmin ? 'admin' : 'company') + '.notifications.index')
+                        n.href || route((isAdmin ? 'admin' : 'company') + '.notifications.index')
                       }
                       onClick={() => {
                         setNotifications((prev) =>
@@ -218,7 +221,9 @@ export default function Navbar({ onMenuToggle }) {
                         <h4 className="text-xs font-bold text-slate-900 hover:text-theme-accent transition">
                           {n.title}
                         </h4>
-                        <span className="text-[10px] font-medium text-slate-400 shrink-0">{n.time}</span>
+                        <span className="text-[10px] font-medium text-slate-400 shrink-0">
+                          {n.time}
+                        </span>
                       </div>
                       <p className="mt-1 text-[11px] text-slate-600 leading-snug">{n.desc}</p>
                     </Link>
@@ -304,20 +309,24 @@ export default function Navbar({ onMenuToggle }) {
                 <span className="max-w-[140px] truncate text-xs font-semibold text-slate-800 leading-tight">
                   {displayName}
                 </span>
-                <span className="text-[10px] font-medium text-slate-400">
-                  {roleName}
-                </span>
+                <span className="text-[10px] font-medium text-slate-400">{roleName}</span>
               </div>
             </button>
 
             {profileOpen && (
               <div className="absolute right-0 top-full mt-2.5 w-56 overflow-hidden rounded-2xl border border-slate-100 bg-white/95 p-1.5 shadow-2xl backdrop-blur-md z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                <div className="border-b border-slate-100/80 p-3 bg-slate-50/50 rounded-xl mb-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Shield className="h-3.5 w-3.5 text-theme-accent" />
-                    <span className="text-[11px] font-bold text-theme-accent uppercase tracking-wider">
-                      {roleName}
-                    </span>
+                {auth?.user && (
+                  <div className="border-b border-slate-100/80 p-3 bg-slate-50/50 rounded-xl mb-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Shield className="h-3.5 w-3.5 text-theme-accent" />
+                      <span className="text-[11px] font-bold text-theme-accent uppercase tracking-wider">
+                        {roleName}
+                      </span>
+                    </div>
+                    <p className="font-semibold text-xs text-slate-800 truncate">
+                      {auth.user.full_name || auth.user.name}
+                    </p>
+                    <p className="truncate text-[11px] text-slate-400 mt-0.5">{auth.user.email}</p>
                   </div>
                   <p className="font-semibold text-xs text-slate-800 truncate">
                     {displayName}

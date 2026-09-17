@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Plus, Edit2, User, Mail, Phone, MapPin, Briefcase, FileText } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
+import SelectInput from '@/Components/Inputs/SelectInput';
 
 export default function ProviderFormModal({
   open = false,
@@ -34,7 +35,12 @@ export default function ProviderFormModal({
         service_category: provider.service_category || provider.service || '',
         location: provider.location || '',
         bio: provider.bio || provider.description || '',
-        status: provider.status === 'Inactive' || provider.status === 'inactive' || provider.status === false ? 'inactive' : 'active',
+        status:
+          provider.status === 'Inactive' ||
+          provider.status === 'inactive' ||
+          provider.status === false
+            ? 'inactive'
+            : 'active',
       });
     } else {
       setFormData({
@@ -66,34 +72,31 @@ export default function ProviderFormModal({
       <div
         role="dialog"
         aria-modal="true"
-        className="relative z-[100] w-full max-w-xl overflow-hidden rounded-[24px] bg-white p-6 sm:p-8 shadow-[0_24px_80px_rgba(15,23,42,0.25)] border border-slate-100 transition-all my-8"
+        className="relative z-[100] w-full max-w-xl overflow-visible rounded-[24px] bg-white p-6 sm:p-8 shadow-[0_24px_80px_rgba(15,23,42,0.25)] border border-slate-100 transition-all my-8"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-theme-accent/10 text-theme-accent">
-              {isEditing ? <Edit2 className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900">
-                {isEditing ? t('Edit Provider') : t('Add New Provider')}
-              </h3>
-              <p className="text-xs text-slate-500">
-                {isEditing ? t('Update provider details and availability.') : t('Register a new service provider in the system.')}
-              </p>
-            </div>
+        <div className="flex items-start justify-between pb-4 border-b border-slate-100">
+          <div>
+            <h3 className="text-xl font-bold text-slate-900 leading-tight">
+              {isEditing ? t('Edit Provider') : t('Add New Provider')}
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5 leading-normal">
+              {isEditing
+                ? t('Update provider details and availability.')
+                : t('Register a new service provider in the system.')}
+            </p>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
+            className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition -mr-1 -mt-1"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-4">
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
               {t('Provider Name')} *
@@ -180,19 +183,14 @@ export default function ProviderFormModal({
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-              {t('Status')}
-            </label>
-            <select
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none focus:ring-1 focus:ring-theme-accent"
-            >
-              <option value="active">{t('Active')}</option>
-              <option value="inactive">{t('Inactive')}</option>
-            </select>
-          </div>
+          <SelectInput
+            label={t('Status')}
+            value={formData.status}
+            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+          >
+            <option value="active">{t('Active')}</option>
+            <option value="inactive">{t('Inactive')}</option>
+          </SelectInput>
 
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
@@ -205,7 +203,7 @@ export default function ProviderFormModal({
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                 placeholder="Brief summary of experience, certifications, and skills..."
-                className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none focus:ring-1 focus:ring-theme-accent"
+                className="block w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none focus:ring-1 focus:ring-theme-accent"
               />
             </div>
           </div>

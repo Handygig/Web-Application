@@ -74,7 +74,8 @@ export default function BookingTable({
     const cat = category?.toLowerCase() || '';
     if (cat.includes('plumb')) return <Droplets className="w-4 h-4 text-sky-500 shrink-0" />;
     if (cat.includes('electric')) return <Zap className="w-4 h-4 text-amber-500 shrink-0" />;
-    if (cat.includes('hvac') || cat.includes('air') || cat.includes('heat')) return <Wind className="w-4 h-4 text-teal-500 shrink-0" />;
+    if (cat.includes('hvac') || cat.includes('air') || cat.includes('heat'))
+      return <Wind className="w-4 h-4 text-teal-500 shrink-0" />;
     return <Wrench className="w-4 h-4 text-slate-500 shrink-0" />;
   };
 
@@ -175,18 +176,22 @@ export default function BookingTable({
                 const techRole = booking.assignedTech?.role || booking.assignedTech?.roleTitle || booking.assignedTech?.specialization || t('Technician');
                 const isUnassigned = !booking.assignedTech || !techName;
                 const currentStatus = localStatuses[booking.id] || booking.status || 'scheduled';
-                const currentPriority = localPriorities[booking.id] || booking.urgency || booking.priority || 'Normal';
+                const currentPriority =
+                  localPriorities[booking.id] || booking.urgency || booking.priority || 'Normal';
 
                 const statusConfig = getStatusConfig(currentStatus);
                 const priorityConfig = getPriorityConfig(currentPriority);
 
                 const techInitials = techName
-                  ? techName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+                  ? techName
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')
+                      .slice(0, 2)
+                      .toUpperCase()
                   : 'T';
 
-                const formattedJobId = booking.id?.startsWith('#')
-                  ? booking.id
-                  : `#${booking.id}`;
+                const formattedJobId = booking.id?.startsWith('#') ? booking.id : `#${booking.id}`;
 
                 return (
                   <tr
@@ -210,13 +215,18 @@ export default function BookingTable({
                         <div
                           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold border ${priorityConfig.badgeClass} shadow-2xs transition-all hover:brightness-95`}
                         >
-                          <span className={`h-2 w-2 rounded-full shrink-0 ${priorityConfig.dotClass}`} />
+                          <span
+                            className={`h-2 w-2 rounded-full shrink-0 ${priorityConfig.dotClass}`}
+                          />
                           <select
                             value={currentPriority}
                             onChange={(e) => handlePriorityChange(booking.id, e.target.value)}
                             className="bg-transparent appearance-none bg-none [background-image:none] border-none py-0 pl-0 pr-4 text-xs font-bold focus:ring-0 focus:outline-none cursor-pointer leading-tight text-inherit outline-none shadow-none"
                           >
-                            <option value="Emergency" className="bg-white text-slate-800 font-medium">
+                            <option
+                              value="Emergency"
+                              className="bg-white text-slate-800 font-medium"
+                            >
                               {t('Emergency')}
                             </option>
                             <option value="High" className="bg-white text-slate-800 font-medium">
@@ -291,7 +301,9 @@ export default function BookingTable({
                         </span>
                         <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium truncate max-w-[180px]">
                           <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          <span className="truncate">{booking.customerEmail || 'customer@example.com'}</span>
+                          <span className="truncate">
+                            {booking.customerEmail || 'customer@example.com'}
+                          </span>
                         </div>
                         {booking.customerPhone && (
                           <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
@@ -311,25 +323,39 @@ export default function BookingTable({
                         <div
                           className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold border ${statusConfig.badgeClass} shadow-2xs transition-all hover:brightness-95`}
                         >
-                          <span className={`h-2 w-2 rounded-full shrink-0 ${statusConfig.dotClass}`} />
+                          <span
+                            className={`h-2 w-2 rounded-full shrink-0 ${statusConfig.dotClass}`}
+                          />
                           <select
                             value={currentStatus}
                             onChange={(e) => handleStatusChange(booking.id, e.target.value)}
                             className="bg-transparent appearance-none bg-none [background-image:none] border-none py-0 pl-0 pr-4 text-xs font-bold focus:ring-0 focus:outline-none cursor-pointer leading-tight text-inherit outline-none shadow-none"
                           >
-                            <option value="scheduled" className="bg-white text-slate-800 font-medium">
+                            <option
+                              value="scheduled"
+                              className="bg-white text-slate-800 font-medium"
+                            >
                               {t('Scheduled')}
                             </option>
-                            <option value="in_progress" className="bg-white text-slate-800 font-medium">
+                            <option
+                              value="in_progress"
+                              className="bg-white text-slate-800 font-medium"
+                            >
                               {t('In Progress')}
                             </option>
                             <option value="pending" className="bg-white text-slate-800 font-medium">
                               {t('Pending')}
                             </option>
-                            <option value="completed" className="bg-white text-slate-800 font-medium">
+                            <option
+                              value="completed"
+                              className="bg-white text-slate-800 font-medium"
+                            >
                               {t('Completed')}
                             </option>
-                            <option value="canceled" className="bg-white text-slate-800 font-medium">
+                            <option
+                              value="canceled"
+                              className="bg-white text-slate-800 font-medium"
+                            >
                               {t('Canceled')}
                             </option>
                           </select>
@@ -401,7 +427,8 @@ export default function BookingTable({
           <span className="font-bold text-slate-900">
             {Math.min(currentPage * itemsPerPage, bookings.length)}
           </span>{' '}
-          {t('of')} <span className="font-bold text-slate-900">{bookings.length}</span> {t('bookings')}
+          {t('of')} <span className="font-bold text-slate-900">{bookings.length}</span>{' '}
+          {t('bookings')}
         </div>
         <div className="flex items-center gap-1.5">
           <button
@@ -430,5 +457,3 @@ export default function BookingTable({
     </div>
   );
 }
-
-

@@ -25,7 +25,7 @@ import {
   ShieldCheck,
   ArrowRight,
   Server,
-  Terminal
+  Terminal,
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
@@ -69,7 +69,8 @@ export default function DonezoDashboard({ authUser }) {
     {
       id: 1,
       name: 'Alexandra Deff',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
       rating: 5,
       comment: 'Excellent electrical repair work! Very punctual and clean.',
       service: 'Electrical Repair',
@@ -77,7 +78,8 @@ export default function DonezoDashboard({ authUser }) {
     {
       id: 2,
       name: 'Edwin Adenike',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
       rating: 5,
       comment: 'Great HVAC central cooling setup service.',
       service: 'HVAC Maintenance',
@@ -85,7 +87,8 @@ export default function DonezoDashboard({ authUser }) {
     {
       id: 3,
       name: 'Isaac Oluwatemilorun',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
       rating: 4,
       comment: 'Resolved main pipe leakage promptly. Highly recommended.',
       service: 'Plumbing Service',
@@ -93,7 +96,8 @@ export default function DonezoDashboard({ authUser }) {
     {
       id: 4,
       name: 'David Oshodi',
-      avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80',
+      avatar:
+        'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80',
       rating: 5,
       comment: 'Outstanding commercial deep cleaning, very professional.',
       service: 'Deep Cleaning',
@@ -103,7 +107,6 @@ export default function DonezoDashboard({ authUser }) {
   return (
     <div className="min-h-screen bg-[#f3f4f6] p-2 sm:p-4 lg:p-6 font-sans text-slate-800">
       <div className="mx-auto max-w-[1440px] rounded-[32px] bg-[#f8faf9] p-4 sm:p-6 shadow-sm border border-slate-200/60 flex flex-col lg:flex-row gap-6">
-        
         {/* LEFT SIDEBAR */}
         <aside className="w-full lg:w-64 flex flex-col justify-between shrink-0 border-b lg:border-b-0 lg:border-r border-slate-200/70 pb-6 lg:pb-0 lg:pr-6">
           <div>
@@ -118,7 +121,9 @@ export default function DonezoDashboard({ authUser }) {
 
             <div className="space-y-6">
               <div>
-                <p className="px-3 text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">MENU</p>
+                <p className="px-3 text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                  MENU
+                </p>
                 <nav className="space-y-1">
                   {[
                     { name: 'Dashboard', icon: LayoutGrid, count: null },
@@ -140,7 +145,9 @@ export default function DonezoDashboard({ authUser }) {
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <Icon className={`w-5 h-5 ${isActive ? 'text-emerald-600' : 'text-slate-400'}`} />
+                          <Icon
+                            className={`w-5 h-5 ${isActive ? 'text-emerald-600' : 'text-slate-400'}`}
+                          />
                           <span>{item.name}</span>
                         </div>
                         {item.count && (
@@ -155,7 +162,9 @@ export default function DonezoDashboard({ authUser }) {
               </div>
 
               <div>
-                <p className="px-3 text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">GENERAL</p>
+                <p className="px-3 text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                  GENERAL
+                </p>
                 <nav className="space-y-1">
                   {[
                     { name: 'Settings', icon: Settings },
@@ -251,7 +260,9 @@ export default function DonezoDashboard({ authUser }) {
               <div className="text-3xl sm:text-4xl font-extrabold tracking-tight">$48,250.00</div>
               <div className="flex items-center gap-1.5">
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
-                  <span className="w-3 h-3 rounded bg-emerald-400 text-emerald-950 flex items-center justify-center text-[10px] font-bold">↑</span>
+                  <span className="w-3 h-3 rounded bg-emerald-400 text-emerald-950 flex items-center justify-center text-[10px] font-bold">
+                    ↑
+                  </span>
                   +14.2% Gross Volume
                 </span>
               </div>
@@ -264,10 +275,14 @@ export default function DonezoDashboard({ authUser }) {
                   <Users className="w-4 h-4" />
                 </button>
               </div>
-              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">184</div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                184
+              </div>
               <div className="flex items-center gap-1.5">
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <span className="w-3 h-3 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center text-[10px] font-bold">↑</span>
+                  <span className="w-3 h-3 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center text-[10px] font-bold">
+                    ↑
+                  </span>
                   Active Marketplace Clients
                 </span>
               </div>
@@ -283,7 +298,9 @@ export default function DonezoDashboard({ authUser }) {
               <div className="text-4xl font-extrabold text-slate-900 tracking-tight">12</div>
               <div className="flex items-center gap-1.5">
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
-                  <span className="w-3.5 h-3.5 rounded bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-bold">2</span>
+                  <span className="w-3.5 h-3.5 rounded bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-bold">
+                    2
+                  </span>
                   Increased from last month
                 </span>
               </div>
@@ -312,7 +329,10 @@ export default function DonezoDashboard({ authUser }) {
                   <h3 className="text-base font-bold text-slate-900 mb-6">Project Analytics</h3>
                   <div className="h-44 flex items-end justify-between gap-2 px-2 pb-2">
                     {analyticsDays.map((item, idx) => (
-                      <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group relative">
+                      <div
+                        key={idx}
+                        className="flex-1 flex flex-col items-center gap-2 h-full justify-end group relative"
+                      >
                         {item.highlight && (
                           <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md z-10">
                             {item.highlight}
@@ -324,10 +344,10 @@ export default function DonezoDashboard({ authUser }) {
                             item.type === 'solid-dark'
                               ? 'bg-[#0f4a2d]'
                               : item.type === 'solid-primary'
-                              ? 'bg-emerald-600'
-                              : item.type === 'solid-accent'
-                              ? 'bg-emerald-400'
-                              : 'bg-slate-200 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:6px_6px]'
+                                ? 'bg-emerald-600'
+                                : item.type === 'solid-accent'
+                                  ? 'bg-emerald-400'
+                                  : 'bg-slate-200 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:6px_6px]'
                           }`}
                         />
                         <span className="text-xs font-semibold text-slate-400">{item.day}</span>
@@ -371,7 +391,10 @@ export default function DonezoDashboard({ authUser }) {
                   </div>
                   <div className="space-y-3 pt-1">
                     {recentReviews.map((rev) => (
-                      <div key={rev.id} className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors text-left border border-slate-100">
+                      <div
+                        key={rev.id}
+                        className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors text-left border border-slate-100"
+                      >
                         <img
                           src={rev.avatar}
                           alt={rev.name}
@@ -379,14 +402,18 @@ export default function DonezoDashboard({ authUser }) {
                         />
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center justify-between gap-2">
-                            <h5 className="text-xs font-bold text-slate-900 truncate">{rev.name}</h5>
+                            <h5 className="text-xs font-bold text-slate-900 truncate">
+                              {rev.name}
+                            </h5>
                             <div className="flex items-center gap-0.5 shrink-0">
                               {[...Array(rev.rating)].map((_, i) => (
                                 <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
                               ))}
                             </div>
                           </div>
-                          <p className="text-[11px] font-medium text-slate-600 line-clamp-1 mt-0.5">{rev.comment}</p>
+                          <p className="text-[11px] font-medium text-slate-600 line-clamp-1 mt-0.5">
+                            {rev.comment}
+                          </p>
                           <span className="inline-block text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.2 rounded mt-1">
                             {rev.service}
                           </span>
@@ -450,7 +477,9 @@ export default function DonezoDashboard({ authUser }) {
                 <div className="space-y-5">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-xl font-bold text-slate-900 tracking-tight">Technical & System Health</h3>
+                      <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+                        Technical & System Health
+                      </h3>
                       <div className="flex items-center gap-2 mt-1.5">
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                         <span className="text-sm font-bold text-emerald-600">100% Operational</span>
@@ -524,7 +553,13 @@ export default function DonezoDashboard({ authUser }) {
                                 preserveAspectRatio="none"
                               >
                                 <defs>
-                                  <linearGradient id="latencyGradientDonezo" x1="0" y1="0" x2="0" y2="1">
+                                  <linearGradient
+                                    id="latencyGradientDonezo"
+                                    x1="0"
+                                    y1="0"
+                                    x2="0"
+                                    y2="1"
+                                  >
                                     <stop offset="0%" stopColor="#10b981" stopOpacity="0.35" />
                                     <stop offset="100%" stopColor="#10b981" stopOpacity="0.02" />
                                   </linearGradient>
@@ -555,7 +590,9 @@ export default function DonezoDashboard({ authUser }) {
                             <span>20:00</span>
                             <span>00:00</span>
                           </div>
-                          <div className="text-center text-[10px] font-semibold text-slate-400 mt-0.5">Time</div>
+                          <div className="text-center text-[10px] font-semibold text-slate-400 mt-0.5">
+                            Time
+                          </div>
                         </div>
                       </div>
 
@@ -577,10 +614,12 @@ export default function DonezoDashboard({ authUser }) {
 
                             <div className="flex items-center justify-between text-xs font-medium text-slate-600 pt-0.5">
                               <span>
-                                Uptime: <strong className="text-slate-900 font-bold">{api.uptime}</strong>
+                                Uptime:{' '}
+                                <strong className="text-slate-900 font-bold">{api.uptime}</strong>
                               </span>
                               <span>
-                                Latency: <strong className="text-slate-900 font-bold">{api.latency}</strong>
+                                Latency:{' '}
+                                <strong className="text-slate-900 font-bold">{api.latency}</strong>
                               </span>
                             </div>
                           </div>
@@ -590,14 +629,21 @@ export default function DonezoDashboard({ authUser }) {
                   ) : (
                     <div className="space-y-2.5 pt-1">
                       {systemLogs.map((log, idx) => (
-                        <div key={idx} className="p-3 rounded-xl bg-slate-950 text-slate-200 font-mono text-xs space-y-1 border border-slate-800">
+                        <div
+                          key={idx}
+                          className="p-3 rounded-xl bg-slate-950 text-slate-200 font-mono text-xs space-y-1 border border-slate-800"
+                        >
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-slate-400">[{log.time}]</span>
+                            <span className="text-[10px] font-bold text-slate-400">
+                              [{log.time}]
+                            </span>
                             <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
                               {log.type}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-300 leading-snug break-all">{log.text}</p>
+                          <p className="text-xs text-slate-300 leading-snug break-all">
+                            {log.text}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -606,7 +652,6 @@ export default function DonezoDashboard({ authUser }) {
               </div>
             </div>
           </div>
-
         </main>
       </div>
     </div>

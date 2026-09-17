@@ -90,10 +90,11 @@ export default function Toast({ message, type = 'success', onClose }) {
 
   return (
     <div
-      className={`fixed bottom-6 right-6 z-50 flex max-w-sm items-start gap-3.5 overflow-hidden rounded-xl border border-l-4 p-4 shadow-xl backdrop-blur-md transition-all duration-300 ease-in-out ${isExiting
-        ? 'opacity-0 translate-y-2 scale-95 pointer-events-none'
-        : 'opacity-100 translate-y-0 scale-100 animate-fade-in-up'
-        } ${currentConfig.bgClass} ${currentConfig.borderClass} ${currentConfig.barClass}`}
+      className={`fixed bottom-6 right-6 z-50 flex max-w-sm items-start gap-3.5 overflow-hidden rounded-xl border border-l-4 p-4 shadow-xl backdrop-blur-md transition-all duration-300 ease-in-out ${
+        isExiting
+          ? 'opacity-0 translate-y-2 scale-95 pointer-events-none'
+          : 'opacity-100 translate-y-0 scale-100 animate-fade-in-up'
+      } ${currentConfig.bgClass} ${currentConfig.borderClass} ${currentConfig.barClass}`}
       role="alert"
     >
       {/* Icon */}

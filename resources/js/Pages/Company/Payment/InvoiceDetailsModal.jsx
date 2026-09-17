@@ -75,14 +75,20 @@ export default function InvoiceDetailsModal({ isOpen, onClose, transaction, comp
           {/* Quick Action bar & Copy TXN */}
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-slate-500 uppercase">{t('Transaction ID')}:</span>
+              <span className="text-xs font-semibold text-slate-500 uppercase">
+                {t('Transaction ID')}:
+              </span>
               <span className="font-mono text-sm font-bold text-slate-900">{transaction.id}</span>
               <button
                 onClick={handleCopyTxn}
                 className="p-1 hover:bg-slate-200 rounded text-slate-500 hover:text-slate-800 transition-colors"
                 title={t('Copy ID')}
               >
-                {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                {copied ? (
+                  <Check className="w-4 h-4 text-emerald-600" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
               </button>
             </div>
             <div className="flex items-center gap-2">
@@ -94,7 +100,9 @@ export default function InvoiceDetailsModal({ isOpen, onClose, transaction, comp
                 {t('Print')}
               </button>
               <button
-                onClick={() => alert(t(`Downloading official PDF receipt for ${transaction.id}...`))}
+                onClick={() =>
+                  alert(t(`Downloading official PDF receipt for ${transaction.id}...`))
+                }
                 className="px-3.5 py-1.5 bg-[#5E6933] hover:bg-[#4d5729] text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 shadow-sm"
               >
                 <Download className="w-3.5 h-3.5" />
@@ -136,7 +144,8 @@ export default function InvoiceDetailsModal({ isOpen, onClose, transaction, comp
                 {transaction.customerPhone}
               </p>
               <p className="text-xs text-slate-500">
-                {t('Payment Method')}: <strong className="text-slate-800 uppercase">{transaction.method}</strong>
+                {t('Payment Method')}:{' '}
+                <strong className="text-slate-800 uppercase">{transaction.method}</strong>
               </p>
             </div>
           </div>
@@ -158,17 +167,13 @@ export default function InvoiceDetailsModal({ isOpen, onClose, transaction, comp
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-slate-700">
                   <tr>
-                    <td className="py-3 px-4 font-medium">
-                      {t('Base Service & Labor Charges')}
-                    </td>
+                    <td className="py-3 px-4 font-medium">{t('Base Service & Labor Charges')}</td>
                     <td className="py-3 px-4 text-right font-semibold">
                       {formattedCurrency((transaction.grossAmount || 0) * 0.75)}
                     </td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-medium">
-                      {t('Parts & Specialized Materials')}
-                    </td>
+                    <td className="py-3 px-4 font-medium">{t('Parts & Specialized Materials')}</td>
                     <td className="py-3 px-4 text-right font-semibold">
                       {formattedCurrency((transaction.grossAmount || 0) * 0.25)}
                     </td>
@@ -213,11 +218,14 @@ export default function InvoiceDetailsModal({ isOpen, onClose, transaction, comp
                 {transaction.technicianName || 'David Miller (Master Plumber)'}
               </p>
               <p className="text-xs text-amber-700">
-                {t('Assigned Rate')}: 60% of Company Net ({formattedCurrency((transaction.netPayout || 0) * 0.6)})
+                {t('Assigned Rate')}: 60% of Company Net (
+                {formattedCurrency((transaction.netPayout || 0) * 0.6)})
               </p>
             </div>
             <span className="px-3 py-1 bg-amber-100 text-amber-900 border border-amber-300 rounded-full text-xs font-bold">
-              {transaction.status === 'disbursed' ? t('Disbursed to Tech') : t('Scheduled for Weekly Payout')}
+              {transaction.status === 'disbursed'
+                ? t('Disbursed to Tech')
+                : t('Scheduled for Weekly Payout')}
             </span>
           </div>
 
@@ -241,7 +249,9 @@ export default function InvoiceDetailsModal({ isOpen, onClose, transaction, comp
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
                 <div className="font-bold text-xs text-slate-800">{t('Customer Charged')}</div>
-                <div className="text-[10px] text-slate-500">{formattedCurrency(transaction.grossAmount)}</div>
+                <div className="text-[10px] text-slate-500">
+                  {formattedCurrency(transaction.grossAmount)}
+                </div>
               </div>
 
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
@@ -249,7 +259,9 @@ export default function InvoiceDetailsModal({ isOpen, onClose, transaction, comp
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
                 <div className="font-bold text-xs text-slate-800">{t('Fee Deducted')}</div>
-                <div className="text-[10px] text-slate-500">-{formattedCurrency(transaction.platformFee)}</div>
+                <div className="text-[10px] text-slate-500">
+                  -{formattedCurrency(transaction.platformFee)}
+                </div>
               </div>
 
               <div className="p-3 bg-[#EBF5EC] rounded-xl border border-emerald-300">
@@ -257,7 +269,9 @@ export default function InvoiceDetailsModal({ isOpen, onClose, transaction, comp
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
                 <div className="font-bold text-xs text-[#5E6933]">{t('Settled to Company')}</div>
-                <div className="text-[10px] text-emerald-800 font-semibold">{formattedCurrency(transaction.netPayout)}</div>
+                <div className="text-[10px] text-emerald-800 font-semibold">
+                  {formattedCurrency(transaction.netPayout)}
+                </div>
               </div>
             </div>
           </div>

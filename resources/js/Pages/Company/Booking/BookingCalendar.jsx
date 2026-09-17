@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, MapPin, UserCheck, AlertTriangle } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar as CalendarIcon,
+  Clock,
+  MapPin,
+  UserCheck,
+  AlertTriangle,
+} from 'lucide-react';
 import { StatusBadge, UrgencyBadge } from './BookingBadgeHelpers';
 import { useTranslation } from '@/Hooks/useTranslation';
 
@@ -63,9 +71,7 @@ export default function BookingCalendar({ bookings, onViewDetails, onOpenAssignM
           <button
             onClick={() => setSelectedDate('2026-08-15')}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              selectedDate === '2026-08-15'
-                ? 'bg-[#5E6933] text-white shadow-xs'
-                : 'text-slate-500'
+              selectedDate === '2026-08-15' ? 'bg-[#5E6933] text-white shadow-xs' : 'text-slate-500'
             }`}
           >
             {t('Today (Aug 15)')}
@@ -127,7 +133,9 @@ export default function BookingCalendar({ bookings, onViewDetails, onOpenAssignM
 
                         <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium">
                           <span className="truncate">{b.customerName}</span>
-                          <span className="font-bold text-slate-900">${b.serviceFee.toFixed(2)}</span>
+                          <span className="font-bold text-slate-900">
+                            ${b.serviceFee.toFixed(2)}
+                          </span>
                         </div>
 
                         {/* Tech info */}

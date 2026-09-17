@@ -151,7 +151,12 @@ export default function CreateBookingModal({
       return;
     }
 
-    if (!formData.serviceTitle || !formData.customerName || !formData.customerEmail || !formData.address) {
+    if (
+      !formData.serviceTitle ||
+      !formData.customerName ||
+      !formData.customerEmail ||
+      !formData.address
+    ) {
       return;
     }
 
@@ -241,7 +246,6 @@ export default function CreateBookingModal({
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/60 backdrop-blur-xs flex justify-end animate-in fade-in duration-200">
       <div className="w-full max-w-2xl bg-white h-full shadow-2xl overflow-y-auto flex flex-col justify-between animate-in slide-in-from-right duration-300">
-        
         {/* Drawer Header */}
         <div className="p-6 border-b border-slate-100 bg-slate-50/80 sticky top-0 z-20 backdrop-blur-md flex items-center justify-between">
           <div>
@@ -266,8 +270,11 @@ export default function CreateBookingModal({
         </div>
 
         {/* Scrollable Form Body */}
-        <form id="booking-form" onSubmit={handleSubmit} className="p-6 space-y-5 flex-1 overflow-y-auto">
-          
+        <form
+          id="booking-form"
+          onSubmit={handleSubmit}
+          className="p-6 space-y-5 flex-1 overflow-y-auto"
+        >
           {/* Service Title & Category */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="sm:col-span-2 space-y-1.5">
@@ -367,7 +374,8 @@ export default function CreateBookingModal({
           {/* Service Address */}
           <div className="space-y-1.5">
             <label className="text-sm font-bold text-black block">
-              {t('Service Address / Location')} <span className="text-red-500 font-bold ml-0.5">*</span>
+              {t('Service Address / Location')}{' '}
+              <span className="text-red-500 font-bold ml-0.5">*</span>
             </label>
             <input
               type="text"
@@ -463,7 +471,9 @@ export default function CreateBookingModal({
 
           {/* Customer Notes */}
           <div className="space-y-1.5">
-            <label className="text-sm font-bold text-black block">{t('Customer Notes & Special Instructions')}</label>
+            <label className="text-sm font-bold text-black block">
+              {t('Customer Notes & Special Instructions')}
+            </label>
             <textarea
               rows="3"
               value={formData.customerNotes}
@@ -472,7 +482,6 @@ export default function CreateBookingModal({
               className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none resize-none"
             />
           </div>
-
         </form>
 
         {/* Fixed Footer Action Bar */}
@@ -484,7 +493,7 @@ export default function CreateBookingModal({
           >
             {t('Cancel')}
           </button>
-          
+
           <button
             type="submit"
             form="booking-form"
@@ -494,7 +503,6 @@ export default function CreateBookingModal({
             {isEditMode ? t('Save Changes') : t('+ Dispatch Booking')}
           </button>
         </div>
-
       </div>
     </div>
   );

@@ -47,22 +47,32 @@ export default function ProviderKyc({ verifications, dbProviders }) {
       return sourceData.map((item) => {
         const isVerification = !!item.verification_type;
         const provider = isVerification ? item.provider : item;
-        const lastKyc = isVerification ? item : (item.kyc_verifications?.[0] || {});
-        
+        const lastKyc = isVerification ? item : item.kyc_verifications?.[0] || {};
+
         return {
           id: lastKyc.id || item.id,
           applicationId: `APP-${9000 + (lastKyc.id || item.id)}`,
           providerName: provider?.user?.full_name || 'Provider Name',
-          businessName: provider?.company?.business_name || provider?.user?.full_name || 'Business Name',
+          businessName:
+            provider?.company?.business_name || provider?.user?.full_name || 'Business Name',
           email: provider?.user?.email || '',
           phone: provider?.user?.phone || '',
           address: provider?.location || 'New York, NY',
           country: 'United States',
-          registrationDate: provider?.created_at ? new Date(provider.created_at).toLocaleDateString() : 'Jan 2025',
-          verificationType: lastKyc.verification_type || (provider?.provider_type === 'company' ? 'KYB' : 'KYC'),
-          submittedDate: lastKyc.created_at ? new Date(lastKyc.created_at).toLocaleString() : (item.created_at ? new Date(item.created_at).toLocaleString() : 'Jan 2025'),
+          registrationDate: provider?.created_at
+            ? new Date(provider.created_at).toLocaleDateString()
+            : 'Jan 2025',
+          verificationType:
+            lastKyc.verification_type || (provider?.provider_type === 'company' ? 'KYB' : 'KYC'),
+          submittedDate: lastKyc.created_at
+            ? new Date(lastKyc.created_at).toLocaleString()
+            : item.created_at
+              ? new Date(item.created_at).toLocaleString()
+              : 'Jan 2025',
           documentsCount: lastKyc.documents?.length || 0,
-          status: lastKyc.status ? (lastKyc.status.charAt(0).toUpperCase() + lastKyc.status.slice(1).toLowerCase()) : 'Pending',
+          status: lastKyc.status
+            ? lastKyc.status.charAt(0).toUpperCase() + lastKyc.status.slice(1).toLowerCase()
+            : 'Pending',
           reviewer: lastKyc.reviewer?.full_name || 'Admin',
           rejectionReason: lastKyc.rejection_reason || '',
           history: lastKyc.history || [],
@@ -110,40 +120,42 @@ export default function ProviderKyc({ verifications, dbProviders }) {
 
   // Filtering & Sorting logic
   const filteredRequests = useMemo(() => {
-    return requestList.filter((r) => {
-      // Tab filter
-      if (activeTab === 'pending' && r.status !== 'Pending') return false;
-      if (activeTab === 'approved' && r.status !== 'Approved') return false;
-      if (activeTab === 'rejected' && r.status !== 'Rejected') return false;
+    return requestList
+      .filter((r) => {
+        // Tab filter
+        if (activeTab === 'pending' && r.status !== 'Pending') return false;
+        if (activeTab === 'approved' && r.status !== 'Approved') return false;
+        if (activeTab === 'rejected' && r.status !== 'Rejected') return false;
 
-      // Status dropdown filter
-      if (statusFilter === 'pending' && r.status !== 'Pending') return false;
-      if (statusFilter === 'approved' && r.status !== 'Approved') return false;
-      if (statusFilter === 'rejected' && r.status !== 'Rejected') return false;
+        // Status dropdown filter
+        if (statusFilter === 'pending' && r.status !== 'Pending') return false;
+        if (statusFilter === 'approved' && r.status !== 'Approved') return false;
+        if (statusFilter === 'rejected' && r.status !== 'Rejected') return false;
 
-      // Type filter
-      if (typeFilter === 'kyc' && r.verificationType !== 'KYC') return false;
-      if (typeFilter === 'kyb' && r.verificationType !== 'KYB') return false;
+        // Type filter
+        if (typeFilter === 'kyc' && r.verificationType !== 'KYC') return false;
+        if (typeFilter === 'kyb' && r.verificationType !== 'KYB') return false;
 
-      // Search query
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        const matchesName = r.providerName.toLowerCase().includes(q);
-        const matchesBusiness = r.businessName.toLowerCase().includes(q);
-        const matchesEmail = r.email.toLowerCase().includes(q);
-        const matchesAppId = r.applicationId.toLowerCase().includes(q);
-        if (!matchesName && !matchesBusiness && !matchesEmail && !matchesAppId) {
-          return false;
+        // Search query
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase().trim();
+          const matchesName = r.providerName.toLowerCase().includes(q);
+          const matchesBusiness = r.businessName.toLowerCase().includes(q);
+          const matchesEmail = r.email.toLowerCase().includes(q);
+          const matchesAppId = r.applicationId.toLowerCase().includes(q);
+          if (!matchesName && !matchesBusiness && !matchesEmail && !matchesAppId) {
+            return false;
+          }
         }
-      }
 
-      return true;
-    }).sort((a, b) => {
-      if (sortOption === 'oldest') {
-        return a.id - b.id;
-      }
-      return b.id - a.id; // newest default
-    });
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortOption === 'oldest') {
+          return a.id - b.id;
+        }
+        return b.id - a.id; // newest default
+      });
   }, [requestList, activeTab, statusFilter, typeFilter, searchQuery, sortOption]);
 
   const handleClearFilters = () => {
@@ -330,7 +342,9 @@ export default function ProviderKyc({ verifications, dbProviders }) {
                   <Clock className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Pending Reviews')}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    {t('Pending Reviews')}
+                  </p>
                   <p className="text-2xl font-bold text-slate-900 mt-0.5">{stats.pending}</p>
                 </div>
               </div>
@@ -340,7 +354,9 @@ export default function ProviderKyc({ verifications, dbProviders }) {
                   <CheckCircle2 className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Approved')}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    {t('Approved')}
+                  </p>
                   <p className="text-2xl font-bold text-slate-900 mt-0.5">{stats.approved}</p>
                 </div>
               </div>
@@ -350,7 +366,9 @@ export default function ProviderKyc({ verifications, dbProviders }) {
                   <XCircle className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Rejected')}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    {t('Rejected')}
+                  </p>
                   <p className="text-2xl font-bold text-slate-900 mt-0.5">{stats.rejected}</p>
                 </div>
               </div>
@@ -360,7 +378,9 @@ export default function ProviderKyc({ verifications, dbProviders }) {
                   <ShieldCheck className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('Total Submissions')}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    {t('Total Submissions')}
+                  </p>
                   <p className="text-2xl font-bold text-slate-900 mt-0.5">{stats.total}</p>
                 </div>
               </div>
@@ -389,7 +409,9 @@ export default function ProviderKyc({ verifications, dbProviders }) {
               </div>
 
               <div className="text-xs text-slate-500 font-medium">
-                {t('Showing')} <span className="font-bold text-slate-900">{filteredRequests.length}</span> {t('requests')}
+                {t('Showing')}{' '}
+                <span className="font-bold text-slate-900">{filteredRequests.length}</span>{' '}
+                {t('requests')}
               </div>
             </div>
 
@@ -412,7 +434,10 @@ export default function ProviderKyc({ verifications, dbProviders }) {
 
                 {/* Clear filters & Sorting */}
                 <div className="flex items-center gap-3 self-end md:self-auto">
-                  {(searchQuery || typeFilter !== 'all' || dateFilter !== 'all' || statusFilter !== 'all') && (
+                  {(searchQuery ||
+                    typeFilter !== 'all' ||
+                    dateFilter !== 'all' ||
+                    statusFilter !== 'all') && (
                     <button
                       type="button"
                       onClick={handleClearFilters}
@@ -489,7 +514,9 @@ export default function ProviderKyc({ verifications, dbProviders }) {
             {error ? (
               <div className="flex flex-col items-center justify-center p-8 rounded-2xl border border-red-200 bg-red-50/50 text-center">
                 <AlertCircle className="h-10 w-10 text-red-500 mb-3" />
-                <h3 className="text-lg font-bold text-slate-900">{t('Unable to load verification requests.')}</h3>
+                <h3 className="text-lg font-bold text-slate-900">
+                  {t('Unable to load verification requests.')}
+                </h3>
                 <p className="text-sm text-slate-600 mt-1 mb-4">{error}</p>
                 <button
                   type="button"
@@ -505,7 +532,10 @@ export default function ProviderKyc({ verifications, dbProviders }) {
               <TableCard>
                 <div className="p-6 space-y-4 animate-pulse">
                   {[1, 2, 3, 4].map((n) => (
-                    <div key={n} className="flex items-center justify-between gap-4 py-3 border-b border-slate-100">
+                    <div
+                      key={n}
+                      className="flex items-center justify-between gap-4 py-3 border-b border-slate-100"
+                    >
                       <div className="h-10 w-10 rounded-full bg-slate-200"></div>
                       <div className="h-4 bg-slate-200 rounded w-1/4"></div>
                       <div className="h-4 bg-slate-200 rounded w-1/6"></div>
@@ -522,9 +552,13 @@ export default function ProviderKyc({ verifications, dbProviders }) {
                   <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 text-amber-500 mb-4 ring-4 ring-amber-50/50">
                     <Clock className="h-8 w-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800">{t('No pending KYC/KYB approvals')}</h3>
+                  <h3 className="text-xl font-bold text-slate-800">
+                    {t('No pending KYC/KYB approvals')}
+                  </h3>
                   <p className="text-sm text-slate-500 mt-1 max-w-md">
-                    {t('Provider verification requests will appear here when providers submit their documents.')}
+                    {t(
+                      'Provider verification requests will appear here when providers submit their documents.'
+                    )}
                   </p>
                 </div>
               </TableCard>
@@ -570,7 +604,9 @@ export default function ProviderKyc({ verifications, dbProviders }) {
                                 </div>
                                 <div className="min-w-0">
                                   <div className="flex items-center gap-1.5">
-                                    <span className="font-semibold text-slate-900 truncate">{req.providerName}</span>
+                                    <span className="font-semibold text-slate-900 truncate">
+                                      {req.providerName}
+                                    </span>
                                     <span className="text-[10px] font-mono font-medium text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
                                       {req.applicationId}
                                     </span>
@@ -578,7 +614,9 @@ export default function ProviderKyc({ verifications, dbProviders }) {
                                   <span className="block text-xs font-medium text-theme-accent truncate">
                                     {req.businessName}
                                   </span>
-                                  <span className="text-xs text-slate-400 truncate">{req.email}</span>
+                                  <span className="text-xs text-slate-400 truncate">
+                                    {req.email}
+                                  </span>
                                 </div>
                               </div>
                             </td>
@@ -591,7 +629,9 @@ export default function ProviderKyc({ verifications, dbProviders }) {
                             </td>
 
                             {/* Submitted Date */}
-                            <td className="px-5 py-4 text-xs font-medium text-slate-600">{req.submittedDate}</td>
+                            <td className="px-5 py-4 text-xs font-medium text-slate-600">
+                              {req.submittedDate}
+                            </td>
 
                             {/* Documents count */}
                             <td className="px-5 py-4">
@@ -608,11 +648,13 @@ export default function ProviderKyc({ verifications, dbProviders }) {
                                   isApproved
                                     ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                     : isRejected
-                                    ? 'bg-red-50 text-red-700 border border-red-200'
-                                    : 'bg-amber-50 text-amber-700 border border-amber-200'
+                                      ? 'bg-red-50 text-red-700 border border-red-200'
+                                      : 'bg-amber-50 text-amber-700 border border-amber-200'
                                 }`}
                               >
-                                {isApproved && <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />}
+                                {isApproved && (
+                                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                                )}
                                 {isRejected && <XCircle className="h-3.5 w-3.5 text-red-600" />}
                                 {isPending && <Clock className="h-3.5 w-3.5 text-amber-600" />}
                                 {req.status}
@@ -664,15 +706,17 @@ export default function ProviderKyc({ verifications, dbProviders }) {
                               {req.applicationId}
                             </span>
                             <h4 className="font-bold text-slate-900">{req.providerName}</h4>
-                            <p className="text-xs text-theme-accent font-medium">{req.businessName}</p>
+                            <p className="text-xs text-theme-accent font-medium">
+                              {req.businessName}
+                            </p>
                           </div>
                           <span
                             className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
                               isApproved
                                 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                 : isRejected
-                                ? 'bg-red-50 text-red-700 border border-red-200'
-                                : 'bg-amber-50 text-amber-700 border border-amber-200'
+                                  ? 'bg-red-50 text-red-700 border border-red-200'
+                                  : 'bg-amber-50 text-amber-700 border border-amber-200'
                             }`}
                           >
                             {req.status}
@@ -680,7 +724,9 @@ export default function ProviderKyc({ verifications, dbProviders }) {
                         </div>
 
                         <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-50">
-                          <span className="font-semibold text-slate-700">{req.verificationType}</span>
+                          <span className="font-semibold text-slate-700">
+                            {req.verificationType}
+                          </span>
                           <span>{req.documentsCount} Documents</span>
                           <span>{req.submittedDate}</span>
                         </div>
@@ -715,7 +761,8 @@ export default function ProviderKyc({ verifications, dbProviders }) {
         title={t('Approve Verification?')}
         message={
           approvingRequest
-            ? t('Are you sure you want to approve this provider\'s KYC/KYB verification?') + ` (${approvingRequest.providerName} - ${approvingRequest.verificationType}, ${approvingRequest.documentsCount} documents)`
+            ? t("Are you sure you want to approve this provider's KYC/KYB verification?") +
+              ` (${approvingRequest.providerName} - ${approvingRequest.verificationType}, ${approvingRequest.documentsCount} documents)`
             : ''
         }
         confirmLabel={t('Approve Verification')}

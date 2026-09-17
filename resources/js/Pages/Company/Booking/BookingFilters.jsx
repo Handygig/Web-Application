@@ -39,7 +39,6 @@ export default function BookingFilters({
 
       {/* Filter Dropdowns & View Toggles */}
       <div className="flex flex-wrap items-center gap-3 justify-between lg:justify-end">
-        
         {/* Status Filter Dropdown */}
         <div className="relative flex items-center">
           <Filter className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
@@ -74,7 +73,6 @@ export default function BookingFilters({
           </select>
           <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 pointer-events-none" />
         </div>
-
       </div>
     </div>
   );

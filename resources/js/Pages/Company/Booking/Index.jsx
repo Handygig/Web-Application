@@ -111,13 +111,13 @@ export default function BookingIndex() {
       // 2. Status Filter
       const matchesStatus =
         statusFilter === 'all' ||
-        (statusFilter === 'pending_dispatch' && (b.status === 'pending_dispatch' || !b.assignedTech)) ||
+        (statusFilter === 'pending_dispatch' &&
+          (b.status === 'pending_dispatch' || !b.assignedTech)) ||
         b.status === statusFilter;
 
       // 3. Category Filter
       const matchesCategory =
-        categoryFilter === 'all' ||
-        b.category.toLowerCase() === categoryFilter.toLowerCase();
+        categoryFilter === 'all' || b.category.toLowerCase() === categoryFilter.toLowerCase();
 
       return matchesSearch && matchesStatus && matchesCategory;
     });
@@ -153,7 +153,11 @@ export default function BookingIndex() {
       prev.map((b) => {
         if (b.id !== bookingId) return b;
 
-        const newStatus = techObj ? (b.status === 'pending_dispatch' ? 'scheduled' : b.status) : 'pending_dispatch';
+        const newStatus = techObj
+          ? b.status === 'pending_dispatch'
+            ? 'scheduled'
+            : b.status
+          : 'pending_dispatch';
 
         const updated = {
           ...b,
@@ -268,9 +272,7 @@ export default function BookingIndex() {
   };
 
   const handleSaveBooking = (updatedBooking) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === updatedBooking.id ? updatedBooking : b))
-    );
+    setBookings((prev) => prev.map((b) => (b.id === updatedBooking.id ? updatedBooking : b)));
     if (selectedBookingDetails && selectedBookingDetails.id === updatedBooking.id) {
       setSelectedBookingDetails(updatedBooking);
     }
@@ -307,9 +309,10 @@ export default function BookingIndex() {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+            'X-CSRF-TOKEN':
+              document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
           },
         });
         if (res.ok || res.status === 404) {
@@ -366,13 +369,15 @@ export default function BookingIndex() {
         />
 
         {/* 2. SUMMARY METRICS CARDS */}
-        <BookingMetrics metrics={metrics} />
+        <BookingMetrics metrics={metrics} onFilterSelect={setStatusFilter} />
 
         {/* 3. FILTERS & CONTROLS */}
         <div className="space-y-3">
           <div className="flex items-center justify-between px-1">
             <div className="text-xs text-slate-500 font-medium">
-              {t('Showing')} <span className="font-bold text-slate-900">{filteredBookings.length}</span> {t('bookings')}
+              {t('Showing')}{' '}
+              <span className="font-bold text-slate-900">{filteredBookings.length}</span>{' '}
+              {t('bookings')}
             </div>
           </div>
 
@@ -465,14 +470,13 @@ export default function BookingIndex() {
           title={t('Delete Booking?')}
           description={
             bookingToDelete
-              ? t('Are you sure you want to delete Job #:id? This action cannot be undone.', { id: bookingToDelete.id })
+              ? t('Are you sure you want to delete Job #:id? This action cannot be undone.', {
+                  id: bookingToDelete.id,
+                })
               : t('Are you sure you want to delete this booking? This action cannot be undone.')
           }
         />
-
       </div>
     </AppLayout>
   );
 }
-
-

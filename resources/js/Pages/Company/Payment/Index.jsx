@@ -218,31 +218,28 @@ export default function PaymentIndex({ initialStats }) {
 
   // Filtering Logic
   const filteredTransactions = useMemo(() => {
-    return transactions
-      .filter((t) => t.status !== 'refunded' && t.status !== 'reversed')
-      .filter((txn) => {
-        // Search term
-        const matchesSearch =
-          searchTerm === '' ||
-          txn.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          txn.jobId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          txn.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          txn.serviceName.toLowerCase().includes(searchTerm.toLowerCase());
+    return transactions.filter((txn) => {
+      // Search term
+      const matchesSearch =
+        searchTerm === '' ||
+        txn.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        txn.jobId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        txn.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        txn.serviceName.toLowerCase().includes(searchTerm.toLowerCase());
 
-        // Status filter
-        const matchesStatus =
-          statusFilter === 'all' ||
-          (statusFilter === 'paid' && (txn.status === 'paid' || txn.status === 'settled')) ||
-          (statusFilter === 'pending' && txn.status === 'pending') ||
-          (statusFilter === 'disbursed' && txn.status === 'disbursed');
+      // Status filter
+      const matchesStatus =
+        statusFilter === 'all' ||
+        (statusFilter === 'paid' && (txn.status === 'paid' || txn.status === 'settled')) ||
+        (statusFilter === 'pending' && txn.status === 'pending') ||
+        (statusFilter === 'refunded' && txn.status === 'refunded') ||
+        (statusFilter === 'disbursed' && txn.status === 'disbursed');
 
-        // Method filter
-        const matchesMethod =
-          methodFilter === 'all' ||
-          txn.method === methodFilter;
+      // Method filter
+      const matchesMethod = methodFilter === 'all' || txn.method === methodFilter;
 
-        return matchesSearch && matchesStatus && matchesMethod;
-      });
+      return matchesSearch && matchesStatus && matchesMethod;
+    });
   }, [transactions, searchTerm, statusFilter, methodFilter, dateFilter]);
 
   // Handlers
@@ -256,7 +253,18 @@ export default function PaymentIndex({ initialStats }) {
   };
 
   const handleExportCSV = () => {
-    const headers = ['Transaction ID', 'Job ID', 'Customer', 'Phone', 'Timestamp', 'Method', 'Gross Amount', 'Platform Fee', 'Net Payout', 'Status'];
+    const headers = [
+      'Transaction ID',
+      'Job ID',
+      'Customer',
+      'Phone',
+      'Timestamp',
+      'Method',
+      'Gross Amount',
+      'Platform Fee',
+      'Net Payout',
+      'Status',
+    ];
     const rows = filteredTransactions.map((t) => [
       t.id,
       t.jobId,
@@ -277,7 +285,10 @@ export default function PaymentIndex({ initialStats }) {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `HandyGig_Payments_Report_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute(
+      'download',
+      `HandyGig_Payments_Report_${new Date().toISOString().slice(0, 10)}.csv`
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -316,7 +327,9 @@ export default function PaymentIndex({ initialStats }) {
 
   const handlePayoutSubmit = ({ amount, bank, speed }) => {
     showNotification(
-      t(`Payout request of $${amount.toLocaleString()} sent to ${bank} via ${speed.toUpperCase()} transfer!`),
+      t(
+        `Payout request of $${amount.toLocaleString()} sent to ${bank} via ${speed.toUpperCase()} transfer!`
+      ),
       'success'
     );
   };
@@ -327,6 +340,26 @@ export default function PaymentIndex({ initialStats }) {
     setMethodFilter('all');
     setDateFilter('all');
   };
+
+  const paymentTabs = [
+    { key: 'all', label: `${t('All')} (${transactions.length})` },
+    {
+      key: 'paid',
+      label: `${t('Paid')} (${transactions.filter((t) => t.status === 'paid' || t.status === 'settled').length})`,
+    },
+    {
+      key: 'pending',
+      label: `${t('Pending')} (${transactions.filter((t) => t.status === 'pending').length})`,
+    },
+    {
+      key: 'disbursed',
+      label: `${t('Disbursed')} (${transactions.filter((t) => t.status === 'disbursed').length})`,
+    },
+    {
+      key: 'refunded',
+      label: `${t('Refunded')} (${transactions.filter((t) => t.status === 'refunded').length})`,
+    },
+  ];
 
   return (
     <AppLayout>
@@ -342,7 +375,9 @@ export default function PaymentIndex({ initialStats }) {
 
         <PageHeader
           title={t('Payments & Invoices')}
-          description={t('Track revenue, net payouts, platform commission, and disbursement history.')}
+          description={t(
+            'Track revenue, net payouts, platform commission, and disbursement history.'
+          )}
           action={
             <button
               type="button"
@@ -358,19 +393,32 @@ export default function PaymentIndex({ initialStats }) {
         {/* Top 4 Summary Metric Cards */}
         <PaymentMetrics metrics={metrics} />
 
-        {/* SEARCH & FILTER CONTROLS */}
-        <PaymentFilters
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          methodFilter={methodFilter}
-          setMethodFilter={setMethodFilter}
-          dateFilter={dateFilter}
-          setDateFilter={setDateFilter}
-          onExportCSV={handleExportCSV}
-          onResetFilters={handleResetFilters}
-        />
+        {/* 3. TABS & SEARCH / FILTER CONTROLS */}
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 pb-3">
+            <TabSwitch tabs={paymentTabs} activeTab={statusFilter} onChange={setStatusFilter} />
+            <div className="text-xs text-slate-500 font-medium">
+              {t('Showing')}{' '}
+              <span className="font-bold text-slate-900">{filteredTransactions.length}</span>{' '}
+              {t('transactions')}
+            </div>
+          </div>
+
+          <PaymentFilters
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            methodFilter={methodFilter}
+            setMethodFilter={setMethodFilter}
+            dateFilter={dateFilter}
+            setDateFilter={setDateFilter}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            onExportCSV={handleExportCSV}
+            onResetFilters={handleResetFilters}
+          />
+        </div>
 
         {/* Transactions & Invoices Data Table inside TableCard */}
         <TableCard>

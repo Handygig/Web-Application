@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Company\StoreEmployeeRequest;
-use App\Models\Provider;
 use Illuminate\Http\JsonResponse;
+use App\Http\Resources\Company\CompanyEmployeeResource;
+use App\Models\Provider;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 
