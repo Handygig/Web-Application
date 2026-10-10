@@ -10,12 +10,13 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['role', 'full_name', 'email', 'phone', 'password', 'firebase_uid', 'status', 'profile_image'])]
+#[Fillable(['company_id', 'role', 'full_name', 'email', 'phone', 'password', 'firebase_uid', 'status', 'profile_image'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -64,9 +65,20 @@ class User extends Authenticatable
         return $this->hasOne(Admin::class);
     }
 
+    /**
+     * The company this user owns (if applicable)
+     */
     public function company(): HasOne
     {
         return $this->hasOne(Company::class);
+    }
+
+    /**
+     * The company this user belongs to as staff (if applicable)
+     */
+    public function employer(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function provider(): HasOne

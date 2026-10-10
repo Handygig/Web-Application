@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-#[Fillable(['job_request_id', 'provider_id', 'quoted_price', 'estimated_duration', 'message', 'status'])]
+#[Fillable(['job_request_id', 'bidder_id', 'bidder_type', 'quoted_price', 'estimated_duration', 'message', 'status'])]
 class Quotation extends Model
 {
     protected function casts(): array
@@ -22,9 +23,9 @@ class Quotation extends Model
         return $this->belongsTo(JobRequest::class);
     }
 
-    public function provider(): BelongsTo
+    public function bidder(): MorphTo
     {
-        return $this->belongsTo(Provider::class);
+        return $this->morphTo();
     }
 
     public function assignment(): HasOne

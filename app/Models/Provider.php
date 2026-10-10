@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 #[Fillable(['user_id', 'company_id', 'provider_type', 'bio', 'availability', 'approval_status'])]
 class Provider extends Model
@@ -26,9 +27,9 @@ class Provider extends Model
         return $this->belongsToMany(ServiceCategory::class, 'provider_services');
     }
 
-    public function quotations(): HasMany
+    public function quotations(): MorphMany
     {
-        return $this->hasMany(Quotation::class);
+        return $this->morphMany(Quotation::class, 'bidder');
     }
 
     public function jobAssignments(): HasMany
