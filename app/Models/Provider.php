@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-#[Fillable(['user_id', 'company_id', 'provider_type', 'latitude', 'longitude', 'service_radius', 'bio', 'availability', 'approval_status'])]
+#[Fillable(['user_id', 'company_id', 'provider_type', 'latitude', 'longitude', 'service_radius', 'bio', 'availability', 'approval_status', 'reg_number', 'tax_id', 'address_line1', 'address_line2', 'city', 'state', 'postal_code', 'country'])]
 class Provider extends Model
 {
     use HasServiceArea;

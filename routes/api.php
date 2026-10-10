@@ -75,7 +75,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Protected Provider API Routes
-    Route::middleware('role:provider')->prefix('provider')->group(function () {});
+    Route::middleware('role:provider')->prefix('provider')->group(function () {
+        Route::post('complete-profile', [ProviderAuthController::class, 'completeProfile']);
+        Route::put('complete-profile', [ProviderAuthController::class, 'completeProfile']);
+    });
 
     // Protected Company API Routes
     Route::middleware('role:company')->prefix('company')->group(function () {
