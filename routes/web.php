@@ -18,6 +18,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Company\BookingController as CompanyBookingController;
+use App\Http\Controllers\Company\CompanyServiceAreaController;
 use App\Http\Controllers\Company\DashboardController as CompanyDashboardController;
 use App\Http\Controllers\Company\EmployeeController as CompanyEmployeeController;
 use App\Http\Controllers\Company\PaymentController as CompanyPaymentController;
@@ -144,6 +145,11 @@ Route::middleware('auth')->group(function () {
 
         // Notifications
         Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+
+        // Service Areas
+        Route::get('service-areas', [CompanyServiceAreaController::class, 'index'])->name('service-areas.index');
+        Route::post('service-areas', [CompanyServiceAreaController::class, 'store'])->name('service-areas.store');
+        Route::delete('service-areas/{serviceArea}', [CompanyServiceAreaController::class, 'destroy'])->name('service-areas.destroy');
 
         // Employees
         Route::get('employees', [CompanyEmployeeController::class, 'index'])->name('employees.index');

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasServiceArea;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,9 +10,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-#[Fillable(['user_id', 'company_id', 'provider_type', 'bio', 'availability', 'approval_status'])]
+#[Fillable(['user_id', 'company_id', 'provider_type', 'latitude', 'longitude', 'service_radius', 'bio', 'availability', 'approval_status'])]
 class Provider extends Model
 {
+    use HasServiceArea;
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

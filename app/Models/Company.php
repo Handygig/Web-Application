@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -33,9 +32,9 @@ class Company extends Model
         return $this->hasMany(Provider::class);
     }
 
-    public function services(): BelongsToMany
+    public function serviceAreas(): HasMany
     {
-        return $this->belongsToMany(ServiceCategory::class, 'company_services');
+        return $this->hasMany(CompanyServiceArea::class);
     }
 
     public function quotations(): MorphMany

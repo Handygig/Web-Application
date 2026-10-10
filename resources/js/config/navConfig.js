@@ -11,6 +11,7 @@ import {
     UserCog,
     FileText,
     Settings,
+    MapPin,
 } from 'lucide-react';
 
 export function getNavByRole(t) {
@@ -100,6 +101,12 @@ export function getNavByRole(t) {
                     icon: UserCog,
                     href: '/company/employees',
                     activePaths: ['/company/employees*'],
+                },
+                {
+                    label: t('Service Areas'),
+                    icon: MapPin,
+                    href: '/company/service-areas',
+                    activePaths: ['/company/service-areas*'],
                 },
                 {
                     label: t('Payments'),

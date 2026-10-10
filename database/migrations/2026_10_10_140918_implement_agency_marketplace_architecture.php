@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -29,7 +28,7 @@ return new class extends Migration
             $table->dropForeign(['provider_id']);
             // Laravel 11/10 supports changing to nullable directly
         });
-        
+
         Schema::table('job_assignments', function (Blueprint $table) {
             $table->unsignedBigInteger('provider_id')->nullable()->change();
             $table->foreign('provider_id')->references('id')->on('providers')->cascadeOnDelete();
@@ -40,7 +39,7 @@ return new class extends Migration
         $columnNames = config('permission.column_names');
         $teamKey = 'company_id';
 
-        if (!empty($tableNames)) {
+        if (! empty($tableNames)) {
             Schema::table($tableNames['roles'], function (Blueprint $table) use ($teamKey) {
                 $table->unsignedBigInteger($teamKey)->nullable()->after('id');
                 $table->index($teamKey, 'roles_team_foreign_key_index');
@@ -83,7 +82,7 @@ return new class extends Migration
         $columnNames = config('permission.column_names');
         $teamKey = 'company_id';
 
-        if (!empty($tableNames)) {
+        if (! empty($tableNames)) {
             Schema::table($tableNames['model_has_permissions'], function (Blueprint $table) use ($teamKey, $columnNames) {
                 $table->dropPrimary('model_has_permissions_permission_model_type_primary');
                 $table->dropIndex('model_has_permissions_team_foreign_key_index');
@@ -109,7 +108,7 @@ return new class extends Migration
         Schema::table('job_assignments', function (Blueprint $table) {
             $table->dropForeign(['provider_id']);
         });
-        
+
         Schema::table('job_assignments', function (Blueprint $table) {
             $table->unsignedBigInteger('provider_id')->nullable(false)->change();
             $table->foreign('provider_id')->references('id')->on('providers')->cascadeOnDelete();
