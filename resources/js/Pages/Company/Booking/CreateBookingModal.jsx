@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
+import {
+  formatSriLankanPhoneDigits,
+  formatPhoneDisplay,
+  validatePhone,
+} from '@/Utils/phoneValidation';
 
 const getSriLankaDateString = () => {
   const parts = new Intl.DateTimeFormat('en-US', {
@@ -29,7 +34,12 @@ export default function CreateBookingModal({
 
   const isEditMode = Boolean(bookingToEdit);
 
-  const [countryCode, setCountryCode] = useState('+1');
+  // Filter only active, non-deleted technicians for assignment
+  const activeTechnicians = technicians.filter(
+    (tObj) => tObj.status !== 'inactive' && tObj.status !== 'deleted'
+  );
+
+  const [countryCode, setCountryCode] = useState('+94');
   const [phoneDigits, setPhoneDigits] = useState('');
   const [phoneError, setPhoneError] = useState('');
 
@@ -54,7 +64,7 @@ export default function CreateBookingModal({
     if (bookingToEdit) {
       // Extract country code and phone digits if present
       let rawPhone = bookingToEdit.customerPhone || '';
-      let code = '+1';
+      let code = '+94';
       let digits = rawPhone;
 
       if (rawPhone.startsWith('+')) {
@@ -67,6 +77,10 @@ export default function CreateBookingModal({
         }
       } else {
         digits = rawPhone.replace(/\D/g, '');
+      }
+
+      if (code === '+94') {
+        digits = formatSriLankanPhoneDigits(digits);
       }
 
       setCountryCode(code);
@@ -90,7 +104,7 @@ export default function CreateBookingModal({
         status: bookingToEdit.status || 'scheduled',
       });
     } else {
-      setCountryCode('+1');
+      setCountryCode('+94');
       setPhoneDigits('');
       setPhoneError('');
       setFormData({
@@ -115,9 +129,15 @@ export default function CreateBookingModal({
   if (!isOpen) return null;
 
   const handlePhoneChange = (e) => {
-    const numericOnly = e.target.value.replace(/\D/g, '');
-    setPhoneDigits(numericOnly);
-    if (numericOnly.length > 0) {
+    let inputVal = e.target.value;
+    let cleanDigits = inputVal.replace(/\D/g, '');
+    if (countryCode === '+94') {
+      cleanDigits = formatSriLankanPhoneDigits(inputVal);
+    }
+    setPhoneDigits(cleanDigits);
+
+    const err = validatePhone(cleanDigits, countryCode, t);
+    if (!err) {
       setPhoneError('');
     }
   };
@@ -125,8 +145,9 @@ export default function CreateBookingModal({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!phoneDigits.trim()) {
-      setPhoneError(t('Phone number is required.'));
+    const err = validatePhone(phoneDigits, countryCode, t);
+    if (err) {
+      setPhoneError(err);
       return;
     }
 
@@ -139,8 +160,11 @@ export default function CreateBookingModal({
       return;
     }
 
-    const fullPhone = `${countryCode} ${phoneDigits}`;
-    const assignedTechObj = technicians.find((tObj) => tObj.id === formData.assignedTechId) || null;
+    const formattedDisplay = formatPhoneDisplay(phoneDigits, countryCode);
+    const fullPhone = `${countryCode} ${formattedDisplay}`;
+    const assignedTechObj = activeTechnicians.find((tObj) => tObj.id === formData.assignedTechId) || null;
+    const techFullName = assignedTechObj ? (assignedTechObj.name || `${assignedTechObj.firstName || ''} ${assignedTechObj.lastName || ''}`.trim()) : null;
+    const techRole = assignedTechObj ? (assignedTechObj.role || assignedTechObj.roleTitle || assignedTechObj.specialization || 'Technician') : null;
 
     if (isEditMode && bookingToEdit) {
       const updatedBooking = {
@@ -159,8 +183,8 @@ export default function CreateBookingModal({
         assignedTech: assignedTechObj
           ? {
               id: assignedTechObj.id,
-              name: assignedTechObj.name,
-              role: assignedTechObj.role,
+              name: techFullName,
+              role: techRole,
               avatar: assignedTechObj.avatar,
             }
           : null,
@@ -186,8 +210,8 @@ export default function CreateBookingModal({
         assignedTech: assignedTechObj
           ? {
               id: assignedTechObj.id,
-              name: assignedTechObj.name,
-              role: assignedTechObj.role,
+              name: techFullName,
+              role: techRole,
               avatar: assignedTechObj.avatar,
             }
           : null,
@@ -309,8 +333,8 @@ export default function CreateBookingModal({
                   onChange={(e) => setCountryCode(e.target.value)}
                   className="px-2.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none shrink-0 cursor-pointer"
                 >
-                  <option value="+1">+1 (US)</option>
                   <option value="+94">+94 (LK)</option>
+                  <option value="+1">+1 (US)</option>
                   <option value="+44">+44 (UK)</option>
                   <option value="+61">+61 (AU)</option>
                   <option value="+971">+971 (AE)</option>
@@ -319,9 +343,9 @@ export default function CreateBookingModal({
                 <input
                   type="text"
                   required
-                  value={phoneDigits}
+                  value={formatPhoneDisplay(phoneDigits, countryCode)}
                   onChange={handlePhoneChange}
-                  placeholder={t('5552349012')}
+                  placeholder={t('77 123 4567')}
                   className={`w-full px-3.5 py-2.5 bg-slate-50 border rounded-xl text-sm font-semibold text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none ${
                     phoneError ? 'border-rose-400 bg-rose-50/50' : 'border-slate-200'
                   }`}
@@ -410,9 +434,9 @@ export default function CreateBookingModal({
                 className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none"
               >
                 <option value="">{t('-- Unassigned --')}</option>
-                {technicians.map((tObj) => (
+                {activeTechnicians.map((tObj) => (
                   <option key={tObj.id} value={tObj.id}>
-                    {tObj.name} ({tObj.role})
+                    {tObj.name || `${tObj.firstName} ${tObj.lastName}`} ({tObj.role || tObj.roleTitle || tObj.specialization})
                   </option>
                 ))}
               </select>

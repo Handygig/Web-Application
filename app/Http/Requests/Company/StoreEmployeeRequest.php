@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Company;
 
+use App\Rules\SriLankanPhone;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEmployeeRequest extends FormRequest
@@ -14,11 +15,13 @@ class StoreEmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'full_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'phone' => ['nullable', 'string', 'max:50'],
-            'role_title' => ['nullable', 'string', 'max:100'],
-            'status' => ['required', 'string', 'in:active,inactive'],
+            'firstName' => ['required', 'string', 'max:255'],
+            'lastName' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'phone' => ['required', 'string', new SriLankanPhone],
+            'specialization' => ['required', 'string', 'max:255'],
+            'hourlyRate' => ['nullable', 'numeric'],
+            'status' => ['required', 'string', 'in:available,on_shift_job,on_break,off_duty,inactive'],
         ];
     }
 }
