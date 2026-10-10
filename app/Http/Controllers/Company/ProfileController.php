@@ -28,26 +28,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function update(UpdateCompanyProfileRequest $request): RedirectResponse
-    {
-        $validated = $request->validated();
-        $user = auth()->user();
-
-        $user->update([
-            'full_name' => $validated['full_name'],
-            'phone' => $validated['phone'] ?? $user->phone,
-        ]);
-
-        $company = Company::firstOrCreate(['user_id' => $user->id]);
-        $company->update([
-            'company_name' => $validated['company_name'],
-            'registration_no' => $validated['registration_no'] ?? $company->registration_no,
-            'address' => $validated['address'] ?? $company->address,
-        ]);
-
-        return redirect()->back()->with('success', __('Company profile updated successfully.'));
-    }
-
     public function update(Request $request): JsonResponse|RedirectResponse
     {
         $validated = $request->validate([
@@ -67,11 +47,20 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+        
         if ($user) {
             $user->update([
-                'name' => $validated['companyName'],
-                'email' => $validated['email'],
                 'full_name' => $validated['companyName'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? $user->phone,
+            ]);
+            
+            $company = Company::firstOrCreate(['user_id' => $user->id]);
+            $company->update([
+                'company_name' => $validated['companyName'],
+                'registration_no' => $validated['registrationNumber'] ?? $company->registration_no,
+                'address' => $validated['address'] ?? $company->address,
+                // other fields are not in Company model, so we ignore them for now.
             ]);
         }
 

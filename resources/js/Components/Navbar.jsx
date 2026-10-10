@@ -147,7 +147,7 @@ export default function Navbar({ onMenuToggle }) {
             <img
               src="/images/handygig-logo.png"
               alt="Logo"
-              className="h-10 w-auto transition-transform group-hover:scale-105"
+              className="h-12 w-auto transition-transform group-hover:scale-105"
             />
           </Link>
         </div>
