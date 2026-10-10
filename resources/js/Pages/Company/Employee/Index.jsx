@@ -1466,7 +1466,7 @@ export default function EmployeeIndex() {
               </div>
             </div>
           </div>
-        </TableCard>
+        )}
 
         {/* 5. EMPLOYEE VIEW DETAILS SIDE DRAWER */}
         <EmployeeDetailsDrawer

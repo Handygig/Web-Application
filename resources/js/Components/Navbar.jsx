@@ -328,13 +328,7 @@ export default function Navbar({ onMenuToggle }) {
                     </p>
                     <p className="truncate text-[11px] text-slate-400 mt-0.5">{auth.user.email}</p>
                   </div>
-                  <p className="font-semibold text-xs text-slate-800 truncate">
-                    {displayName}
-                  </p>
-                  <p className="truncate text-[11px] text-slate-400 mt-0.5">
-                    {auth?.user?.email || 'contact@apexrepairs.com'}
-                  </p>
-                </div>
+                )}
 
                 <Link
                   href={route((isAdmin ? 'admin' : 'company') + '.profile.index')}

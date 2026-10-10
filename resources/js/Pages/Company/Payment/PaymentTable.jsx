@@ -169,8 +169,7 @@ export default function PaymentTable({ transactions, viewMode, onViewInvoice, on
                           </span>
                         </div>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
                     {/* Customer & Date */}
                     <td className="py-4 px-6 align-middle">
@@ -263,8 +262,7 @@ export default function PaymentTable({ transactions, viewMode, onViewInvoice, on
                     </div>
                   </td>
                 </tr>
-              ))
-            )}
+              ))}
           </tbody>
         </table>
       </div>
@@ -365,7 +363,7 @@ export default function PaymentTable({ transactions, viewMode, onViewInvoice, on
             </div>
           ))}
         </div>
-      </div>
+      )}
     </div>
   );
 }
