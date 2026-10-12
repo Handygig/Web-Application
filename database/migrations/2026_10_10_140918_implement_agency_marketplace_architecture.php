@@ -12,63 +12,82 @@ return new class extends Migration
     public function up(): void
     {
         // 1. Update Users Table (Add company_id)
-        Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('company_id')->nullable()->after('id')->constrained('companies')->nullOnDelete();
-        });
+        if (! Schema::hasColumn('users', 'company_id')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->foreignId('company_id')->nullable()->after('id')->constrained('companies')->nullOnDelete();
+            });
+        }
 
         // 2. Update Quotations Table (Polymorphic Bidder)
-        Schema::table('quotations', function (Blueprint $table) {
-            $table->dropForeign(['provider_id']);
-            $table->dropColumn('provider_id');
-            $table->nullableMorphs('bidder');
-        });
+        if (Schema::hasColumn('quotations', 'provider_id')) {
+            Schema::table('quotations', function (Blueprint $table) {
+                $table->dropForeign(['provider_id']);
+                $table->dropColumn('provider_id');
+                $table->nullableMorphs('bidder');
+            });
+        }
 
         // 3. Update Job Assignments Table (Make provider_id nullable)
-        Schema::table('job_assignments', function (Blueprint $table) {
-            $table->dropForeign(['provider_id']);
-            // Laravel 11/10 supports changing to nullable directly
-        });
+        if (Schema::hasColumn('job_assignments', 'provider_id')) {
+            Schema::table('job_assignments', function (Blueprint $table) {
+                $table->dropForeign(['provider_id']);
+            });
 
-        Schema::table('job_assignments', function (Blueprint $table) {
-            $table->unsignedBigInteger('provider_id')->nullable()->change();
-            $table->foreign('provider_id')->references('id')->on('providers')->cascadeOnDelete();
-        });
+            Schema::table('job_assignments', function (Blueprint $table) {
+                $table->unsignedBigInteger('provider_id')->nullable()->change();
+                $table->foreign('provider_id')->references('id')->on('providers')->cascadeOnDelete();
+            });
+        }
 
         // 4. Update Spatie Permission Tables for Teams (company_id)
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');
+        $pivotRole = $columnNames['role_pivot_key'] ?? 'role_id';
+        $pivotPermission = $columnNames['permission_pivot_key'] ?? 'permission_id';
         $teamKey = 'company_id';
 
         if (! empty($tableNames)) {
-            Schema::table($tableNames['roles'], function (Blueprint $table) use ($teamKey) {
-                $table->unsignedBigInteger($teamKey)->nullable()->after('id');
-                $table->index($teamKey, 'roles_team_foreign_key_index');
-                $table->dropUnique(['name', 'guard_name']);
-                $table->unique([$teamKey, 'name', 'guard_name']);
-            });
+            if (! Schema::hasColumn($tableNames['roles'], $teamKey)) {
+                Schema::table($tableNames['roles'], function (Blueprint $table) use ($teamKey) {
+                    $table->unsignedBigInteger($teamKey)->nullable()->after('id');
+                    $table->index($teamKey, 'roles_team_foreign_key_index');
+                    $table->dropUnique(['name', 'guard_name']);
+                    $table->unique([$teamKey, 'name', 'guard_name']);
+                });
+            }
 
-            Schema::table($tableNames['model_has_roles'], function (Blueprint $table) use ($teamKey, $columnNames) {
-                $table->dropPrimary('model_has_roles_role_model_type_primary');
-                $table->unsignedBigInteger($teamKey)->default(0)->after('role_id');
-                $table->index($teamKey, 'model_has_roles_team_foreign_key_index');
-                $table->primary([$teamKey, 'role_id', $columnNames['model_morph_key'], 'model_type'], 'model_has_roles_role_model_type_primary');
-            });
+            if (! Schema::hasColumn($tableNames['model_has_roles'], $teamKey)) {
+                Schema::table($tableNames['model_has_roles'], function (Blueprint $table) use ($teamKey, $columnNames, $pivotRole, $tableNames) {
+                    $table->dropForeign([$pivotRole]);
+                    $table->dropPrimary('model_has_roles_role_model_type_primary');
+                    $table->unsignedBigInteger($teamKey)->default(0)->after($pivotRole);
+                    $table->index($teamKey, 'model_has_roles_team_foreign_key_index');
+                    $table->primary([$teamKey, $pivotRole, $columnNames['model_morph_key'], 'model_type'], 'model_has_roles_role_model_type_primary');
+                    $table->foreign($pivotRole)->references('id')->on($tableNames['roles'])->cascadeOnDelete();
+                });
+            }
 
-            Schema::table($tableNames['model_has_permissions'], function (Blueprint $table) use ($teamKey, $columnNames) {
-                $table->dropPrimary('model_has_permissions_permission_model_type_primary');
-                $table->unsignedBigInteger($teamKey)->default(0)->after('permission_id');
-                $table->index($teamKey, 'model_has_permissions_team_foreign_key_index');
-                $table->primary([$teamKey, 'permission_id', $columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_permission_model_type_primary');
-            });
+            if (! Schema::hasColumn($tableNames['model_has_permissions'], $teamKey)) {
+                Schema::table($tableNames['model_has_permissions'], function (Blueprint $table) use ($teamKey, $columnNames, $pivotPermission, $tableNames) {
+                    $table->dropForeign([$pivotPermission]);
+                    $table->dropPrimary('model_has_permissions_permission_model_type_primary');
+                    $table->unsignedBigInteger($teamKey)->default(0)->after($pivotPermission);
+                    $table->index($teamKey, 'model_has_permissions_team_foreign_key_index');
+                    $table->primary([$teamKey, $pivotPermission, $columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_permission_model_type_primary');
+                    $table->foreign($pivotPermission)->references('id')->on($tableNames['permissions'])->cascadeOnDelete();
+                });
+            }
         }
 
         // 5. Create company_services table
-        Schema::create('company_services', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
-            $table->foreignId('service_category_id')->constrained('service_categories')->cascadeOnDelete();
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('company_services')) {
+            Schema::create('company_services', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
+                $table->foreignId('service_category_id')->constrained('service_categories')->cascadeOnDelete();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -80,29 +99,41 @@ return new class extends Migration
 
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');
+        $pivotRole = $columnNames['role_pivot_key'] ?? 'role_id';
+        $pivotPermission = $columnNames['permission_pivot_key'] ?? 'permission_id';
         $teamKey = 'company_id';
 
         if (! empty($tableNames)) {
-            Schema::table($tableNames['model_has_permissions'], function (Blueprint $table) use ($teamKey, $columnNames) {
-                $table->dropPrimary('model_has_permissions_permission_model_type_primary');
-                $table->dropIndex('model_has_permissions_team_foreign_key_index');
-                $table->dropColumn($teamKey);
-                $table->primary(['permission_id', $columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_permission_model_type_primary');
-            });
+            if (Schema::hasColumn($tableNames['model_has_permissions'], $teamKey)) {
+                Schema::table($tableNames['model_has_permissions'], function (Blueprint $table) use ($teamKey, $columnNames, $pivotPermission, $tableNames) {
+                    $table->dropForeign([$pivotPermission]);
+                    $table->dropPrimary('model_has_permissions_permission_model_type_primary');
+                    $table->dropIndex('model_has_permissions_team_foreign_key_index');
+                    $table->dropColumn($teamKey);
+                    $table->primary([$pivotPermission, $columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_permission_model_type_primary');
+                    $table->foreign($pivotPermission)->references('id')->on($tableNames['permissions'])->cascadeOnDelete();
+                });
+            }
 
-            Schema::table($tableNames['model_has_roles'], function (Blueprint $table) use ($teamKey, $columnNames) {
-                $table->dropPrimary('model_has_roles_role_model_type_primary');
-                $table->dropIndex('model_has_roles_team_foreign_key_index');
-                $table->dropColumn($teamKey);
-                $table->primary(['role_id', $columnNames['model_morph_key'], 'model_type'], 'model_has_roles_role_model_type_primary');
-            });
+            if (Schema::hasColumn($tableNames['model_has_roles'], $teamKey)) {
+                Schema::table($tableNames['model_has_roles'], function (Blueprint $table) use ($teamKey, $columnNames, $pivotRole, $tableNames) {
+                    $table->dropForeign([$pivotRole]);
+                    $table->dropPrimary('model_has_roles_role_model_type_primary');
+                    $table->dropIndex('model_has_roles_team_foreign_key_index');
+                    $table->dropColumn($teamKey);
+                    $table->primary([$pivotRole, $columnNames['model_morph_key'], 'model_type'], 'model_has_roles_role_model_type_primary');
+                    $table->foreign($pivotRole)->references('id')->on($tableNames['roles'])->cascadeOnDelete();
+                });
+            }
 
-            Schema::table($tableNames['roles'], function (Blueprint $table) use ($teamKey) {
-                $table->dropUnique(['company_id', 'name', 'guard_name']);
-                $table->dropIndex('roles_team_foreign_key_index');
-                $table->dropColumn($teamKey);
-                $table->unique(['name', 'guard_name']);
-            });
+            if (Schema::hasColumn($tableNames['roles'], $teamKey)) {
+                Schema::table($tableNames['roles'], function (Blueprint $table) use ($teamKey) {
+                    $table->dropUnique(['company_id', 'name', 'guard_name']);
+                    $table->dropIndex('roles_team_foreign_key_index');
+                    $table->dropColumn($teamKey);
+                    $table->unique(['name', 'guard_name']);
+                });
+            }
         }
 
         Schema::table('job_assignments', function (Blueprint $table) {
@@ -114,14 +145,18 @@ return new class extends Migration
             $table->foreign('provider_id')->references('id')->on('providers')->cascadeOnDelete();
         });
 
-        Schema::table('quotations', function (Blueprint $table) {
-            $table->dropMorphs('bidder');
-            $table->foreignId('provider_id')->constrained('providers')->cascadeOnDelete();
-        });
+        if (Schema::hasColumn('quotations', 'bidder_type')) {
+            Schema::table('quotations', function (Blueprint $table) {
+                $table->dropMorphs('bidder');
+                $table->foreignId('provider_id')->constrained('providers')->cascadeOnDelete();
+            });
+        }
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['company_id']);
-            $table->dropColumn('company_id');
-        });
+        if (Schema::hasColumn('users', 'company_id')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropForeign(['company_id']);
+                $table->dropColumn('company_id');
+            });
+        }
     }
 };
