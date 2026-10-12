@@ -60,10 +60,10 @@ return new class extends Migration
                 Schema::table($tableNames['model_has_roles'], function (Blueprint $table) use ($teamKey, $columnNames, $pivotRole, $tableNames) {
                     $table->dropForeign([$pivotRole]);
                     $table->dropPrimary('model_has_roles_role_model_type_primary');
-                    $table->unsignedBigInteger($teamKey)->default(0)->after($pivotRole);
+                    $table->unsignedBigInteger($teamKey)->nullable()->after($pivotRole);
                     $table->index($teamKey, 'model_has_roles_team_foreign_key_index');
-                    $table->primary([$teamKey, $pivotRole, $columnNames['model_morph_key'], 'model_type'], 'model_has_roles_role_model_type_primary');
                     $table->foreign($pivotRole)->references('id')->on($tableNames['roles'])->cascadeOnDelete();
+                    $table->unique([$teamKey, $pivotRole, $columnNames['model_morph_key'], 'model_type'], 'model_has_roles_role_model_type_unique');
                 });
             }
 
@@ -71,10 +71,10 @@ return new class extends Migration
                 Schema::table($tableNames['model_has_permissions'], function (Blueprint $table) use ($teamKey, $columnNames, $pivotPermission, $tableNames) {
                     $table->dropForeign([$pivotPermission]);
                     $table->dropPrimary('model_has_permissions_permission_model_type_primary');
-                    $table->unsignedBigInteger($teamKey)->default(0)->after($pivotPermission);
+                    $table->unsignedBigInteger($teamKey)->nullable()->after($pivotPermission);
                     $table->index($teamKey, 'model_has_permissions_team_foreign_key_index');
-                    $table->primary([$teamKey, $pivotPermission, $columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_permission_model_type_primary');
                     $table->foreign($pivotPermission)->references('id')->on($tableNames['permissions'])->cascadeOnDelete();
+                    $table->unique([$teamKey, $pivotPermission, $columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_permission_model_type_unique');
                 });
             }
         }
@@ -107,7 +107,7 @@ return new class extends Migration
             if (Schema::hasColumn($tableNames['model_has_permissions'], $teamKey)) {
                 Schema::table($tableNames['model_has_permissions'], function (Blueprint $table) use ($teamKey, $columnNames, $pivotPermission, $tableNames) {
                     $table->dropForeign([$pivotPermission]);
-                    $table->dropPrimary('model_has_permissions_permission_model_type_primary');
+                    $table->dropUnique('model_has_permissions_permission_model_type_unique');
                     $table->dropIndex('model_has_permissions_team_foreign_key_index');
                     $table->dropColumn($teamKey);
                     $table->primary([$pivotPermission, $columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_permission_model_type_primary');
@@ -118,7 +118,7 @@ return new class extends Migration
             if (Schema::hasColumn($tableNames['model_has_roles'], $teamKey)) {
                 Schema::table($tableNames['model_has_roles'], function (Blueprint $table) use ($teamKey, $columnNames, $pivotRole, $tableNames) {
                     $table->dropForeign([$pivotRole]);
-                    $table->dropPrimary('model_has_roles_role_model_type_primary');
+                    $table->dropUnique('model_has_roles_role_model_type_unique');
                     $table->dropIndex('model_has_roles_team_foreign_key_index');
                     $table->dropColumn($teamKey);
                     $table->primary([$pivotRole, $columnNames['model_morph_key'], 'model_type'], 'model_has_roles_role_model_type_primary');
