@@ -22,6 +22,7 @@ class CardResource extends JsonResource
             'card_holder_name' => $this->card_holder_name,
             'billing_address' => $this->billing_address,
             'is_default' => (bool) $this->is_default,
+            'is_frozen' => (bool) $this->is_frozen,
         ];
     }
 }

@@ -72,4 +72,49 @@ class CardController extends Controller
 
         return response()->json(['message' => __('Card removed successfully')]);
     }
+
+    /**
+     * Set the specified card as the default card.
+     */
+    public function setDefault(Request $request, CustomerCard $card): JsonResponse
+    {
+        $customer = $request->user()->customer;
+
+        if ($card->customer_id !== $customer?->id) {
+            return response()->json(['message' => __('Unauthorized')], 403);
+        }
+
+        $customer->cards()->where('id', '!=', $card->id)->update(['is_default' => false]);
+        $card->update(['is_default' => true]);
+
+        return (new CardResource($card->fresh()))
+            ->additional(['message' => __('Primary card updated successfully')])
+            ->response()
+            ->setStatusCode(200);
+    }
+
+    /**
+     * Toggle or set the freeze status of the specified card.
+     */
+    public function toggleFreeze(Request $request, CustomerCard $card): JsonResponse
+    {
+        $customer = $request->user()->customer;
+
+        if ($card->customer_id !== $customer?->id) {
+            return response()->json(['message' => __('Unauthorized')], 403);
+        }
+
+        $isFrozen = $request->has('is_frozen')
+            ? $request->boolean('is_frozen')
+            : ! $card->is_frozen;
+
+        $card->update(['is_frozen' => $isFrozen]);
+
+        $message = $isFrozen ? __('Card frozen successfully') : __('Card unfrozen successfully');
+
+        return (new CardResource($card->fresh()))
+            ->additional(['message' => $message])
+            ->response()
+            ->setStatusCode(200);
+    }
 }
