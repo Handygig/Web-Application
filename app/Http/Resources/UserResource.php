@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'profile_image' => $this->profile_image ? asset('storage/'.$this->profile_image) : null,
             'is_profile_complete' => $this->is_profile_complete,
             'gender' => $this->customer?->gender,
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

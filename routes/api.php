@@ -62,6 +62,10 @@ Route::middleware('auth:sanctum')->group(function () {
         // Cards
         Route::get('cards', [CardController::class, 'index']);
         Route::post('cards', [CardController::class, 'store']);
+        Route::post('cards/{card}/default', [CardController::class, 'setDefault']);
+        Route::put('cards/{card}/default', [CardController::class, 'setDefault']);
+        Route::post('cards/{card}/freeze', [CardController::class, 'toggleFreeze']);
+        Route::put('cards/{card}/freeze', [CardController::class, 'toggleFreeze']);
         Route::delete('cards/{card}', [CardController::class, 'destroy']);
 
         // Payments

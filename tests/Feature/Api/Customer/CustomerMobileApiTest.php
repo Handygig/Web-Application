@@ -262,7 +262,42 @@ class CustomerMobileApiTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonCount(1, 'data');
 
-        // 3. Delete card
+        // 3. Add second card
+        $response = $this->actingAs($this->user, 'sanctum')
+            ->postJson('/api/customer/cards', [
+                'card_type' => 'Mastercard',
+                'masked_card_number' => '**** **** **** 5678',
+                'expiry_date' => '11/27',
+                'card_holder_name' => 'Jane Doe',
+                'is_default' => false,
+            ]);
+        $response->assertStatus(201);
+        $secondCardId = $response->json('data.id');
+
+        // 4. Set second card as default
+        $response = $this->actingAs($this->user, 'sanctum')
+            ->postJson("/api/customer/cards/{$secondCardId}/default");
+        $response->assertStatus(200)
+            ->assertJsonPath('data.is_default', true);
+
+        $this->assertDatabaseHas('customer_cards', ['id' => $cardId, 'is_default' => false]);
+        $this->assertDatabaseHas('customer_cards', ['id' => $secondCardId, 'is_default' => true]);
+
+        // 5. Freeze card
+        $response = $this->actingAs($this->user, 'sanctum')
+            ->postJson("/api/customer/cards/{$secondCardId}/freeze", ['is_frozen' => true]);
+        $response->assertStatus(200)
+            ->assertJsonPath('data.is_frozen', true);
+        $this->assertDatabaseHas('customer_cards', ['id' => $secondCardId, 'is_frozen' => true]);
+
+        // 6. Unfreeze card
+        $response = $this->actingAs($this->user, 'sanctum')
+            ->putJson("/api/customer/cards/{$secondCardId}/freeze", ['is_frozen' => false]);
+        $response->assertStatus(200)
+            ->assertJsonPath('data.is_frozen', false);
+        $this->assertDatabaseHas('customer_cards', ['id' => $secondCardId, 'is_frozen' => false]);
+
+        // 7. Delete card
         $response = $this->actingAs($this->user, 'sanctum')
             ->deleteJson("/api/customer/cards/{$cardId}");
 
@@ -331,7 +366,17 @@ class CustomerMobileApiTest extends TestCase
             'is_default' => true,
         ]);
 
-        // Pay for assignment
+        // Attempt payment with frozen card
+        $card->update(['is_frozen' => true]);
+        $response = $this->actingAs($this->user, 'sanctum')
+            ->postJson("/api/customer/job-assignments/{$assignment->id}/pay", [
+                'card_id' => $card->id,
+            ]);
+        $response->assertStatus(422)
+            ->assertJsonPath('message', 'This card is frozen and cannot be used for payment');
+
+        // Unfreeze card and succeed
+        $card->update(['is_frozen' => false]);
         $response = $this->actingAs($this->user, 'sanctum')
             ->postJson("/api/customer/job-assignments/{$assignment->id}/pay", [
                 'card_id' => $card->id,

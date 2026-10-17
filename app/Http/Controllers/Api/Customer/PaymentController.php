@@ -32,7 +32,15 @@ class PaymentController extends Controller
             return response()->json(['message' => __('Payment card not found')], 404);
         }
 
-        $amount = (float) $jobAssignment->quotation->quoted_price;
+        if ($card->is_frozen) {
+            return response()->json(['message' => __('This card is frozen and cannot be used for payment')], 422);
+        }
+
+        $amount = (float) ($jobAssignment->quotation?->quoted_price ?? 0);
+        if ($amount <= 0) {
+            return response()->json(['message' => __('Cannot determine payment amount for this assignment')], 422);
+        }
+
         $platformFee = round($amount * 0.10, 2);
         $providerAmount = round($amount - $platformFee, 2);
 

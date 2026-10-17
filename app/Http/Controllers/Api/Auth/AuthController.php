@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\UpdateProfileRequest;
+use App\Http\Resources\UserResource;
 use App\Models\Customer;
 use App\Models\Provider;
 use App\Models\User;
 use App\Services\FirebaseTokenVerifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -108,45 +112,49 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        return response()->json([
-            'id' => $user->id,
-            'name' => $user->name,
-            'phone_number' => $user->phone,
-            'email' => $user->email,
-            'created_at' => $user->created_at?->toIso8601String(),
-        ]);
+        return response()->json(new UserResource($user));
     }
 
     /**
      * Update the authenticated user's profile.
      */
-    public function updateProfile(Request $request): JsonResponse
+    public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
         $user = $request->user();
 
-        $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,'.$user->id,
-        ]);
-
-        if ($request->has('name')) {
-            $user->name = $request->name;
+        if ($request->filled('full_name')) {
+            $user->full_name = $request->input('full_name');
         }
 
-        if ($request->has('email')) {
-            $user->email = $request->email;
+        if ($request->filled('email')) {
+            $user->email = $request->input('email');
+        }
+
+        if ($request->filled('phone')) {
+            $user->phone = $request->input('phone');
+        }
+
+        if ($request->hasFile('profile_image')) {
+            if ($user->profile_image) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+            $user->profile_image = $request->file('profile_image')->store('profile-images', 'public');
         }
 
         $user->save();
 
+        if ($request->filled('gender')) {
+            $customer = $user->customer;
+            if (! $customer) {
+                $customer = Customer::create(['user_id' => $user->id]);
+            }
+            $customer->gender = $request->input('gender');
+            $customer->save();
+        }
+
         return response()->json([
             'status' => 'success',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'phone_number' => $user->phone,
-                'email' => $user->email,
-            ],
+            'user' => new UserResource($user),
         ]);
     }
 
@@ -155,7 +163,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->user()->currentAccessToken()?->delete();
 
         return response()->json([
             'status' => 'success',

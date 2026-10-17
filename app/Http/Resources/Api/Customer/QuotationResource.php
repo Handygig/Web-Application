@@ -21,10 +21,12 @@ class QuotationResource extends JsonResource
             'message' => $this->message,
             'status' => $this->status,
             'provider' => [
-                'id' => $this->provider_id,
-                'name' => $this->provider?->user?->full_name,
-                'rating' => $this->provider?->reviews()->exists() ? round((float) $this->provider->reviews()->avg('rating'), 1) : null,
-                'profile_image' => $this->provider?->user?->profile_image ? asset('storage/'.$this->provider->user->profile_image) : null,
+                'id' => $this->bidder_id ?? $this->provider_id,
+                'name' => $this->bidder_name,
+                'rating' => $this->bidder_rating,
+                'profile_image' => $this->bidder_user?->profile_image
+                    ? asset('storage/'.$this->bidder_user->profile_image)
+                    : null,
             ],
             'created_at' => $this->created_at?->toIso8601String(),
         ];
