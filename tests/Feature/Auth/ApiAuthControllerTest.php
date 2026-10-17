@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Customer;
 use App\Models\User;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -190,11 +191,11 @@ class ApiAuthControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'id' => $user->id,
-                'name' => 'Jane Doe',
-                'phone_number' => '+15555550199',
+                'full_name' => 'Jane Doe',
+                'phone' => '+15555550199',
                 'email' => 'jane.doe@example.com',
             ])
-            ->assertJsonStructure(['id', 'name', 'phone_number', 'email', 'created_at']);
+            ->assertJsonStructure(['id', 'full_name', 'phone', 'email', 'role', 'status']);
     }
 
     public function test_unauthenticated_user_cannot_get_profile(): void
@@ -216,7 +217,7 @@ class ApiAuthControllerTest extends TestCase
         $user->assignRole('customer');
 
         $response = $this->actingAs($user, 'sanctum')->putJson('/api/user/profile', [
-            'name' => 'Jane Smith',
+            'full_name' => 'Jane Smith',
             'email' => 'jane.smith@example.com',
         ]);
 
@@ -225,8 +226,8 @@ class ApiAuthControllerTest extends TestCase
                 'status' => 'success',
                 'user' => [
                     'id' => $user->id,
-                    'name' => 'Jane Smith',
-                    'phone_number' => '+15555550199',
+                    'full_name' => 'Jane Smith',
+                    'phone' => '+15555550199',
                     'email' => 'jane.smith@example.com',
                 ],
             ]);
@@ -235,6 +236,43 @@ class ApiAuthControllerTest extends TestCase
             'id' => $user->id,
             'full_name' => 'Jane Smith',
             'email' => 'jane.smith@example.com',
+        ]);
+    }
+
+    public function test_authenticated_customer_can_update_profile_with_gender(): void
+    {
+        $user = User::create([
+            'role' => 'customer',
+            'full_name' => 'Jane Doe',
+            'email' => 'jane.doe@example.com',
+            'phone' => '+15555550199',
+            'status' => 'active',
+        ]);
+        $user->assignRole('customer');
+        Customer::create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/user/profile', [
+            'full_name' => 'Jane Williams',
+            'email' => 'jane.williams@example.com',
+            'phone' => '+15555550200',
+            'gender' => 'female',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'status' => 'success',
+                'user' => [
+                    'id' => $user->id,
+                    'full_name' => 'Jane Williams',
+                    'email' => 'jane.williams@example.com',
+                    'phone' => '+15555550200',
+                    'gender' => 'female',
+                ],
+            ]);
+
+        $this->assertDatabaseHas('customers', [
+            'user_id' => $user->id,
+            'gender' => 'female',
         ]);
     }
 
