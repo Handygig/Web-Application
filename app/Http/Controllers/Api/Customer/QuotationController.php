@@ -24,7 +24,7 @@ class QuotationController extends Controller
             return response()->json(['message' => __('Unauthorized')], 403);
         }
 
-        $quotations = $jobRequest->quotations()->with('provider.user')->get();
+        $quotations = $jobRequest->quotations()->with('bidder')->get();
 
         return QuotationResource::collection($quotations);
     }
@@ -58,12 +58,15 @@ class QuotationController extends Controller
             // Update JobRequest status
             $jobRequest->update(['status' => 'assigned']);
 
+            $providerId = $quotation->provider_id ?? ($quotation->bidder instanceof \App\Models\Provider ? $quotation->bidder_id : null);
+            $companyId = $quotation->provider?->company_id ?? ($quotation->bidder instanceof \App\Models\Company ? $quotation->bidder_id : $quotation->bidder?->company_id);
+
             // Create JobAssignment
             JobAssignment::create([
                 'job_request_id' => $jobRequest->id,
                 'quotation_id' => $quotation->id,
-                'provider_id' => $quotation->provider_id,
-                'company_id' => $quotation->provider?->company_id,
+                'provider_id' => $providerId,
+                'company_id' => $companyId,
                 'assigned_at' => now(),
                 'status' => 'scheduled',
             ]);
