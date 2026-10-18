@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\Customer\PaymentController;
 use App\Http\Controllers\Api\Customer\PropertyController;
 use App\Http\Controllers\Api\Customer\QuotationController;
 use App\Http\Controllers\Api\Customer\ReviewController;
+use App\Http\Controllers\Api\Customer\ExclusiveOfferController as CustomerExclusiveOfferController;
+use App\Http\Controllers\Api\Customer\RewardController as CustomerRewardController;
 use App\Http\Controllers\Api\Customer\ServiceCategoryController;
 use App\Http\Controllers\Api\Customer\ServiceController as CustomerServiceController;
 use App\Http\Controllers\Api\Provider\AuthController as ProviderAuthController;
@@ -32,6 +34,7 @@ Route::get('service-categories', [ServiceCategoryController::class, 'index']);
 Route::get('service-categories/{serviceCategory}/services', [CustomerServiceController::class, 'byCategory']);
 Route::get('services', [CustomerServiceController::class, 'index']);
 Route::get('services/{service}', [CustomerServiceController::class, 'show']);
+Route::get('exclusive-offers', [CustomerExclusiveOfferController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user/profile', [AuthController::class, 'profile']);
@@ -86,6 +89,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Disputes
         Route::post('job-assignments/{jobAssignment}/disputes', [DisputeController::class, 'store']);
+
+        // Exclusive Offers
+        Route::get('exclusive-offers', [CustomerExclusiveOfferController::class, 'index']);
+        Route::post('exclusive-offers/claim', [CustomerExclusiveOfferController::class, 'claim']);
+
+        // Rewards & Wallet
+        Route::get('rewards', [CustomerRewardController::class, 'index']);
+        Route::post('rewards/redeem', [CustomerRewardController::class, 'redeem']);
+        Route::post('referral/apply', [CustomerRewardController::class, 'applyReferral']);
     });
 
     // Protected Provider API Routes

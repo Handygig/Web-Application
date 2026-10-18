@@ -24,6 +24,10 @@ class UserResource extends JsonResource
             'profile_image' => $this->profile_image ? asset('storage/'.$this->profile_image) : null,
             'is_profile_complete' => $this->is_profile_complete,
             'gender' => $this->customer?->gender,
+            'membership_tier' => $this->customer?->membership_tier ?? 'Member',
+            'reward_points' => (int) ($this->customer?->reward_points ?? 0),
+            'wallet_balance' => (float) ($this->customer?->wallet_balance ?? 0.0),
+            'referral_code' => $this->customer?->referral_code ?? '',
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
