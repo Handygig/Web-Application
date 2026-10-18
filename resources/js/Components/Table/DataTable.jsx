@@ -2,13 +2,15 @@ import React from 'react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
 export default function DataTable({
-  columns,
+  columns = [],
   rows,
+  data,
   rowKey = 'id',
   onRowClick,
   cellWrapperClassName = 'text-slate-600',
 }) {
   const { t } = useTranslation();
+  const tableRows = rows || data || [];
 
   return (
     <div className="overflow-x-auto">
@@ -27,7 +29,7 @@ export default function DataTable({
         </thead>
 
         <tbody>
-          {rows.map((row) => (
+          {tableRows.map((row) => (
             <tr
               key={row[rowKey]}
               onClick={(e) => {

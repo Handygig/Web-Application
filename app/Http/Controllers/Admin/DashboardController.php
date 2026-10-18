@@ -61,7 +61,7 @@ class DashboardController extends Controller
         $reviewsItems = [];
         $avgRating = 4.9;
         if (class_exists(Review::class)) {
-            $dbReviews = Review::with(['customer.user', 'provider.user', 'assignment.jobRequest.jobType'])
+            $dbReviews = Review::with(['customer.user', 'provider.user', 'assignment.jobRequest.serviceCategory'])
                 ->latest()
                 ->take(5)
                 ->get();
@@ -76,7 +76,7 @@ class DashboardController extends Controller
                     'name' => $r->customer?->user?->name ?? 'Customer',
                     'avatar' => $r->customer?->avatar ?? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
                     'rating' => (int) $r->rating,
-                    'service' => $r->assignment?->jobRequest?->jobType?->name ?? 'Home Service',
+                    'service' => $r->assignment?->jobRequest?->serviceCategory?->service_name ?? 'Home Service',
                     'comment' => $r->comment ?? 'Great service provided!',
                     'date' => $r->created_at ? $r->created_at->diffForHumans() : 'Recently',
                 ];
