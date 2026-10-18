@@ -391,8 +391,9 @@ export default function ServiceIndex({ services, categories = [], stats, filters
               <>
                 <DataTable columns={columns} rows={serviceList} rowKey="id" />
                 <div className="border-t border-slate-100 p-4">
-                  <Paginator pagination={services} />
+                  <Paginator links={services?.meta?.links || services?.links || []} pagination={services} />
                 </div>
+
               </>
             )}
           </div>

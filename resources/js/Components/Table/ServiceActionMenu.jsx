@@ -19,7 +19,10 @@ export default function ServiceActionMenu({
         <MoreVertical className="h-4 w-4" />
       </Menu.Button>
 
-      <Menu.Items className="absolute right-0 z-50 mt-1 w-48 origin-top-right rounded-xl bg-white p-1.5 shadow-xl ring-1 ring-slate-900/10 focus:outline-none text-xs font-medium divide-y divide-slate-100">
+      <Menu.Items
+        anchor="bottom end"
+        className="z-50 w-48 rounded-xl bg-white p-1.5 shadow-xl ring-1 ring-slate-900/10 focus:outline-none text-xs font-medium divide-y divide-slate-100 [--anchor-gap:4px]"
+      >
         <div className="py-0.5">
           {onViewDetails && (
             <Menu.Item>

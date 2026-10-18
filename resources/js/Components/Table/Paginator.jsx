@@ -11,14 +11,17 @@ function normalizeLabel(label) {
     .trim();
 }
 
-export default function Paginator({ links = [] }) {
-  if (!links.length) {
+export default function Paginator({ links, pagination }) {
+  const resolvedLinks = links || pagination?.meta?.links || pagination?.links || [];
+
+  if (!resolvedLinks.length) {
     return null;
   }
 
   return (
     <div className="mt-6 flex flex-wrap items-center justify-end gap-3 text-slate-700">
-      {links.map((link, index) => {
+      {resolvedLinks.map((link, index) => {
+
         const label = normalizeLabel(link.label);
         const isArrow = label === '';
         const isPrevious = index === 0;
