@@ -15,6 +15,7 @@ import {
     Wrench,
     Tag,
     Gift,
+    HelpCircle,
 } from 'lucide-react';
 
 export function getNavByRole(t) {
@@ -82,6 +83,12 @@ export function getNavByRole(t) {
                     icon: Gift,
                     href: '/admin/rewards',
                     activePaths: ['/admin/rewards*'],
+                },
+                {
+                    label: t('Help & FAQs'),
+                    icon: HelpCircle,
+                    href: '/admin/faqs',
+                    activePaths: ['/admin/faqs*'],
                 },
             ],
         },

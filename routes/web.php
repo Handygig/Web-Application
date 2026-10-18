@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ExclusiveOfferController as AdminExclusiveOfferController;
+use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\KycController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\PropertyTypeController as AdminPropertyTypeController;
@@ -133,6 +134,13 @@ Route::middleware('auth')->group(function () {
         Route::get('rewards', [AdminRewardController::class, 'index'])->name('rewards.index');
         Route::put('rewards/settings', [AdminRewardController::class, 'updateSettings'])->name('rewards.settings.update');
         Route::post('rewards/customers/{customer}/adjust', [AdminRewardController::class, 'adjustCustomerBalance'])->name('rewards.customers.adjust');
+
+        // FAQs
+        Route::get('faqs', [AdminFaqController::class, 'index'])->name('faqs.index');
+        Route::post('faqs', [AdminFaqController::class, 'store'])->name('faqs.store');
+        Route::put('faqs/{faq}', [AdminFaqController::class, 'update'])->name('faqs.update');
+        Route::delete('faqs/{faq}', [AdminFaqController::class, 'destroy'])->name('faqs.destroy');
+        Route::put('faqs/{faq}/toggle-active', [AdminFaqController::class, 'toggleActive'])->name('faqs.toggle-active');
 
         // Bookings
         Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');

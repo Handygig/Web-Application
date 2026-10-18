@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Customer\PropertyController;
 use App\Http\Controllers\Api\Customer\QuotationController;
 use App\Http\Controllers\Api\Customer\ReviewController;
 use App\Http\Controllers\Api\Customer\ExclusiveOfferController as CustomerExclusiveOfferController;
+use App\Http\Controllers\Api\Customer\FaqController as CustomerFaqController;
 use App\Http\Controllers\Api\Customer\NotificationController as CustomerNotificationController;
 use App\Http\Controllers\Api\Customer\RewardController as CustomerRewardController;
 use App\Http\Controllers\Api\Customer\ServiceCategoryController;
@@ -36,6 +37,8 @@ Route::get('service-categories/{serviceCategory}/services', [CustomerServiceCont
 Route::get('services', [CustomerServiceController::class, 'index']);
 Route::get('services/{service}', [CustomerServiceController::class, 'show']);
 Route::get('exclusive-offers', [CustomerExclusiveOfferController::class, 'index']);
+Route::get('faqs', [CustomerFaqController::class, 'index']);
+Route::get('faqs/categories', [CustomerFaqController::class, 'categories']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user/profile', [AuthController::class, 'profile']);
@@ -94,6 +97,10 @@ Route::middleware('auth:sanctum')->group(function () {
         // Exclusive Offers
         Route::get('exclusive-offers', [CustomerExclusiveOfferController::class, 'index']);
         Route::post('exclusive-offers/claim', [CustomerExclusiveOfferController::class, 'claim']);
+
+        // FAQs
+        Route::get('faqs', [CustomerFaqController::class, 'index']);
+        Route::get('faqs/categories', [CustomerFaqController::class, 'categories']);
 
         // Rewards & Wallet
         Route::get('rewards', [CustomerRewardController::class, 'index']);
