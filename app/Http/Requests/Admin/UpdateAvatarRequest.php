@@ -8,13 +8,13 @@ class UpdateAvatarRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('admin');
+        return $this->user() && ($this->user()->hasRole('admin') || $this->user()->role === 'admin');
     }
 
     public function rules(): array
     {
         return [
-            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
         ];
     }
 }

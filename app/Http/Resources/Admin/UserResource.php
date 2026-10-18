@@ -16,9 +16,8 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'role' => $this->role,
             'status' => $this->status,
-            'profile_image' => $this->profile_image,
+            'profile_image' => $this->image_url ?? $this->profile_image,
             'created_at' => $this->created_at,
-            'admin' => $this->whenLoaded('admin'),
         ];
     }
 }

@@ -159,6 +159,7 @@ Route::middleware('auth')->group(function () {
         Route::put('profile', [AdminProfileController::class, 'update'])->name('profile.update');
         Route::put('profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
         Route::post('profile/avatar', [AdminProfileController::class, 'updateAvatar'])->name('profile.avatar');
+        Route::delete('profile/avatar', [AdminProfileController::class, 'destroyAvatar'])->name('profile.avatar.destroy');
 
         // Audit Logs
         Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
