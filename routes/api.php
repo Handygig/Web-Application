@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Customer\PropertyController;
 use App\Http\Controllers\Api\Customer\QuotationController;
 use App\Http\Controllers\Api\Customer\ReviewController;
 use App\Http\Controllers\Api\Customer\ExclusiveOfferController as CustomerExclusiveOfferController;
+use App\Http\Controllers\Api\Customer\NotificationController as CustomerNotificationController;
 use App\Http\Controllers\Api\Customer\RewardController as CustomerRewardController;
 use App\Http\Controllers\Api\Customer\ServiceCategoryController;
 use App\Http\Controllers\Api\Customer\ServiceController as CustomerServiceController;
@@ -98,6 +99,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('rewards', [CustomerRewardController::class, 'index']);
         Route::post('rewards/redeem', [CustomerRewardController::class, 'redeem']);
         Route::post('referral/apply', [CustomerRewardController::class, 'applyReferral']);
+
+        // Notifications & Alerts
+        Route::get('notifications', [CustomerNotificationController::class, 'index']);
+        Route::patch('notifications/{notification}/read', [CustomerNotificationController::class, 'markAsRead']);
+        Route::post('notifications/mark-all-read', [CustomerNotificationController::class, 'markAllAsRead']);
+        Route::delete('notifications/{notification}', [CustomerNotificationController::class, 'destroy']);
     });
 
     // Protected Provider API Routes
