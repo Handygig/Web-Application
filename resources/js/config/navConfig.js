@@ -12,6 +12,7 @@ import {
     FileText,
     Settings,
     MapPin,
+    Wrench,
 } from 'lucide-react';
 
 export function getNavByRole(t) {
@@ -57,10 +58,16 @@ export function getNavByRole(t) {
                     activePaths: ['/admin/property-types*'],
                 },
                 {
-                    label: t('Job Types'),
+                    label: t('Service Categories'),
                     icon: Layers,
-                    href: '/admin/job-types',
-                    activePaths: ['/admin/job-types*'],
+                    href: '/admin/service-categories',
+                    activePaths: ['/admin/service-categories*'],
+                },
+                {
+                    label: t('Services'),
+                    icon: Wrench,
+                    href: '/admin/services',
+                    activePaths: ['/admin/services*'],
                 },
             ],
         },

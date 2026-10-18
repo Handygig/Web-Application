@@ -5,11 +5,12 @@ use App\Http\Controllers\Admin\BannedAccountController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\JobTypeController as AdminJobTypeController;
 use App\Http\Controllers\Admin\KycController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\PropertyTypeController as AdminPropertyTypeController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
+use App\Http\Controllers\Admin\ServiceCategoryController as AdminServiceCategoryController;
+use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -105,14 +106,19 @@ Route::middleware('auth')->group(function () {
         Route::delete('property-types/{propertyType}', [AdminPropertyTypeController::class, 'destroy'])->name('property-types.destroy');
         Route::put('property-types/{propertyType}/toggle-active', [AdminPropertyTypeController::class, 'toggleActive'])->name('property-types.toggle-active');
 
-        // Job Types
-        Route::get('job-types', [AdminJobTypeController::class, 'index'])->name('job-types.index');
-        Route::get('job-types/create', [AdminJobTypeController::class, 'create'])->name('job-types.create');
-        Route::post('job-types', [AdminJobTypeController::class, 'store'])->name('job-types.store');
-        Route::get('job-types/{jobType}/edit', [AdminJobTypeController::class, 'edit'])->name('job-types.edit');
-        Route::put('job-types/{jobType}', [AdminJobTypeController::class, 'update'])->name('job-types.update');
-        Route::delete('job-types/{jobType}', [AdminJobTypeController::class, 'destroy'])->name('job-types.destroy');
-        Route::put('job-types/{jobType}/toggle-active', [AdminJobTypeController::class, 'toggleActive'])->name('job-types.toggle-active');
+        // Service Categories
+        Route::get('service-categories', [AdminServiceCategoryController::class, 'index'])->name('service-categories.index');
+        Route::post('service-categories', [AdminServiceCategoryController::class, 'store'])->name('service-categories.store');
+        Route::put('service-categories/{serviceCategory}', [AdminServiceCategoryController::class, 'update'])->name('service-categories.update');
+        Route::delete('service-categories/{serviceCategory}', [AdminServiceCategoryController::class, 'destroy'])->name('service-categories.destroy');
+        Route::put('service-categories/{serviceCategory}/toggle-active', [AdminServiceCategoryController::class, 'toggleActive'])->name('service-categories.toggle-active');
+
+        // Services
+        Route::get('services', [AdminServiceController::class, 'index'])->name('services.index');
+        Route::post('services', [AdminServiceController::class, 'store'])->name('services.store');
+        Route::put('services/{service}', [AdminServiceController::class, 'update'])->name('services.update');
+        Route::delete('services/{service}', [AdminServiceController::class, 'destroy'])->name('services.destroy');
+        Route::put('services/{service}/toggle-active', [AdminServiceController::class, 'toggleActive'])->name('services.toggle-active');
 
         // Bookings
         Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');

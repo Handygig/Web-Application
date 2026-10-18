@@ -17,8 +17,12 @@ class ServiceCategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->service_name,
+            'service_name' => $this->service_name,
             'description' => $this->description,
+            'image' => $this->image,
+            'image_url' => $this->image_url,
             'is_active' => (bool) $this->is_active,
+            'services' => ServiceResource::collection($this->whenLoaded('services')),
         ];
     }
 }

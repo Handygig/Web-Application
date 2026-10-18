@@ -1,14 +1,20 @@
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Briefcase, Clock, Calendar, CheckCircle2, XCircle, Edit2, Power } from 'lucide-react';
+import {
+  X,
+  Wrench,
+  Layers,
+  DollarSign,
+  Calendar,
+  Edit2,
+} from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
-export default function JobTypeDetailModal({
+export default function ServiceDetailModal({
   open = false,
-  jobType = null,
+  service = null,
   onClose,
   onEdit,
-  onToggleActive,
 }) {
   const { t } = useTranslation();
 
@@ -21,9 +27,9 @@ export default function JobTypeDetailModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose, open]);
 
-  if (!open || !jobType) return null;
+  if (!open || !service) return null;
 
-  const isActive = jobType.status === 'Active' || jobType.status === 'active';
+  const isActive = Boolean(service.is_active);
 
   const modalContent = (
     <div
@@ -39,8 +45,8 @@ export default function JobTypeDetailModal({
         {/* Header Controls */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-            <Briefcase className="h-4 w-4 text-theme-accent" />
-            {t('Job Type Details')}
+            <Wrench className="h-4 w-4 text-theme-accent" />
+            {t('Service Details')}
           </div>
 
           <button
@@ -54,15 +60,25 @@ export default function JobTypeDetailModal({
         </div>
 
         {/* Top Banner Card */}
-        <div className="flex items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-indigo-50/40 border border-slate-100 mb-6">
+        <div className="flex items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-emerald-50/30 border border-slate-100 mb-6">
           <div className="flex items-center gap-4 min-w-0">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-theme-accent text-white shadow-md ring-4 ring-white">
-              <Briefcase className="h-7 w-7" />
-            </div>
+            {service.image_url ? (
+              <img
+                src={service.image_url}
+                alt={service.name}
+                className="h-16 w-16 shrink-0 rounded-2xl object-cover shadow-md ring-4 ring-white border border-slate-100 bg-white"
+              />
+            ) : (
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-theme-accent text-white shadow-md ring-4 ring-white">
+                <Wrench className="h-7 w-7" />
+              </div>
+            )}
 
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold text-slate-900 truncate">{jobType.name}</h2>
+                <h2 className="text-xl font-bold text-slate-900 truncate">
+                  {service.name}
+                </h2>
                 <span
                   className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
                     isActive
@@ -77,7 +93,7 @@ export default function JobTypeDetailModal({
                 </span>
               </div>
               <p className="mt-1 font-mono text-xs text-slate-400">
-                {jobType.code || `JT-${jobType.id}`}
+                {service.code || `SRV-${service.id}`}
               </p>
             </div>
           </div>
@@ -87,12 +103,12 @@ export default function JobTypeDetailModal({
               type="button"
               onClick={() => {
                 onClose();
-                if (onEdit) onEdit(jobType);
+                if (onEdit) onEdit(service);
               }}
               className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-2xs"
             >
               <Edit2 className="h-3.5 w-3.5 text-slate-500" />
-              {t('Edit Job Type')}
+              {t('Edit Service')}
             </button>
           </div>
         </div>
@@ -104,26 +120,49 @@ export default function JobTypeDetailModal({
               {t('Description')}
             </span>
             <p className="text-sm text-slate-700 leading-relaxed">
-              {jobType.description || t('No description provided for this job type.')}
+              {service.description || t('No description provided for this service.')}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="p-4 rounded-xl border border-slate-100 bg-slate-50">
-              <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                {t('Job Type ID')}
-              </span>
-              <span className="font-mono font-bold text-slate-900 text-sm">
-                {jobType.code || `JT-${jobType.id}`}
+              <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                <Layers className="h-3.5 w-3.5" />
+                {t('Category')}
+              </div>
+              <span className="font-bold text-slate-900 text-sm truncate block">
+                {service.category_name || (service.category?.service_name ?? '-')}
               </span>
             </div>
 
             <div className="p-4 rounded-xl border border-slate-100 bg-slate-50">
-              <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                {t('Created Date')}
+              <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                <DollarSign className="h-3.5 w-3.5" />
+                {t('Base Price')}
+              </div>
+              <span className="font-bold text-slate-900 text-sm">
+                {service.formatted_price ?? (service.base_price ? `$${Number(service.base_price).toFixed(2)}` : t('Flexible / Quote'))}
               </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50">
+              <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                {t('Service ID')}
+              </span>
+              <span className="font-mono font-bold text-slate-900 text-sm">
+                {service.code || `SRV-${service.id}`}
+              </span>
+            </div>
+
+            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                <Calendar className="h-3.5 w-3.5" />
+                {t('Created Date')}
+              </div>
               <span className="font-semibold text-slate-800 text-sm">
-                {jobType.createdDate || jobType.created_at || 'Jan 10, 2025'}
+                {service.createdDate || service.created_at || '-'}
               </span>
             </div>
           </div>

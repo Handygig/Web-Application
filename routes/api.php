@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Customer\PropertyController;
 use App\Http\Controllers\Api\Customer\QuotationController;
 use App\Http\Controllers\Api\Customer\ReviewController;
 use App\Http\Controllers\Api\Customer\ServiceCategoryController;
+use App\Http\Controllers\Api\Customer\ServiceController as CustomerServiceController;
 use App\Http\Controllers\Api\Provider\AuthController as ProviderAuthController;
 use App\Http\Controllers\Company\BookingController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,12 @@ Route::post('customer/login', [CustomerAuthController::class, 'login']);
 Route::post('provider/register', [ProviderAuthController::class, 'register']);
 Route::post('provider/login', [ProviderAuthController::class, 'login']);
 
+// Public Service Catalog Endpoints
+Route::get('service-categories', [ServiceCategoryController::class, 'index']);
+Route::get('service-categories/{serviceCategory}/services', [CustomerServiceController::class, 'byCategory']);
+Route::get('services', [CustomerServiceController::class, 'index']);
+Route::get('services/{service}', [CustomerServiceController::class, 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user/profile', [AuthController::class, 'profile']);
     Route::put('user/profile', [AuthController::class, 'updateProfile']);
@@ -35,8 +42,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:customer')->prefix('customer')->group(function () {
         Route::put('complete-profile', [CustomerAuthController::class, 'completeProfile']);
 
-        // Service Categories
+        // Service Categories & Services
         Route::get('service-categories', [ServiceCategoryController::class, 'index']);
+        Route::get('service-categories/{serviceCategory}/services', [CustomerServiceController::class, 'byCategory']);
+        Route::get('services', [CustomerServiceController::class, 'index']);
+        Route::get('services/{service}', [CustomerServiceController::class, 'show']);
 
         // Properties
         Route::get('properties', [PropertyController::class, 'index']);

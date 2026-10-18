@@ -19,7 +19,7 @@ class CompanyServiceAreaController extends Controller
             ->latest()
             ->get();
 
-        $serviceCategories = ServiceCategory::where('is_active', true)->get(['id', 'name']);
+        $serviceCategories = ServiceCategory::where('is_active', true)->get(['id', 'service_name']);
 
         return Inertia::render('Company/ServiceAreas/Index', [
             'serviceAreas' => $serviceAreas,
