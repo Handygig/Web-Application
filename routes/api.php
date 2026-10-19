@@ -17,6 +17,17 @@ use App\Http\Controllers\Api\Customer\RewardController as CustomerRewardControll
 use App\Http\Controllers\Api\Customer\ServiceCategoryController;
 use App\Http\Controllers\Api\Customer\ServiceController as CustomerServiceController;
 use App\Http\Controllers\Api\Provider\AuthController as ProviderAuthController;
+use App\Http\Controllers\Api\Provider\CompanyController as ProviderCompanyController;
+use App\Http\Controllers\Api\Provider\DashboardController as ProviderDashboardController;
+use App\Http\Controllers\Api\Provider\JobAssignmentController as ProviderJobAssignmentController;
+use App\Http\Controllers\Api\Provider\JobRequestController as ProviderJobRequestController;
+use App\Http\Controllers\Api\Provider\NotificationController as ProviderNotificationController;
+use App\Http\Controllers\Api\Provider\PayoutAccountController as ProviderPayoutAccountController;
+use App\Http\Controllers\Api\Provider\PayoutController as ProviderPayoutController;
+use App\Http\Controllers\Api\Provider\ProfileController as ProviderProfileController;
+use App\Http\Controllers\Api\Provider\QuotationController as ProviderQuotationController;
+use App\Http\Controllers\Api\Provider\ReviewController as ProviderReviewController;
+use App\Http\Controllers\Api\Provider\WalletController as ProviderWalletController;
 use App\Http\Controllers\Company\BookingController;
 use Illuminate\Support\Facades\Route;
 
@@ -75,6 +86,8 @@ Route::middleware('auth:sanctum')->group(function () {
         // Job Assignments
         Route::get('job-assignments', [JobAssignmentController::class, 'index']);
         Route::get('job-assignments/{jobAssignment}', [JobAssignmentController::class, 'show']);
+        Route::post('job-assignments/{jobAssignment}/extra-charge/approve', [JobAssignmentController::class, 'approveExtra']);
+        Route::post('job-assignments/{jobAssignment}/extra-charge/reject', [JobAssignmentController::class, 'rejectExtra']);
 
         // Cards
         Route::get('cards', [CardController::class, 'index']);
@@ -115,9 +128,64 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Protected Provider API Routes
-    Route::middleware('role:provider')->prefix('provider')->group(function () {
+    Route::middleware('role:provider|company')->prefix('provider')->group(function () {
+        // Profile & Onboarding
         Route::post('complete-profile', [ProviderAuthController::class, 'completeProfile']);
         Route::put('complete-profile', [ProviderAuthController::class, 'completeProfile']);
+        Route::get('profile', [ProviderProfileController::class, 'show']);
+        Route::put('profile', [ProviderProfileController::class, 'update']);
+        Route::post('status', [ProviderProfileController::class, 'toggleAvailability']);
+        Route::post('location', [ProviderProfileController::class, 'updateLocation']);
+
+        // Dashboard Overview
+        Route::get('dashboard', [ProviderDashboardController::class, 'index']);
+
+        // Live Radar & Job Requests (To Quote)
+        Route::get('radar', [ProviderJobRequestController::class, 'index']);
+        Route::get('job-requests', [ProviderJobRequestController::class, 'index']);
+        Route::get('job-requests/{jobRequest}', [ProviderJobRequestController::class, 'show']);
+
+        // Quotations (Bidding / Pending Approval)
+        Route::get('quotations', [ProviderQuotationController::class, 'index']);
+        Route::post('job-requests/{jobRequest}/quotations', [ProviderQuotationController::class, 'store']);
+        Route::get('quotations/{quotation}', [ProviderQuotationController::class, 'show']);
+        Route::put('quotations/{quotation}', [ProviderQuotationController::class, 'update']);
+        Route::delete('quotations/{quotation}', [ProviderQuotationController::class, 'destroy']);
+
+        // Job Assignments (Ongoing & Finished)
+        Route::get('jobs', [ProviderJobAssignmentController::class, 'index']);
+        Route::get('jobs/{jobAssignment}', [ProviderJobAssignmentController::class, 'show']);
+        Route::post('jobs/{jobAssignment}/start', [ProviderJobAssignmentController::class, 'start']);
+        Route::post('jobs/{jobAssignment}/extra-charge', [ProviderJobAssignmentController::class, 'requestExtra']);
+        Route::post('jobs/{jobAssignment}/complete', [ProviderJobAssignmentController::class, 'complete']);
+        Route::post('jobs/{jobAssignment}/dispatch', [ProviderJobAssignmentController::class, 'dispatchJob']);
+
+        // Company Employees / Dispatching Pool
+        Route::get('company/employees', [ProviderCompanyController::class, 'employees']);
+        Route::post('company/employees', [ProviderCompanyController::class, 'storeEmployee']);
+
+        // Wallet & Financials
+        Route::get('wallet', [ProviderWalletController::class, 'index']);
+        Route::post('wallet/pay-fees', [ProviderWalletController::class, 'payFees']);
+
+        // Payout Accounts (Bank accounts)
+        Route::get('payout-accounts', [ProviderPayoutAccountController::class, 'index']);
+        Route::post('payout-accounts', [ProviderPayoutAccountController::class, 'store']);
+        Route::put('payout-accounts/{payoutAccount}/default', [ProviderPayoutAccountController::class, 'setDefault']);
+        Route::delete('payout-accounts/{payoutAccount}', [ProviderPayoutAccountController::class, 'destroy']);
+
+        // Withdrawals / Payouts
+        Route::get('payouts', [ProviderPayoutController::class, 'index']);
+        Route::post('payouts', [ProviderPayoutController::class, 'store']);
+
+        // Reviews & Ratings
+        Route::get('reviews', [ProviderReviewController::class, 'index']);
+
+        // Notifications & Alerts
+        Route::get('notifications', [ProviderNotificationController::class, 'index']);
+        Route::patch('notifications/{notification}/read', [ProviderNotificationController::class, 'markAsRead']);
+        Route::post('notifications/mark-all-read', [ProviderNotificationController::class, 'markAllAsRead']);
+        Route::delete('notifications/{notification}', [ProviderNotificationController::class, 'destroy']);
     });
 
     // Protected Company API Routes

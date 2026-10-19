@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('quotations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('job_request_id')->constrained('job_requests')->cascadeOnDelete();
-            $table->foreignId('provider_id')->constrained('providers')->cascadeOnDelete();
+            $table->foreignId('provider_id')->nullable()->constrained('providers')->cascadeOnDelete();
             $table->decimal('quoted_price', 10, 2);
             $table->string('estimated_duration');
             $table->text('message')->nullable();

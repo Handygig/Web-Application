@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('job_request_id')->unique()->constrained('job_requests')->cascadeOnDelete();
             $table->foreignId('quotation_id')->unique()->constrained('quotations')->cascadeOnDelete();
-            $table->foreignId('provider_id')->constrained('providers')->cascadeOnDelete();
+            $table->foreignId('provider_id')->nullable()->constrained('providers')->cascadeOnDelete();
             $table->foreignId('company_id')->nullable()->constrained('companies')->nullOnDelete();
             $table->timestamp('assigned_at')->nullable();
             $table->dateTime('start_date')->nullable();
