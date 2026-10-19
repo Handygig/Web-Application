@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   Clock,
   Ban,
-  PauseCircle,
   History,
   Activity,
   Edit2,
@@ -27,7 +26,6 @@ export default function CustomerDetailModal({
   customer = null,
   onClose,
   onEdit,
-  onSuspend,
   onBan,
   onReactivate,
   onActivate,
@@ -59,7 +57,6 @@ export default function CustomerDetailModal({
 
   const status = customer.status || 'Active';
   const isActive = status === 'Active';
-  const isSuspended = status === 'Suspended';
   const isBanned = status === 'Banned';
 
   const cityCountryText =
@@ -113,22 +110,18 @@ export default function CustomerDetailModal({
                   className={`inline-flex items-center gap-1 rounded-full px-3 py-0.5 text-xs font-bold ${
                     isActive
                       ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      : isSuspended
-                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                        : isBanned
-                          ? 'bg-red-50 text-red-700 border border-red-200'
-                          : 'bg-slate-100 text-slate-600 border border-slate-200'
+                      : isBanned
+                        ? 'bg-red-50 text-red-700 border border-red-200'
+                        : 'bg-slate-100 text-slate-600 border border-slate-200'
                   }`}
                 >
                   <span
                     className={`h-1.5 w-1.5 rounded-full ${
                       isActive
                         ? 'bg-emerald-500'
-                        : isSuspended
-                          ? 'bg-amber-500'
-                          : isBanned
-                            ? 'bg-red-500'
-                            : 'bg-slate-400'
+                        : isBanned
+                          ? 'bg-red-500'
+                          : 'bg-slate-400'
                     }`}
                   />
                   {status}
@@ -176,20 +169,6 @@ export default function CustomerDetailModal({
               >
                 <UserCheck className="h-3.5 w-3.5" />
                 {t('Reactivate')}
-              </button>
-            )}
-
-            {!isSuspended && !isBanned && (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  if (onSuspend) onSuspend(customer);
-                }}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition shadow-2xs"
-              >
-                <PauseCircle className="h-3.5 w-3.5" />
-                {t('Suspend')}
               </button>
             )}
 
@@ -475,16 +454,6 @@ export default function CustomerDetailModal({
           </div>
         )}
 
-        {/* Footer Controls */}
-        <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-end">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition"
-          >
-            {t('Close Profile')}
-          </button>
-        </div>
       </div>
     </div>
   );

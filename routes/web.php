@@ -94,7 +94,6 @@ Route::middleware('auth')->group(function () {
         Route::get('customers/{customer}', [AdminCustomerController::class, 'show'])->name('customers.show');
         Route::get('customers/{customer}/edit', [AdminCustomerController::class, 'edit'])->name('customers.edit');
         Route::put('customers/{customer}', [AdminCustomerController::class, 'update'])->name('customers.update');
-        Route::patch('customers/{customer}/suspend', [AdminCustomerController::class, 'suspend'])->name('customers.suspend');
         Route::patch('customers/{customer}/activate', [AdminCustomerController::class, 'activate'])->name('customers.activate');
         Route::patch('customers/{customer}/ban', [AdminCustomerController::class, 'ban'])->name('customers.ban');
         Route::delete('customers/{customer}', [AdminCustomerController::class, 'destroy'])->name('customers.destroy');

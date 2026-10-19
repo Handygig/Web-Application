@@ -1,13 +1,12 @@
 import React from 'react';
 import { Menu } from '@headlessui/react';
-import { MoreVertical, Eye, Edit3, PauseCircle, CheckCircle2, Lock, Trash2 } from 'lucide-react';
+import { MoreVertical, Eye, Edit3, CheckCircle2, Lock, Trash2 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
 export default function CustomerActionMenu({
   customer,
   onViewDetails,
   onEdit,
-  onPromptSuspend,
   onReactivate,
   onPromptBan,
   onPromptDelete,
@@ -15,7 +14,6 @@ export default function CustomerActionMenu({
   const { t } = useTranslation();
   const status = customer.status || 'Active';
   const isActive = status === 'Active';
-  const isSuspended = status === 'Suspended';
   const isBanned = status === 'Banned';
 
   return (
@@ -59,24 +57,7 @@ export default function CustomerActionMenu({
             )}
           </Menu.Item>
 
-          {isActive && (
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  type="button"
-                  onClick={() => onPromptSuspend(customer)}
-                  className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-amber-700 ${
-                    active ? 'bg-amber-50' : ''
-                  }`}
-                >
-                  <PauseCircle className="h-3.5 w-3.5 text-amber-600" />
-                  {t('Suspend Account')}
-                </button>
-              )}
-            </Menu.Item>
-          )}
-
-          {isSuspended && (
+          {isBanned && (
             <Menu.Item>
               {({ active }) => (
                 <button

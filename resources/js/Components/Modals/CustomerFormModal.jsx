@@ -152,7 +152,6 @@ export default function CustomerFormModal({
                 >
                   <option value="Active">{t('Active')}</option>
                   <option value="Inactive">{t('Inactive')}</option>
-                  <option value="Suspended">{t('Suspended')}</option>
                   <option value="Banned">{t('Banned')}</option>
                 </SelectInput>
 

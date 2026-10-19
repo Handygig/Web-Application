@@ -1,13 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { Head, router } from '@inertiajs/react';
-import { Users, UserCheck, UserX, UserPlus, ShieldAlert } from 'lucide-react';
+import { Users, UserCheck, UserPlus, ShieldAlert } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 import AppLayout from '@/Layouts/AppLayout';
 import PageHeader from '@/Components/Other/PageHeader';
 import TableCard from '@/Components/Cards/TableCard';
 import ConfirmModal from '@/Components/Modals/ConfirmModal';
 import CustomerDetailModal from '@/Components/Modals/CustomerDetailModal';
-import CustomerSuspendModal from '@/Components/Modals/CustomerSuspendModal';
 import CustomerBanModal from '@/Components/Modals/CustomerBanModal';
 import CustomerFormModal from '@/Components/Modals/CustomerFormModal';
 import SearchBar from '@/Components/Inputs/SearchBar';
@@ -31,8 +30,6 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
   // Modal states
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false);
-  const [suspendingCustomer, setSuspendingCustomer] = useState(null);
   const [isBanModalOpen, setIsBanModalOpen] = useState(false);
   const [banningCustomer, setBanningCustomer] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -94,29 +91,6 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
   const handleEdit = (c) => {
     setEditingCustomer(c);
     setIsFormModalOpen(true);
-  };
-
-  const handlePromptSuspend = (c) => {
-    setSuspendingCustomer(c);
-    setIsSuspendModalOpen(true);
-  };
-
-  const confirmSuspend = (reason) => {
-    if (!suspendingCustomer) return;
-    setActionProcessing(true);
-    router.patch(
-      route('admin.customers.suspend', suspendingCustomer.id),
-      { reason },
-      {
-        preserveScroll: true,
-        onSuccess: () => {
-          setIsSuspendModalOpen(false);
-          setSuspendingCustomer(null);
-          setActionProcessing(false);
-        },
-        onError: () => setActionProcessing(false),
-      }
-    );
   };
 
   const handlePromptBan = (c) => {
@@ -241,9 +215,6 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
         if (s === 'active') {
           badgeClass = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
           dotClass = 'bg-emerald-500';
-        } else if (s === 'suspended') {
-          badgeClass = 'bg-amber-50 text-amber-700 border border-amber-200';
-          dotClass = 'bg-amber-500';
         } else if (s === 'banned') {
           badgeClass = 'bg-red-50 text-red-700 border border-red-200';
           dotClass = 'bg-red-500';
@@ -274,7 +245,6 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
             customer={row}
             onViewDetails={handleViewDetails}
             onEdit={handleEdit}
-            onPromptSuspend={handlePromptSuspend}
             onReactivate={handleReactivate}
             onPromptBan={handlePromptBan}
             onPromptDelete={handlePromptDelete}
@@ -304,7 +274,7 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
           }
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <StatCard
             icon={Users}
             label={t('Total Customers')}
@@ -320,14 +290,6 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
             iconBgClass="bg-emerald-50"
             iconColorClass="text-emerald-600"
             ringClass="ring-emerald-50/50"
-          />
-          <StatCard
-            icon={UserX}
-            label={t('Suspended')}
-            value={stats.suspended.toLocaleString()}
-            iconBgClass="bg-amber-50"
-            iconColorClass="text-amber-600"
-            ringClass="ring-amber-50/50"
           />
           <StatCard
             icon={ShieldAlert}
@@ -360,7 +322,6 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
               >
                 <option value="all">{t('All Statuses')}</option>
                 <option value="active">{t('Active')}</option>
-                <option value="suspended">{t('Suspended')}</option>
                 <option value="banned">{t('Banned')}</option>
               </SelectInput>
             </div>
@@ -391,20 +352,8 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
         customer={selectedCustomer}
         onClose={() => setIsDetailModalOpen(false)}
         onEdit={handleEdit}
-        onSuspend={handlePromptSuspend}
         onActivate={handleReactivate}
         onBan={handlePromptBan}
-      />
-
-      <CustomerSuspendModal
-        open={isSuspendModalOpen}
-        customer={suspendingCustomer}
-        onClose={() => {
-          setIsSuspendModalOpen(false);
-          setSuspendingCustomer(null);
-        }}
-        onConfirm={confirmSuspend}
-        processing={actionProcessing}
       />
 
       <CustomerBanModal

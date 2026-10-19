@@ -19,7 +19,7 @@ class UpdateCustomerRequest extends FormRequest
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,'.$customer->user_id,
             'phone' => 'nullable|string|max:50',
-            'status' => 'required|string|in:active,inactive,suspended,banned',
+            'status' => 'required|string|in:active,inactive,banned',
         ];
     }
 }

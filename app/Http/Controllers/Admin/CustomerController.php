@@ -80,7 +80,6 @@ class CustomerController extends Controller
             'total' => User::where('role', 'customer')->count(),
             'active' => User::where('role', 'customer')->where('status', 'active')->count(),
             'inactive' => User::where('role', 'customer')->where('status', 'inactive')->count(),
-            'suspended' => User::where('role', 'customer')->where('status', 'suspended')->count(),
             'new' => User::where('role', 'customer')->where('created_at', '>=', now()->startOfMonth())->count(),
             'banned' => User::where('role', 'customer')->where('status', 'banned')->count(),
         ];
@@ -158,26 +157,19 @@ class CustomerController extends Controller
         return redirect()->back()->with('success', __('Customer updated successfully.'));
     }
 
-    public function suspend(Customer $customer): RedirectResponse
-    {
-        if ($customer->user) {
-            $customer->user->update(['status' => 'suspended']);
-            AuditLog::log(
-                auth()->id(),
-                'Customer suspended',
-                'Customer',
-                $customer->id,
-                "Suspended customer #{$customer->id}"
-            );
-        }
-
-        return redirect()->back()->with('success', __('Customer suspended successfully.'));
-    }
-
     public function activate(Customer $customer): RedirectResponse
     {
         if ($customer->user) {
             $customer->user->update(['status' => 'active']);
+
+            BannedAccount::where('user_id', $customer->user_id)
+                ->where('status', 'ACTIVE')
+                ->update([
+                    'status' => 'UNBANNED',
+                    'unbanned_by' => auth()->id(),
+                    'unbanned_at' => now(),
+                ]);
+
             AuditLog::log(
                 auth()->id(),
                 'Customer activated',
