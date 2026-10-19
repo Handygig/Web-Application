@@ -8,7 +8,14 @@ class UpdateProfileRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('admin');
+        return $this->user() && ($this->user()->hasRole('admin') || $this->user()->role === 'admin');
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('fullName') && ! $this->has('full_name')) {
+            $this->merge(['full_name' => $this->fullName]);
+        }
     }
 
     public function rules(): array
@@ -17,13 +24,8 @@ class UpdateProfileRequest extends FormRequest
 
         return [
             'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$user->id,
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
             'phone' => 'nullable|string|max:50',
-            'address' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:100',
-            'province' => 'nullable|string|max:100',
-            'postal_code' => 'nullable|string|max:20',
-            'country' => 'nullable|string|max:100',
         ];
     }
 }

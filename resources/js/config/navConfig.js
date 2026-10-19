@@ -13,6 +13,9 @@ import {
     Settings,
     MapPin,
     Wrench,
+    Tag,
+    Gift,
+    HelpCircle,
 } from 'lucide-react';
 
 export function getNavByRole(t) {
@@ -68,6 +71,24 @@ export function getNavByRole(t) {
                     icon: Wrench,
                     href: '/admin/services',
                     activePaths: ['/admin/services*'],
+                },
+                {
+                    label: t('Exclusive Offers'),
+                    icon: Tag,
+                    href: '/admin/exclusive-offers',
+                    activePaths: ['/admin/exclusive-offers*'],
+                },
+                {
+                    label: t('Rewards & Referral'),
+                    icon: Gift,
+                    href: '/admin/rewards',
+                    activePaths: ['/admin/rewards*'],
+                },
+                {
+                    label: t('Help & FAQs'),
+                    icon: HelpCircle,
+                    href: '/admin/faqs',
+                    activePaths: ['/admin/faqs*'],
                 },
             ],
         },

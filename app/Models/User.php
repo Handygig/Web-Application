@@ -36,6 +36,8 @@ class User extends Authenticatable
         ];
     }
 
+    protected $appends = ['image_url'];
+
     protected function name(): Attribute
     {
         return Attribute::make(
@@ -43,6 +45,18 @@ class User extends Authenticatable
             set: fn ($value) => ['full_name' => $value],
         );
     }
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->profile_image
+                ? (str_starts_with($this->profile_image, 'http')
+                    ? $this->profile_image
+                    : asset('storage/'.$this->profile_image))
+                : null,
+        );
+    }
+
 
     /**
      * Determine whether the user has completed their profile.

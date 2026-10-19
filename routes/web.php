@@ -5,10 +5,13 @@ use App\Http\Controllers\Admin\BannedAccountController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ExclusiveOfferController as AdminExclusiveOfferController;
+use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\KycController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\PropertyTypeController as AdminPropertyTypeController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
+use App\Http\Controllers\Admin\RewardController as AdminRewardController;
 use App\Http\Controllers\Admin\ServiceCategoryController as AdminServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
@@ -120,6 +123,25 @@ Route::middleware('auth')->group(function () {
         Route::delete('services/{service}', [AdminServiceController::class, 'destroy'])->name('services.destroy');
         Route::put('services/{service}/toggle-active', [AdminServiceController::class, 'toggleActive'])->name('services.toggle-active');
 
+        // Exclusive Offers
+        Route::get('exclusive-offers', [AdminExclusiveOfferController::class, 'index'])->name('exclusive-offers.index');
+        Route::post('exclusive-offers', [AdminExclusiveOfferController::class, 'store'])->name('exclusive-offers.store');
+        Route::put('exclusive-offers/{exclusiveOffer}', [AdminExclusiveOfferController::class, 'update'])->name('exclusive-offers.update');
+        Route::delete('exclusive-offers/{exclusiveOffer}', [AdminExclusiveOfferController::class, 'destroy'])->name('exclusive-offers.destroy');
+        Route::put('exclusive-offers/{exclusiveOffer}/toggle-active', [AdminExclusiveOfferController::class, 'toggleActive'])->name('exclusive-offers.toggle-active');
+
+        // Rewards & Referral
+        Route::get('rewards', [AdminRewardController::class, 'index'])->name('rewards.index');
+        Route::put('rewards/settings', [AdminRewardController::class, 'updateSettings'])->name('rewards.settings.update');
+        Route::post('rewards/customers/{customer}/adjust', [AdminRewardController::class, 'adjustCustomerBalance'])->name('rewards.customers.adjust');
+
+        // FAQs
+        Route::get('faqs', [AdminFaqController::class, 'index'])->name('faqs.index');
+        Route::post('faqs', [AdminFaqController::class, 'store'])->name('faqs.store');
+        Route::put('faqs/{faq}', [AdminFaqController::class, 'update'])->name('faqs.update');
+        Route::delete('faqs/{faq}', [AdminFaqController::class, 'destroy'])->name('faqs.destroy');
+        Route::put('faqs/{faq}/toggle-active', [AdminFaqController::class, 'toggleActive'])->name('faqs.toggle-active');
+
         // Bookings
         Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
         Route::get('bookings/create', [AdminBookingController::class, 'create'])->name('bookings.create');
@@ -137,6 +159,7 @@ Route::middleware('auth')->group(function () {
         Route::put('profile', [AdminProfileController::class, 'update'])->name('profile.update');
         Route::put('profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
         Route::post('profile/avatar', [AdminProfileController::class, 'updateAvatar'])->name('profile.avatar');
+        Route::delete('profile/avatar', [AdminProfileController::class, 'destroyAvatar'])->name('profile.avatar.destroy');
 
         // Audit Logs
         Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');

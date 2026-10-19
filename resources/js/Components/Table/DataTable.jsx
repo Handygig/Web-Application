@@ -8,12 +8,13 @@ export default function DataTable({
   rowKey = 'id',
   onRowClick,
   cellWrapperClassName = 'text-slate-600',
+  className = '',
 }) {
   const { t } = useTranslation();
   const tableRows = rows || data || [];
 
   return (
-    <div className="overflow-x-auto">
+    <div className={`overflow-x-auto min-h-[260px] ${className}`}>
       <table className="min-w-full border-separate border-spacing-y-2 pb-2">
         <thead>
           <tr className="text-left text-sm font-semibold text-slate-700">

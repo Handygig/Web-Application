@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             PaymentSeeder::class,
             ReviewSeeder::class,
             AuditLogSeeder::class,
+            RewardAndOfferSeeder::class,
+            FaqSeeder::class,
         ]);
     }
 }

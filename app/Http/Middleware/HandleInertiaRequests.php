@@ -42,6 +42,10 @@ class HandleInertiaRequests extends Middleware
                     ['roles' => $request->user()->roles->map(fn ($r) => ['name' => $r->name])->values()]
                 ) : null,
             ],
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+            ],
             'locale' => $locale,
             'translations' => File::exists($path)
                 ? json_decode(File::get($path), true)

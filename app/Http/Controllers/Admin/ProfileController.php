@@ -7,7 +7,6 @@ use App\Http\Requests\Admin\UpdateAvatarRequest;
 use App\Http\Requests\Admin\UpdatePasswordRequest;
 use App\Http\Requests\Admin\UpdateProfileRequest;
 use App\Http\Resources\Admin\UserResource;
-use App\Models\Admin;
 use App\Models\AuditLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -19,10 +18,25 @@ class ProfileController extends Controller
 {
     public function index(): Response
     {
-        $user = auth()->user()->load('admin');
+        $user = auth()->user();
+
+        $recentActivities = AuditLog::where('admin_id', $user->id)
+            ->latest()
+            ->take(10)
+            ->get()
+            ->map(function ($log) {
+                return [
+                    'id' => $log->id,
+                    'action' => $log->action,
+                    'title' => $log->description ?: $log->action,
+                    'time' => $log->created_at ? $log->created_at->diffForHumans() : '',
+                    'formatted_time' => $log->created_at ? $log->created_at->format('M d, Y h:i A') : '',
+                ];
+            });
 
         return Inertia::render('Admin/Profile/Index', [
             'user' => new UserResource($user),
+            'recentActivities' => $recentActivities,
         ]);
     }
 
@@ -37,21 +51,12 @@ class ProfileController extends Controller
             'phone' => $validated['phone'] ?? null,
         ]);
 
-        $admin = Admin::firstOrCreate(['user_id' => $user->id]);
-        $admin->update([
-            'address' => $validated['address'] ?? null,
-            'city' => $validated['city'] ?? null,
-            'province' => $validated['province'] ?? null,
-            'postal_code' => $validated['postal_code'] ?? null,
-            'country' => $validated['country'] ?? null,
-        ]);
-
         AuditLog::log(
             auth()->id(),
             'Profile updated',
             'User',
             $user->id,
-            'Updated profile details'
+            'Updated personal profile details'
         );
 
         return redirect()->back()->with('success', __('Profile updated successfully.'));
@@ -101,5 +106,27 @@ class ProfileController extends Controller
         );
 
         return redirect()->back()->with('success', __('Profile image updated successfully.'));
+    }
+
+    public function destroyAvatar(): RedirectResponse
+    {
+        $user = auth()->user();
+
+        if ($user->profile_image) {
+            Storage::disk('public')->delete($user->profile_image);
+            $user->update([
+                'profile_image' => null,
+            ]);
+
+            AuditLog::log(
+                auth()->id(),
+                'Profile image removed',
+                'User',
+                $user->id,
+                'Removed avatar'
+            );
+        }
+
+        return redirect()->back()->with('success', __('Profile photo removed successfully.'));
     }
 }

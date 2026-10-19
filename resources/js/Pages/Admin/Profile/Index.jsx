@@ -1,12 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { Head } from '@inertiajs/react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { Head, router, usePage } from '@inertiajs/react';
 import {
   User,
   Mail,
   Phone,
-  Calendar,
-  MapPin,
-  Globe,
   ShieldCheck,
   Lock,
   Eye,
@@ -17,10 +14,8 @@ import {
   History,
   Save,
   RotateCcw,
-  Building,
   KeyRound,
-  FileText,
-  Sparkles,
+  Loader2,
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 import AppLayout from '@/Layouts/AppLayout';
@@ -28,36 +23,37 @@ import PageHeader from '@/Components/Other/PageHeader';
 import TableCard from '@/Components/Cards/TableCard';
 import UnsavedChangesModal from '@/Components/Modals/UnsavedChangesModal';
 
-const INITIAL_PROFILE = {
-  userId: 'ADM-001',
-  fullName: 'Tharushi Maleesha',
-  email: 'tharushi@example.com',
-  phone: '+94 77 123 4567',
-  dob: '1998-05-24',
-  gender: 'Female',
-  role: 'Administrator',
-  status: 'Active',
-  avatarUrl: null,
-  address: 'Colombo Road',
-  city: 'Colombo',
-  province: 'Western Province',
-  postalCode: '00100',
-  country: 'Sri Lanka',
-  createdDate: 'January 15, 2026',
-  lastLogin: 'August 15, 2026',
-  emailVerified: true,
-};
-
-export default function ProfileIndex() {
+export default function ProfileIndex({ user: userProp, recentActivities = [] }) {
   const { t } = useTranslation();
+  const { auth, errors: pageErrors } = usePage().props;
   const fileInputRef = useRef(null);
 
-  // Tab Navigation State: 'personal' | 'address' | 'security' | 'account'
-  const [activeTab, setActiveTab] = useState('personal');
+  // Extract user model from prop or auth
+  const currentUser = useMemo(() => {
+    return userProp?.data || userProp || auth?.user || {};
+  }, [userProp, auth?.user]);
 
-  // Pure Frontend Local State Management
-  const [profile, setProfile] = useState(INITIAL_PROFILE);
-  const [formData, setFormData] = useState(INITIAL_PROFILE);
+  // Tab Navigation State: 'personal' | 'security' | 'account'
+  const [activeTab, setActiveTab] = useState('personal');
+  const [pendingTab, setPendingTab] = useState(null);
+
+  // Form State
+  const buildInitialFormData = (u) => ({
+    fullName: u?.full_name || '',
+    email: u?.email || '',
+    phone: u?.phone || '',
+  });
+
+  const [savedData, setSavedData] = useState(() => buildInitialFormData(currentUser));
+  const [formData, setFormData] = useState(() => buildInitialFormData(currentUser));
+
+  // Sync state if currentUser changes from server reload
+  useEffect(() => {
+    const updated = buildInitialFormData(currentUser);
+    setSavedData(updated);
+    setFormData(updated);
+    setIsDirty(false);
+  }, [currentUser]);
 
   // Password Form State
   const [passwords, setPasswords] = useState({
@@ -71,62 +67,118 @@ export default function ProfileIndex() {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // Errors & Toast state
+  // Errors, loading & toast state
   const [profileErrors, setProfileErrors] = useState({});
   const [passwordErrors, setPasswordErrors] = useState({});
   const [fileError, setFileError] = useState('');
   const [toastMessage, setToastMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPasswordSubmitting, setIsPasswordSubmitting] = useState(false);
+  const [isAvatarProcessing, setIsAvatarProcessing] = useState(false);
 
   // Unsaved changes state
   const [isDirty, setIsDirty] = useState(false);
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
 
+  // Sync page errors from Inertia if any
+  useEffect(() => {
+    if (pageErrors && Object.keys(pageErrors).length > 0) {
+      const pErrors = {};
+      const pwErrors = {};
+      if (pageErrors.full_name) pErrors.fullName = pageErrors.full_name;
+      if (pageErrors.email) pErrors.email = pageErrors.email;
+      if (pageErrors.phone) pErrors.phone = pageErrors.phone;
+      if (pageErrors.avatar) setFileError(pageErrors.avatar);
+
+      if (pageErrors.current_password) pwErrors.currentPassword = pageErrors.current_password;
+      if (pageErrors.new_password) pwErrors.newPassword = pageErrors.new_password;
+      if (pageErrors.new_password_confirmation) pwErrors.confirmPassword = pageErrors.new_password_confirmation;
+
+      if (Object.keys(pErrors).length > 0) setProfileErrors(pErrors);
+      if (Object.keys(pwErrors).length > 0) setPasswordErrors(pwErrors);
+    }
+  }, [pageErrors]);
+
   // Handle Form Change
   const handleChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setIsDirty(true);
+    setFormData((prev) => {
+      const next = { ...prev, [field]: value };
+      const hasChanged = Object.keys(next).some((k) => next[k] !== savedData[k]);
+      setIsDirty(hasChanged);
+      return next;
+    });
+
     if (profileErrors[field]) {
       setProfileErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
-  // Image Upload Handling (Frontend-Only File Reader / Preview)
+  // Tab switching with unsaved changes check
+  const handleTabChange = (targetTab) => {
+    if (targetTab === activeTab) return;
+    if (isDirty) {
+      setPendingTab(targetTab);
+      setShowUnsavedModal(true);
+    } else {
+      setActiveTab(targetTab);
+    }
+  };
+
+  // Image Upload Handling
   const handlePhotoSelect = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setFileError('');
 
-    // Format check
     const validFormats = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (!validFormats.includes(file.type)) {
       setFileError(t('Please select a valid image file (JPG, PNG, or WEBP).'));
       return;
     }
 
-    // Size check (< 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setFileError(t('Image file size must be less than 5MB.'));
       return;
     }
 
-    const previewUrl = URL.createObjectURL(file);
-    setFormData((prev) => ({ ...prev, avatarUrl: previewUrl }));
-    setProfile((prev) => ({ ...prev, avatarUrl: previewUrl }));
-    setIsDirty(true);
+    setIsAvatarProcessing(true);
+    const data = new FormData();
+    data.append('avatar', file);
 
-    setToastMessage(t('Profile photo updated successfully.'));
-    setTimeout(() => setToastMessage(''), 4000);
+    router.post(route('admin.profile.avatar'), data, {
+      forceFormData: true,
+      preserveScroll: true,
+      onSuccess: () => {
+        setIsAvatarProcessing(false);
+        setToastMessage(t('Profile photo updated successfully.'));
+        setTimeout(() => setToastMessage(''), 4000);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      },
+      onError: (errs) => {
+        setIsAvatarProcessing(false);
+        setFileError(errs?.avatar || t('Failed to upload image.'));
+      },
+    });
   };
 
+  // Remove Photo Action
   const handleRemovePhoto = () => {
-    setFormData((prev) => ({ ...prev, avatarUrl: null }));
-    setProfile((prev) => ({ ...prev, avatarUrl: null }));
-    if (fileInputRef.current) fileInputRef.current.value = '';
-    setIsDirty(true);
+    if (!window.confirm(t('Are you sure you want to remove your profile photo?'))) return;
 
-    setToastMessage(t('Profile photo removed.'));
-    setTimeout(() => setToastMessage(''), 4000);
+    setIsAvatarProcessing(true);
+    router.delete(route('admin.profile.avatar.destroy'), {
+      preserveScroll: true,
+      onSuccess: () => {
+        setIsAvatarProcessing(false);
+        setToastMessage(t('Profile photo removed.'));
+        setTimeout(() => setToastMessage(''), 4000);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      },
+      onError: () => {
+        setIsAvatarProcessing(false);
+      },
+    });
   };
 
   // Profile Save Action
@@ -152,16 +204,39 @@ export default function ProfileIndex() {
     }
 
     setProfileErrors({});
-    setProfile(formData);
-    setIsDirty(false);
+    setIsSubmitting(true);
 
-    setToastMessage(t('Profile updated successfully.'));
-    setTimeout(() => setToastMessage(''), 4000);
+    router.put(
+      route('admin.profile.update'),
+      {
+        full_name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone || null,
+      },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setIsSubmitting(false);
+          setSavedData(formData);
+          setIsDirty(false);
+          setToastMessage(t('Profile updated successfully.'));
+          setTimeout(() => setToastMessage(''), 4000);
+        },
+        onError: (errs) => {
+          setIsSubmitting(false);
+          const mapped = {};
+          if (errs.full_name) mapped.fullName = errs.full_name;
+          if (errs.email) mapped.email = errs.email;
+          if (errs.phone) mapped.phone = errs.phone;
+          setProfileErrors(mapped);
+        },
+      }
+    );
   };
 
   // Profile Cancel Action
   const handleCancelProfile = () => {
-    setFormData(profile);
+    setFormData(savedData);
     setProfileErrors({});
     setIsDirty(false);
   };
@@ -171,6 +246,10 @@ export default function ProfileIndex() {
     e.preventDefault();
 
     const errors = {};
+
+    if (!passwords.currentPassword) {
+      errors.currentPassword = t('Current password is required.');
+    }
 
     if (!passwords.newPassword) {
       errors.newPassword = t('New password is required.');
@@ -188,21 +267,64 @@ export default function ProfileIndex() {
     }
 
     setPasswordErrors({});
-    setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    setIsPasswordSubmitting(true);
 
-    setToastMessage(t('Password changed successfully.'));
-    setTimeout(() => setToastMessage(''), 4000);
+    router.put(
+      route('admin.profile.password'),
+      {
+        current_password: passwords.currentPassword,
+        new_password: passwords.newPassword,
+        new_password_confirmation: passwords.confirmPassword,
+      },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setIsPasswordSubmitting(false);
+          setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
+          setToastMessage(t('Password changed successfully.'));
+          setTimeout(() => setToastMessage(''), 4000);
+        },
+        onError: (errs) => {
+          setIsPasswordSubmitting(false);
+          const mapped = {};
+          if (errs.current_password) mapped.currentPassword = errs.current_password;
+          if (errs.new_password) mapped.newPassword = errs.new_password;
+          if (errs.new_password_confirmation) mapped.confirmPassword = errs.new_password_confirmation;
+          setPasswordErrors(mapped);
+        },
+      }
+    );
   };
 
-  // Calculate initials
-  const initials = profile.fullName
-    ? profile.fullName
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase()
-    : 'TM';
+  // Derived user details for hero & account metadata
+  const displayName = formData.fullName || currentUser.full_name || t('Administrator');
+  const displayEmail = formData.email || currentUser.email || '';
+  const displayStatus = currentUser.status
+    ? currentUser.status.charAt(0).toUpperCase() + currentUser.status.slice(1)
+    : t('Active');
+  const displayRole = currentUser.role
+    ? currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1)
+    : t('Administrator');
+  const displayUserId = currentUser.id ? `ADM-${String(currentUser.id).padStart(3, '0')}` : 'ADM-001';
+  const avatarUrl = currentUser.profile_image || null;
+
+  const initials = displayName
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() || 'AD';
+
+  const createdDate = currentUser.created_at
+    ? new Date(currentUser.created_at).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : '—';
+  const lastActivityTime = recentActivities?.[0]?.formatted_time || recentActivities?.[0]?.time || t('Active now');
 
   return (
     <AppLayout>
@@ -231,21 +353,28 @@ export default function ProfileIndex() {
               {/* Avatar Box */}
               <div className="relative shrink-0 group">
                 <div className="flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-theme-accent to-indigo-700 font-bold text-white text-3xl shadow-lg ring-4 ring-slate-50 overflow-hidden">
-                  {formData.avatarUrl ? (
+                  {avatarUrl ? (
                     <img
-                      src={formData.avatarUrl}
-                      alt={profile.fullName}
+                      src={avatarUrl}
+                      alt={displayName}
                       className="h-full w-full object-cover"
                     />
                   ) : (
                     <span>{initials}</span>
                   )}
+
+                  {isAvatarProcessing && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px]">
+                      <Loader2 className="h-6 w-6 animate-spin text-white" />
+                    </div>
+                  )}
                 </div>
 
                 <button
                   type="button"
+                  disabled={isAvatarProcessing}
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-white shadow-md hover:bg-theme-accent transition"
+                  className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-white shadow-md hover:bg-theme-accent transition disabled:opacity-50"
                   title={t('Change Photo')}
                 >
                   <Camera className="h-4 w-4" />
@@ -264,22 +393,22 @@ export default function ProfileIndex() {
               {/* User Identity Details */}
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
-                  <h2 className="text-2xl font-bold text-slate-900">{profile.fullName}</h2>
+                  <h2 className="text-2xl font-bold text-slate-900">{displayName}</h2>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-0.5 text-xs font-bold text-emerald-700 border border-emerald-200">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    {profile.status}
+                    {displayStatus}
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-500 font-medium">{profile.email}</p>
+                <p className="text-xs text-slate-500 font-medium">{displayEmail}</p>
 
                 <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-2">
                   <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-theme-accent border border-indigo-100">
                     <ShieldCheck className="h-3.5 w-3.5" />
-                    {profile.role}
+                    {displayRole}
                   </span>
                   <span className="font-mono text-xs font-semibold text-slate-400">
-                    ID: {profile.userId}
+                    ID: {displayUserId}
                   </span>
                 </div>
               </div>
@@ -289,18 +418,24 @@ export default function ProfileIndex() {
             <div className="flex items-center gap-2.5 shrink-0 self-center md:self-auto">
               <button
                 type="button"
+                disabled={isAvatarProcessing}
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition"
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition disabled:opacity-50"
               >
-                <Camera className="h-4 w-4 text-slate-500" />
+                {isAvatarProcessing ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+                ) : (
+                  <Camera className="h-4 w-4 text-slate-500" />
+                )}
                 {t('Change Photo')}
               </button>
 
-              {formData.avatarUrl && (
+              {avatarUrl && (
                 <button
                   type="button"
+                  disabled={isAvatarProcessing}
                   onClick={handleRemovePhoto}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50/70 px-3.5 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-100 transition shadow-2xs"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50/70 px-3.5 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-100 transition shadow-2xs disabled:opacity-50"
                 >
                   <Trash2 className="h-4 w-4" />
                   {t('Remove Photo')}
@@ -316,12 +451,11 @@ export default function ProfileIndex() {
           )}
         </div>
 
-        {/* 2. ORGANIZED NAVIGATION SECTION TABS */}
+        {/* 2. NAVIGATION SECTION TABS */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 pb-1">
           <div className="flex flex-wrap items-center gap-2">
             {[
               { id: 'personal', label: t('Personal Details'), icon: User },
-              { id: 'address', label: t('Address & Contact'), icon: MapPin },
               { id: 'security', label: t('Security & Password'), icon: KeyRound },
               { id: 'account', label: t('Account Overview & Activity'), icon: History },
             ].map((tab) => {
@@ -331,7 +465,7 @@ export default function ProfileIndex() {
                 <button
                   key={tab.id}
                   type="button"
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabChange(tab.id)}
                   className={`inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all ${
                     isActive
                       ? 'bg-slate-900 text-white shadow-md'
@@ -381,6 +515,7 @@ export default function ProfileIndex() {
                         required
                         value={formData.fullName}
                         onChange={(e) => handleChange('fullName', e.target.value)}
+                        placeholder={t('Enter full name')}
                         className={`w-full rounded-xl border pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:outline-none transition-all ${
                           profileErrors.fullName
                             ? 'border-red-500 focus:border-red-500'
@@ -407,6 +542,7 @@ export default function ProfileIndex() {
                         required
                         value={formData.email}
                         onChange={(e) => handleChange('email', e.target.value)}
+                        placeholder="admin@example.com"
                         className={`w-full rounded-xl border pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:outline-none transition-all ${
                           profileErrors.email
                             ? 'border-red-500 focus:border-red-500'
@@ -420,7 +556,7 @@ export default function ProfileIndex() {
                   </div>
 
                   {/* Phone */}
-                  <div>
+                  <div className="sm:col-span-2">
                     <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
                       {t('Phone Number')}
                     </label>
@@ -430,42 +566,13 @@ export default function ProfileIndex() {
                         type="text"
                         value={formData.phone}
                         onChange={(e) => handleChange('phone', e.target.value)}
+                        placeholder="+94 77 123 4567"
                         className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none"
                       />
                     </div>
-                  </div>
-
-                  {/* Date of Birth */}
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                      {t('Date of Birth')}
-                    </label>
-                    <div className="relative">
-                      <Calendar className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
-                      <input
-                        type="date"
-                        value={formData.dob}
-                        onChange={(e) => handleChange('dob', e.target.value)}
-                        className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Gender */}
-                  <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                      {t('Gender')}
-                    </label>
-                    <select
-                      value={formData.gender}
-                      onChange={(e) => handleChange('gender', e.target.value)}
-                      className="w-full appearance-none rounded-xl border border-slate-200 bg-white pl-3.5 pr-9 py-2.5 text-sm text-slate-800 bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[length:14px_14px] bg-[right_10px_center] bg-no-repeat cursor-pointer focus:border-theme-accent focus:outline-none"
-                    >
-                      <option value="Female">{t('Female')}</option>
-                      <option value="Male">{t('Male')}</option>
-                      <option value="Other">{t('Other')}</option>
-                      <option value="Prefer not to say">{t('Prefer not to say')}</option>
-                    </select>
+                    {profileErrors.phone && (
+                      <p className="mt-1 text-xs font-medium text-red-500">{profileErrors.phone}</p>
+                    )}
                   </div>
                 </div>
 
@@ -474,16 +581,22 @@ export default function ProfileIndex() {
                   <button
                     type="button"
                     onClick={handleCancelProfile}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition"
+                    disabled={isSubmitting}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition disabled:opacity-50"
                   >
                     <RotateCcw className="h-4 w-4 text-slate-500" />
                     {t('Cancel')}
                   </button>
                   <button
                     type="submit"
-                    className="inline-flex items-center gap-2 rounded-xl bg-theme-accent px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-theme-accent/20 transition-all hover:bg-theme-accent-hover active:scale-95"
+                    disabled={isSubmitting}
+                    className="inline-flex items-center gap-2 rounded-xl bg-theme-accent px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-theme-accent/20 transition-all hover:bg-theme-accent-hover active:scale-95 disabled:opacity-50"
                   >
-                    <Save className="h-4 w-4" />
+                    {isSubmitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin text-white" />
+                    ) : (
+                      <Save className="h-4 w-4" />
+                    )}
                     {t('Save Changes')}
                   </button>
                 </div>
@@ -492,111 +605,7 @@ export default function ProfileIndex() {
           </TableCard>
         )}
 
-        {/* TAB 2: ADDRESS & CONTACT DETAILS */}
-        {activeTab === 'address' && (
-          <TableCard>
-            <div className="p-6 sm:p-8 space-y-6">
-              <div className="border-b border-slate-100 pb-4">
-                <h3 className="text-lg font-bold text-slate-900">
-                  {t('Address & Location Details')}
-                </h3>
-                <p className="text-xs text-slate-500">
-                  {t('Update your primary location and correspondence address.')}
-                </p>
-              </div>
-
-              <form onSubmit={handleSaveProfile} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                      {t('Street Address')}
-                    </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
-                      <input
-                        type="text"
-                        value={formData.address}
-                        onChange={(e) => handleChange('address', e.target.value)}
-                        className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                      {t('City')}
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.city}
-                      onChange={(e) => handleChange('city', e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                      {t('State / Province')}
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.province}
-                      onChange={(e) => handleChange('province', e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                      {t('Postal Code')}
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.postalCode}
-                      onChange={(e) => handleChange('postalCode', e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                      {t('Country')}
-                    </label>
-                    <div className="relative">
-                      <Globe className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
-                      <input
-                        type="text"
-                        value={formData.country}
-                        onChange={(e) => handleChange('country', e.target.value)}
-                        className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={handleCancelProfile}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition"
-                  >
-                    <RotateCcw className="h-4 w-4 text-slate-500" />
-                    {t('Cancel')}
-                  </button>
-                  <button
-                    type="submit"
-                    className="inline-flex items-center gap-2 rounded-xl bg-theme-accent px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-theme-accent/20 transition-all hover:bg-theme-accent-hover active:scale-95"
-                  >
-                    <Save className="h-4 w-4" />
-                    {t('Save Changes')}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </TableCard>
-        )}
-
-        {/* TAB 3: SECURITY & PASSWORD */}
+        {/* TAB 2: SECURITY & PASSWORD */}
         {activeTab === 'security' && (
           <TableCard>
             <div className="p-6 sm:p-8 space-y-6">
@@ -611,18 +620,23 @@ export default function ProfileIndex() {
                 {/* Current Password */}
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                    {t('Current Password')}
+                    {t('Current Password')} *
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
                     <input
                       type={showCurrent ? 'text' : 'password'}
+                      required
                       value={passwords.currentPassword}
                       onChange={(e) =>
                         setPasswords({ ...passwords, currentPassword: e.target.value })
                       }
                       placeholder="••••••••"
-                      className="w-full rounded-xl border border-slate-200 pl-10 pr-10 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none"
+                      className={`w-full rounded-xl border pl-10 pr-10 py-2.5 text-sm text-slate-800 focus:outline-none transition-all ${
+                        passwordErrors.currentPassword
+                          ? 'border-red-500 focus:border-red-500'
+                          : 'border-slate-200 focus:border-theme-accent'
+                      }`}
                     />
                     <button
                       type="button"
@@ -632,6 +646,11 @@ export default function ProfileIndex() {
                       {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
+                  {passwordErrors.currentPassword && (
+                    <p className="mt-1 text-xs font-medium text-red-500">
+                      {passwordErrors.currentPassword}
+                    </p>
+                  )}
                 </div>
 
                 {/* New Password */}
@@ -713,9 +732,14 @@ export default function ProfileIndex() {
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-start">
                   <button
                     type="submit"
-                    className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-slate-800 active:scale-95"
+                    disabled={isPasswordSubmitting}
+                    className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-slate-800 active:scale-95 disabled:opacity-50"
                   >
-                    <Lock className="h-4 w-4" />
+                    {isPasswordSubmitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin text-white" />
+                    ) : (
+                      <Lock className="h-4 w-4" />
+                    )}
                     {t('Change Password')}
                   </button>
                 </div>
@@ -724,7 +748,7 @@ export default function ProfileIndex() {
           </TableCard>
         )}
 
-        {/* TAB 4: ACCOUNT OVERVIEW & ACTIVITY */}
+        {/* TAB 3: ACCOUNT OVERVIEW & ACTIVITY */}
         {activeTab === 'account' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Account Metadata Card */}
@@ -740,29 +764,29 @@ export default function ProfileIndex() {
                 <div className="space-y-3.5 text-xs">
                   <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
                     <span className="text-slate-500 font-medium">{t('User ID')}</span>
-                    <span className="font-mono font-bold text-slate-900">{profile.userId}</span>
+                    <span className="font-mono font-bold text-slate-900">{displayUserId}</span>
                   </div>
 
                   <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
                     <span className="text-slate-500 font-medium">{t('Role')}</span>
-                    <span className="font-bold text-slate-800">{profile.role}</span>
+                    <span className="font-bold text-slate-800">{displayRole}</span>
                   </div>
 
                   <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
                     <span className="text-slate-500 font-medium">{t('Account Status')}</span>
                     <span className="font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                      {profile.status}
+                      {displayStatus}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
                     <span className="text-slate-500 font-medium">{t('Created Date')}</span>
-                    <span className="font-semibold text-slate-700">{profile.createdDate}</span>
+                    <span className="font-semibold text-slate-700">{createdDate}</span>
                   </div>
 
                   <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
-                    <span className="text-slate-500 font-medium">{t('Last Login')}</span>
-                    <span className="font-semibold text-slate-700">{profile.lastLogin}</span>
+                    <span className="text-slate-500 font-medium">{t('Last Activity')}</span>
+                    <span className="font-semibold text-slate-700">{lastActivityTime}</span>
                   </div>
                 </div>
               </div>
@@ -778,22 +802,25 @@ export default function ProfileIndex() {
                   </h3>
                 </div>
 
-                <div className="space-y-4 pl-2 border-l-2 border-slate-100 text-xs">
-                  {[
-                    { time: 'Today, 09:30 AM', title: 'Logged into the admin dashboard' },
-                    { time: 'Yesterday, 04:15 PM', title: 'Updated profile information' },
-                    { time: 'Aug 12, 2026', title: 'Password changed successfully' },
-                    { time: 'Aug 05, 2026', title: 'Two-factor authentication verified' },
-                  ].map((act, idx) => (
-                    <div key={idx} className="relative pl-4">
-                      <span className="absolute -left-[17px] top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white ring-2 ring-indigo-200">
-                        <span className="h-1.5 w-1.5 rounded-full bg-theme-accent" />
-                      </span>
-                      <span className="font-bold text-slate-900">{act.time}</span>
-                      <p className="text-slate-600 mt-0.5">{act.title}</p>
-                    </div>
-                  ))}
-                </div>
+                {recentActivities && recentActivities.length > 0 ? (
+                  <div className="space-y-4 pl-2 border-l-2 border-slate-100 text-xs">
+                    {recentActivities.map((act) => (
+                      <div key={act.id || act.time} className="relative pl-4">
+                        <span className="absolute -left-[17px] top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white ring-2 ring-indigo-200">
+                          <span className="h-1.5 w-1.5 rounded-full bg-theme-accent" />
+                        </span>
+                        <span className="font-bold text-slate-900">{act.time || act.formatted_time}</span>
+                        <p className="text-slate-600 mt-0.5">{act.title}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-8 text-center">
+                    <History className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                    <p className="text-xs font-semibold text-slate-500">{t('No recent activity recorded yet.')}</p>
+                    <p className="text-[11px] text-slate-400 mt-1">{t('Account events and administrative changes will appear here.')}</p>
+                  </div>
+                )}
               </div>
             </TableCard>
           </div>
@@ -803,10 +830,19 @@ export default function ProfileIndex() {
       {/* Unsaved Changes Confirmation Modal */}
       <UnsavedChangesModal
         open={showUnsavedModal}
-        onStay={() => setShowUnsavedModal(false)}
+        onStay={() => {
+          setShowUnsavedModal(false);
+          setPendingTab(null);
+        }}
         onLeave={() => {
           setShowUnsavedModal(false);
           setIsDirty(false);
+          setFormData(savedData);
+          setProfileErrors({});
+          if (pendingTab) {
+            setActiveTab(pendingTab);
+            setPendingTab(null);
+          }
         }}
       />
     </AppLayout>
