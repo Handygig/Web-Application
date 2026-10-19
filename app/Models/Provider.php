@@ -50,6 +50,12 @@ class Provider extends Model
         return $this->hasMany(Payout::class);
     }
 
+    public function defaultPayoutAccount(): ?PayoutAccount
+    {
+        return $this->payoutAccounts()->where('is_default', true)->first()
+            ?? $this->payoutAccounts()->first();
+    }
+
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);

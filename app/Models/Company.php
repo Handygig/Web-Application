@@ -52,8 +52,19 @@ class Company extends Model
         return $this->hasMany(PayoutAccount::class);
     }
 
+    public function serviceCategories(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(ServiceCategory::class, 'company_services');
+    }
+
     public function payouts(): HasMany
     {
         return $this->hasMany(Payout::class);
+    }
+
+    public function defaultPayoutAccount(): ?PayoutAccount
+    {
+        return $this->payoutAccounts()->where('is_default', true)->first()
+            ?? $this->payoutAccounts()->first();
     }
 }
