@@ -26,4 +26,24 @@ trait HasServiceArea
             ->whereNotNull('longitude')
             ->whereRaw("{$haversine} <= service_radius", [$latitude, $longitude, $latitude]);
     }
+
+    /**
+     * Calculate distance in kilometers to the target coordinates.
+     */
+    public function distanceTo(float $latitude, float $longitude): float
+    {
+        if (! $this->latitude || ! $this->longitude) {
+            return 0.0;
+        }
+
+        $earthRadius = 6371; // km
+        $dLat = deg2rad($latitude - (float) $this->latitude);
+        $dLon = deg2rad($longitude - (float) $this->longitude);
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad((float) $this->latitude)) * cos(deg2rad($latitude)) *
+            sin($dLon / 2) * sin($dLon / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
+    }
 }

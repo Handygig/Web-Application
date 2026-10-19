@@ -28,9 +28,22 @@ class Quotation extends Model
         return $this->morphTo();
     }
 
+    public function setProviderIdAttribute($value): void
+    {
+        if ($value) {
+            $this->attributes['bidder_id'] = $value;
+            $this->attributes['bidder_type'] = Provider::class;
+        }
+    }
+
+    public function getProviderIdAttribute(): ?int
+    {
+        return $this->bidder_type === Provider::class ? (int) $this->bidder_id : null;
+    }
+
     public function provider(): BelongsTo
     {
-        return $this->belongsTo(Provider::class, 'provider_id');
+        return $this->belongsTo(Provider::class, 'bidder_id');
     }
 
     public function assignment(): HasOne
