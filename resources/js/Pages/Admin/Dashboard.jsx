@@ -16,7 +16,6 @@ import {
   Clock,
   CheckCircle2,
   AlertTriangle,
-  Building,
   Wrench,
   Activity,
   Layers,
@@ -608,19 +607,6 @@ export default function Dashboard({
             {/* Quick Admin Actions Card */}
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-3">
               <h3 className="text-base font-bold text-slate-900 mb-2">{t('Admin Shortcuts')}</h3>
-
-              <Link
-                href={route('admin.property-types.index')}
-                className="flex items-center justify-between p-3 rounded-2xl border border-slate-100 hover:bg-slate-50 transition group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 group-hover:bg-[#0f4a2d] group-hover:text-white transition">
-                    <Building className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-800">{t('Property Types')}</span>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-900 transition" />
-              </Link>
 
               <Link
                 href={route('admin.service-categories.index')}

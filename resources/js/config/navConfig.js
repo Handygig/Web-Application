@@ -7,7 +7,6 @@ import {
     CalendarDays,
     CreditCard,
     UserCircle,
-    Building2,
     UserCog,
     FileText,
     Settings,
@@ -53,12 +52,6 @@ export function getNavByRole(t) {
                         { label: t('KYC / KYB Approvals'), href: '/admin/providers/kyc' },
                         { label: t('Banned Accounts'), href: '/admin/providers/banned' },
                     ],
-                },
-                {
-                    label: t('Property Types'),
-                    icon: Building2,
-                    href: '/admin/property-types',
-                    activePaths: ['/admin/property-types*'],
                 },
                 {
                     label: t('Service Categories'),

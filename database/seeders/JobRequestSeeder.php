@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Customer;
 use App\Models\JobRequest;
 use App\Models\Property;
-use App\Models\PropertyType;
 use App\Models\ServiceCategory;
 use Illuminate\Database\Seeder;
 
@@ -14,10 +13,9 @@ class JobRequestSeeder extends Seeder
     public function run(): void
     {
         $customersList = Customer::all();
-        $propResidential = PropertyType::where('name', 'Residential Apartment')->first();
         $plumbingCat = ServiceCategory::where('service_name', 'Plumbing')->first();
 
-        if ($customersList->isEmpty() || ! $propResidential || ! $plumbingCat) {
+        if ($customersList->isEmpty() || ! $plumbingCat) {
             return;
         }
 
@@ -25,7 +23,6 @@ class JobRequestSeeder extends Seeder
             'customer_id' => $customersList[0]->id,
             'label' => 'Main Residence',
         ], [
-            'property_type_id' => $propResidential->id,
             'address_line' => '456 Elm St',
             'city' => 'Metropolis',
         ]);

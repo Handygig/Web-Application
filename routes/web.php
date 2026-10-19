@@ -9,7 +9,6 @@ use App\Http\Controllers\Admin\ExclusiveOfferController as AdminExclusiveOfferCo
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\KycController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
-use App\Http\Controllers\Admin\PropertyTypeController as AdminPropertyTypeController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\RewardController as AdminRewardController;
 use App\Http\Controllers\Admin\ServiceCategoryController as AdminServiceCategoryController;
@@ -98,15 +97,6 @@ Route::middleware('auth')->group(function () {
         Route::patch('customers/{customer}/ban', [AdminCustomerController::class, 'ban'])->name('customers.ban');
         Route::delete('customers/{customer}', [AdminCustomerController::class, 'destroy'])->name('customers.destroy');
         Route::put('customers/{customer}/toggle-active', [AdminCustomerController::class, 'toggleActive'])->name('customers.toggle-active');
-
-        // Property Types
-        Route::get('property-types', [AdminPropertyTypeController::class, 'index'])->name('property-types.index');
-        Route::get('property-types/create', [AdminPropertyTypeController::class, 'create'])->name('property-types.create');
-        Route::post('property-types', [AdminPropertyTypeController::class, 'store'])->name('property-types.store');
-        Route::get('property-types/{propertyType}/edit', [AdminPropertyTypeController::class, 'edit'])->name('property-types.edit');
-        Route::put('property-types/{propertyType}', [AdminPropertyTypeController::class, 'update'])->name('property-types.update');
-        Route::delete('property-types/{propertyType}', [AdminPropertyTypeController::class, 'destroy'])->name('property-types.destroy');
-        Route::put('property-types/{propertyType}/toggle-active', [AdminPropertyTypeController::class, 'toggleActive'])->name('property-types.toggle-active');
 
         // Service Categories
         Route::get('service-categories', [AdminServiceCategoryController::class, 'index'])->name('service-categories.index');
