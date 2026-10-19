@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
+use App\Models\AuditLog;
 use App\Models\Customer;
 use App\Models\Provider;
 use App\Models\User;
@@ -89,6 +90,24 @@ class AuthController extends Controller
 
             $token = $user->createToken($request->device_name)->plainTextToken;
 
+            if ($user->wasRecentlyCreated) {
+                AuditLog::log(
+                    null,
+                    'Account Created',
+                    'User',
+                    $user->id,
+                    'Initial account registration'
+                );
+            } else {
+                AuditLog::log(
+                    null,
+                    'Login',
+                    'User',
+                    $user->id,
+                    ($user->role === 'customer' ? 'Customer' : 'User') . ' logged in to platform'
+                );
+            }
+
             return response()->json([
                 'status' => 'success',
                 'token' => $token,
@@ -151,6 +170,14 @@ class AuthController extends Controller
             $customer->gender = $request->input('gender');
             $customer->save();
         }
+
+        AuditLog::log(
+            null,
+            'Profile Updated',
+            'User',
+            $user->id,
+            'Customer profile details updated'
+        );
 
         return response()->json([
             'status' => 'success',

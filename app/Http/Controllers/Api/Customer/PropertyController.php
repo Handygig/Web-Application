@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Customer\StorePropertyRequest;
 use App\Http\Requests\Api\Customer\UpdatePropertyRequest;
 use App\Http\Resources\Api\Customer\PropertyResource;
+use App\Models\AuditLog;
 use App\Models\Property;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -45,6 +46,14 @@ class PropertyController extends Controller
 
         $property = $customer->properties()->create($data);
 
+        AuditLog::log(
+            null,
+            'Profile Updated',
+            'Customer',
+            $customer->id,
+            'Address updated by customer'
+        );
+
         return (new PropertyResource($property))
             ->response()
             ->setStatusCode(201);
@@ -81,6 +90,14 @@ class PropertyController extends Controller
         }
 
         $property->update($data);
+
+        AuditLog::log(
+            null,
+            'Profile Updated',
+            'Customer',
+            $customer->id,
+            'Address updated by customer'
+        );
 
         return new PropertyResource($property);
     }

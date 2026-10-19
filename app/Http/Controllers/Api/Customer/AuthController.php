@@ -7,6 +7,7 @@ use App\Http\Requests\Api\Customer\CompleteProfileRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Resources\UserResource;
+use App\Models\AuditLog;
 use App\Models\Customer;
 use App\Models\User;
 use App\Services\FirebaseTokenVerifier;
@@ -70,6 +71,14 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken($request->device_name)->plainTextToken;
+
+        AuditLog::log(
+            null,
+            'Login',
+            'User',
+            $user->id,
+            'Customer logged in to platform'
+        );
 
         return response()->json([
             'token' => $token,
@@ -162,6 +171,16 @@ class AuthController extends Controller
             }
         }
 
+        if ($isNewUser) {
+            AuditLog::log(
+                null,
+                'Account Created',
+                'User',
+                $user->id,
+                'Initial account registration'
+            );
+        }
+
         $token = $user->createToken($request->device_name)->plainTextToken;
 
         return response()->json([
@@ -201,6 +220,14 @@ class AuthController extends Controller
         }
         $customer->gender = $request->input('gender');
         $customer->save();
+
+        AuditLog::log(
+            null,
+            'Profile Updated',
+            'User',
+            $user->id,
+            'Customer profile completed'
+        );
 
         return response()->json([
             'status' => 'success',
