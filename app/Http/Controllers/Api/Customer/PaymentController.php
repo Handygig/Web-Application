@@ -36,7 +36,12 @@ class PaymentController extends Controller
             return response()->json(['message' => __('This card is frozen and cannot be used for payment')], 422);
         }
 
-        $amount = (float) ($jobAssignment->quotation?->quoted_price ?? 0);
+        $baseAmount = (float) ($jobAssignment->quotation?->quoted_price ?? 0);
+        $extraAmount = ($jobAssignment->extra_status === 'approved' && $jobAssignment->extra_amount)
+            ? (float) $jobAssignment->extra_amount
+            : 0.0;
+        $amount = $baseAmount + $extraAmount;
+
         if ($amount <= 0) {
             return response()->json(['message' => __('Cannot determine payment amount for this assignment')], 422);
         }
@@ -48,6 +53,7 @@ class PaymentController extends Controller
             $payment = Payment::create([
                 'assignment_id' => $jobAssignment->id,
                 'customer_id' => $customer->id,
+                'provider_id' => $jobAssignment->provider_id,
                 'card_id' => $card->id,
                 'amount' => $amount,
                 'platform_fee' => $platformFee,
