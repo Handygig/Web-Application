@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(['customer_id', 'property_id', 'service_category_id', 'description', 'preferred_date', 'status'])]
+#[Fillable(['customer_id', 'property_id', 'service_category_id', 'title', 'budget', 'history', 'description', 'preferred_date', 'status'])]
 class JobRequest extends Model
 {
     protected function casts(): array

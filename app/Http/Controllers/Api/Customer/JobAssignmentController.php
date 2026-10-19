@@ -43,4 +43,83 @@ class JobAssignmentController extends Controller
 
         return new JobAssignmentResource($jobAssignment);
     }
+
+    /**
+     * Approve provider's requested extra charge.
+     */
+    public function approveExtra(Request $request, JobAssignment $jobAssignment): JsonResponse
+    {
+        $customer = $request->user()->customer;
+
+        if ($jobAssignment->jobRequest?->customer_id !== $customer?->id) {
+            return response()->json(['message' => __('Unauthorized')], 403);
+        }
+
+        if ($jobAssignment->extra_status !== 'pending') {
+            return response()->json(['message' => __('No pending extra quotation found.')], 422);
+        }
+
+        $jobAssignment->update(['extra_status' => 'approved']);
+
+        // Notify provider
+        $providerUser = $jobAssignment->provider?->user;
+        if ($providerUser) {
+            \App\Models\Notification::create([
+                'recipient_user_id' => $providerUser->id,
+                'title' => __('Extra Quotation Approved!'),
+                'message' => __('The customer approved your extra quotation of $:amount.', [
+                    'amount' => number_format((float) $jobAssignment->extra_amount, 2),
+                ]),
+                'type' => 'job',
+                'related_id' => $jobAssignment->id,
+                'related_type' => JobAssignment::class,
+                'is_read' => false,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('Extra charge approved successfully.'),
+            'extra_status' => 'approved',
+            'extra_amount' => (float) $jobAssignment->extra_amount,
+        ]);
+    }
+
+    /**
+     * Reject provider's requested extra charge.
+     */
+    public function rejectExtra(Request $request, JobAssignment $jobAssignment): JsonResponse
+    {
+        $customer = $request->user()->customer;
+
+        if ($jobAssignment->jobRequest?->customer_id !== $customer?->id) {
+            return response()->json(['message' => __('Unauthorized')], 403);
+        }
+
+        if ($jobAssignment->extra_status !== 'pending') {
+            return response()->json(['message' => __('No pending extra quotation found.')], 422);
+        }
+
+        $jobAssignment->update(['extra_status' => 'rejected']);
+
+        // Notify provider
+        $providerUser = $jobAssignment->provider?->user;
+        if ($providerUser) {
+            \App\Models\Notification::create([
+                'recipient_user_id' => $providerUser->id,
+                'title' => __('Extra Quotation Declined'),
+                'message' => __('The customer declined your extra quotation request.'),
+                'type' => 'job',
+                'related_id' => $jobAssignment->id,
+                'related_type' => JobAssignment::class,
+                'is_read' => false,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('Extra charge declined.'),
+            'extra_status' => 'rejected',
+        ]);
+    }
 }

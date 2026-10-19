@@ -8,7 +8,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(['job_request_id', 'quotation_id', 'provider_id', 'company_id', 'assigned_at', 'start_date', 'end_date', 'status'])]
+#[Fillable([
+    'job_request_id',
+    'quotation_id',
+    'provider_id',
+    'company_id',
+    'assigned_at',
+    'start_date',
+    'end_date',
+    'status',
+    'extra_amount',
+    'extra_reason',
+    'extra_status',
+])]
 class JobAssignment extends Model
 {
     protected function casts(): array
@@ -17,7 +29,15 @@ class JobAssignment extends Model
             'assigned_at' => 'datetime',
             'start_date' => 'datetime',
             'end_date' => 'datetime',
+            'extra_amount' => 'decimal:2',
         ];
+    }
+
+    public function getTotalEffectivePriceAttribute(): float
+    {
+        $base = (float) ($this->quotation?->quoted_price ?? 0.0);
+        $extra = ($this->extra_status === 'approved' && $this->extra_amount) ? (float) $this->extra_amount : 0.0;
+        return round($base + $extra, 2);
     }
 
     public function jobRequest(): BelongsTo
