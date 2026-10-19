@@ -44,12 +44,86 @@ export default function Dashboard({
   const pendingPercent = stats?.pendingPercent ?? 10;
   const avgRating = stats?.avgRating ?? 4.9;
 
+  const [selectedProgressStatus, setSelectedProgressStatus] = useState(null);
+
+  // Booking Progress semicircular arc gauge geometry
+  const progressCx = 120;
+  const progressCy = 115;
+  const progressRadius = 75;
+  const progressStroke = 36;
+  const progressArcLength = Math.PI * progressRadius;
+  const progressTotalPct = (completedPercent + inProgressPercent + pendingPercent) || 100;
+  const progressCompFrac = completedPercent / progressTotalPct;
+  const progressProgFrac = inProgressPercent / progressTotalPct;
+
+  const progressCompLen = progressCompFrac * progressArcLength;
+  const progressProgTotalLen = (progressCompFrac + progressProgFrac) * progressArcLength;
+
+  const displayProgressPercent =
+    selectedProgressStatus === 'in_progress'
+      ? inProgressPercent
+      : selectedProgressStatus === 'pending'
+        ? pendingPercent
+        : completedPercent;
+
+  const displayProgressLabel =
+    selectedProgressStatus === 'in_progress'
+      ? t('In Progress')
+      : selectedProgressStatus === 'pending'
+        ? t('Pending')
+        : t('Booking Ended');
+
   const formattedCurrency = (val) =>
     new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       maximumFractionDigits: 0,
     }).format(val);
+
+  const totalProjects = stats?.totalProjects ?? totalBookings;
+
+  const statCards = [
+    {
+      id: 'revenue',
+      title: t('Total Revenue'),
+      value: formattedCurrency(grossRevenue),
+      badge: '12%',
+      subtext: t('Increased from last month'),
+      href: route('admin.bookings.index'),
+    },
+    {
+      id: 'projects',
+      title: t('Total Projects'),
+      value: totalProjects,
+      badge: '5',
+      subtext: t('Increased from last month'),
+      href: route('admin.bookings.index'),
+    },
+    {
+      id: 'active_bookings',
+      title: t('Active Bookings'),
+      value: activeBookings,
+      badge: '3',
+      subtext: t('Increased from last month'),
+      href: route('admin.bookings.index'),
+    },
+    {
+      id: 'customers',
+      title: t('Total Customers'),
+      value: totalCustomers,
+      badge: '8%',
+      subtext: t('Increased from last month'),
+      href: route('admin.customers.index'),
+    },
+    {
+      id: 'providers',
+      title: t('Verified Providers'),
+      value: totalProviders,
+      badge: '4',
+      subtext: t('Increased from last month'),
+      href: route('admin.providers.index'),
+    },
+  ];
 
   // Fallback sample data if database table is currently empty
   const fallbackKycQueue = [
@@ -123,7 +197,7 @@ export default function Dashboard({
     <AppLayout>
       <Head title={t('Dashboard')} />
 
-      <div className="mx-auto max-w-[1400px] space-y-6 pb-12 font-sans">
+      <div className="flex w-full flex-col gap-6">
         {/* TOP HEADER SECTION */}
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -136,101 +210,79 @@ export default function Dashboard({
           </p>
         </div>
 
-        {/* STAT CARDS ROW */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Card 1: Total Platform Revenue */}
-          <div className="bg-[#0f4a2d] text-white p-6 rounded-3xl shadow-sm flex flex-col justify-between space-y-4 relative overflow-hidden transition-transform hover:-translate-y-0.5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-emerald-100/90">
-                {t('Total Platform Revenue')}
-              </span>
-              <Link
-                href={route('admin.bookings.index')}
-                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-              >
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div>
-              <div className="text-4xl font-extrabold tracking-tight">
-                {formattedCurrency(grossRevenue)}
-              </div>
-              <p className="text-[11px] font-medium text-emerald-300 mt-1.5 flex items-center gap-1.5">
-                <span className="inline-block w-2 h-2 rounded-full bg-[#10b981]" />
-                {t('Increased from last month')}
-              </p>
-            </div>
-          </div>
+        {/* STAT CARDS ROW (Card 1: Green, Cards 2-5: White Cards) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
+          {statCards.map((card, index) => {
+            const isGreen = index === 0;
 
-          {/* Card 2: Active Job Bookings */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-4 transition-transform hover:-translate-y-0.5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">
-                {t('Active Job Bookings')}
-              </span>
-              <Link
-                href={route('admin.bookings.index')}
-                className="w-8 h-8 rounded-full border border-slate-200/80 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors"
+            return (
+              <div
+                key={card.id}
+                className={`p-5 rounded-[22px] flex flex-col justify-between min-h-[148px] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md relative overflow-hidden group ${
+                  isGreen
+                    ? 'bg-gradient-to-b from-[#12442b] via-[#1a613f] to-[#22724b] text-white shadow-xs'
+                    : 'bg-white border border-slate-100/90 text-slate-900 shadow-sm'
+                }`}
               >
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div>
-              <div className="text-4xl font-extrabold text-slate-900 tracking-tight">
-                {activeBookings}
-              </div>
-              <p className="text-[11px] font-medium text-slate-400 mt-1.5 flex items-center gap-1">
-                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
-                {t('Dispatched & In Progress')}
-              </p>
-            </div>
-          </div>
+                <div className="flex items-center justify-between gap-2">
+                  <span
+                    className={`text-base font-semibold tracking-tight truncate ${
+                      isGreen ? 'text-white/95' : 'text-slate-900'
+                    }`}
+                  >
+                    {card.title}
+                  </span>
+                  <Link
+                    href={card.href}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-transform hover:scale-110 shadow-xs shrink-0 ${
+                      isGreen
+                        ? 'bg-white text-slate-900'
+                        : 'bg-white border border-slate-700 text-slate-900 hover:border-slate-900'
+                    }`}
+                  >
+                    <ArrowUpRight className="w-4 h-4 text-slate-900 stroke-[2.5]" />
+                  </Link>
+                </div>
 
-          {/* Card 3: Registered Customers */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-4 transition-transform hover:-translate-y-0.5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">{t('Total Customers')}</span>
-              <Link
-                href={route('admin.customers.index')}
-                className="w-8 h-8 rounded-full border border-slate-200/80 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors"
-              >
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div>
-              <div className="text-4xl font-extrabold text-slate-900 tracking-tight">
-                {totalCustomers}
-              </div>
-              <p className="text-[11px] font-medium text-slate-400 mt-1.5 flex items-center gap-1">
-                <span className="inline-block w-2 h-2 rounded-full bg-slate-300" />
-                {t('Verified Client Accounts')}
-              </p>
-            </div>
-          </div>
+                <div className="my-2.5">
+                  <div
+                    className={`text-3xl sm:text-4xl font-extrabold tracking-tight leading-none ${
+                      isGreen ? 'text-white' : 'text-slate-900'
+                    }`}
+                  >
+                    {card.value}
+                  </div>
+                </div>
 
-          {/* Card 4: Verified Providers */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-4 transition-transform hover:-translate-y-0.5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">
-                {t('Verified Providers')}
-              </span>
-              <Link
-                href={route('admin.providers.index')}
-                className="w-8 h-8 rounded-full border border-slate-200/80 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors"
-              >
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div>
-              <div className="text-4xl font-extrabold text-slate-900 tracking-tight">
-                {totalProviders}
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                  <span
+                    className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] sm:text-[11px] font-semibold leading-none shrink-0 ${
+                      isGreen
+                        ? 'border border-white/20 bg-white/10 text-white'
+                        : 'border border-slate-200 bg-slate-50/80 text-slate-700'
+                    }`}
+                  >
+                    <span>{card.badge}</span>
+                    <svg
+                      className={`w-2 h-2 shrink-0 ${
+                        isGreen ? 'fill-current' : 'fill-slate-600'
+                      }`}
+                      viewBox="0 0 10 10"
+                    >
+                      <polygon points="5,2 9,8 1,8" />
+                    </svg>
+                  </span>
+                  <span
+                    className={`text-[11px] sm:text-xs font-normal leading-tight ${
+                      isGreen ? 'text-emerald-100/90' : 'text-slate-400'
+                    }`}
+                  >
+                    {card.subtext}
+                  </span>
+                </div>
               </div>
-              <p className="text-[11px] font-medium text-slate-400 mt-1.5 flex items-center gap-1">
-                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
-                {t('Companies & Technicians')}
-              </p>
-            </div>
-          </div>
+            );
+          })}
         </div>
 
         {/* MAIN TWO-COLUMN DASHBOARD GRID */}
@@ -498,65 +550,164 @@ export default function Dashboard({
 
           {/* RIGHT COLUMN (4 cols): Booking Status Gauge + Dispatch Summary + Admin Links */}
           <div className="lg:col-span-4 space-y-6">
-            {/* Booking Status Distribution Donut Gauge Card */}
+            {/* Booking Progress Semicircular Arc Gauge Card */}
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-              <h3 className="text-base font-bold text-slate-900">{t('Booking Distribution')}</h3>
+              <h3 className="text-base font-bold text-slate-900">{t('Booking progress')}</h3>
 
-              <div className="flex flex-col items-center justify-center py-2">
-                <div className="relative w-44 h-44 flex items-center justify-center">
-                  <svg className="w-44 h-44 -rotate-90" viewBox="0 0 100 100">
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="38"
-                      fill="transparent"
-                      stroke="#f1f5f9"
-                      strokeWidth="12"
-                    />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="38"
-                      fill="transparent"
-                      stroke="#0f4a2d"
-                      strokeWidth="12"
-                      strokeDasharray="238"
-                      strokeDashoffset="70"
+              <div className="flex flex-col items-center justify-center py-1">
+                <div className="relative w-full max-w-[260px] flex items-center justify-center">
+                  <svg className="w-full h-auto overflow-visible" viewBox="0 0 240 150">
+                    <defs>
+                      <pattern
+                        id="pendingStripes"
+                        width="3.2"
+                        height="3.2"
+                        patternTransform="rotate(45 0 0)"
+                        patternUnits="userSpaceOnUse"
+                      >
+                        <line
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="3.2"
+                          stroke="#8a9990"
+                          strokeWidth="1.3"
+                          strokeLinecap="square"
+                        />
+                      </pattern>
+                    </defs>
+
+                    {/* Layer 1: Full Semicircle Striped Track (Pending) with round caps */}
+                    <path
+                      d={`M ${progressCx - progressRadius} ${progressCy} A ${progressRadius} ${progressRadius} 0 0 1 ${progressCx + progressRadius} ${progressCy}`}
+                      fill="none"
+                      stroke="url(#pendingStripes)"
+                      strokeWidth={progressStroke}
                       strokeLinecap="round"
+                      className="cursor-pointer"
+                      onClick={() =>
+                        setSelectedProgressStatus(
+                          selectedProgressStatus === 'pending' ? null : 'pending'
+                        )
+                      }
                     />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="38"
-                      fill="transparent"
-                      stroke="#10b981"
-                      strokeWidth="12"
-                      strokeDasharray="238"
-                      strokeDashoffset="180"
+
+                    {/* Layer 2: In Progress (Dark Green Arc) with round caps */}
+                    <path
+                      d={`M ${progressCx - progressRadius} ${progressCy} A ${progressRadius} ${progressRadius} 0 0 1 ${progressCx + progressRadius} ${progressCy}`}
+                      fill="none"
+                      stroke="#11462c"
+                      strokeWidth={progressStroke}
+                      strokeDasharray={`${progressProgTotalLen} ${progressArcLength}`}
+                      strokeDashoffset={0}
                       strokeLinecap="round"
+                      className="cursor-pointer"
+                      onClick={() =>
+                        setSelectedProgressStatus(
+                          selectedProgressStatus === 'in_progress' ? null : 'in_progress'
+                        )
+                      }
                     />
+
+                    {/* Layer 3: Completed (Light Green Arc) with round caps */}
+                    <path
+                      d={`M ${progressCx - progressRadius} ${progressCy} A ${progressRadius} ${progressRadius} 0 0 1 ${progressCx + progressRadius} ${progressCy}`}
+                      fill="none"
+                      stroke="#217e52"
+                      strokeWidth={progressStroke}
+                      strokeDasharray={`${progressCompLen} ${progressArcLength}`}
+                      strokeDashoffset={0}
+                      strokeLinecap="round"
+                      className="cursor-pointer"
+                      onClick={() =>
+                        setSelectedProgressStatus(
+                          selectedProgressStatus === 'completed' ? null : 'completed'
+                        )
+                      }
+                    />
+
+                    {/* Center Numbers & Label */}
+                    <text
+                      x={progressCx}
+                      y={progressCy - 10}
+                      textAnchor="middle"
+                      className="font-extrabold fill-slate-900 select-none text-[34px]"
+                      style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+                    >
+                      {displayProgressPercent}%
+                    </text>
+                    <text
+                      x={progressCx}
+                      y={progressCy + 12}
+                      textAnchor="middle"
+                      className="font-medium fill-[#738075] select-none text-[12px]"
+                      style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+                    >
+                      {displayProgressLabel}
+                    </text>
                   </svg>
-                  <div className="absolute text-center">
-                    <div className="text-3xl font-extrabold text-slate-900">{totalBookings}</div>
-                    <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                      {t('Bookings')}
-                    </div>
-                  </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 text-[10px] font-semibold text-slate-600 mt-4 w-full text-center">
-                  <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
-                    <span className="block text-slate-400">{t('Completed')}</span>
-                    <span className="text-xs font-bold text-slate-900">{completedPercent}%</span>
-                  </div>
-                  <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-100">
-                    <span className="block text-emerald-700">{t('In Progress')}</span>
-                    <span className="text-xs font-bold text-emerald-800">{inProgressPercent}%</span>
-                  </div>
-                  <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
-                    <span className="block text-slate-400">{t('Pending')}</span>
-                    <span className="text-xs font-bold text-slate-900">{pendingPercent}%</span>
-                  </div>
+                {/* Bottom Legend */}
+                <div className="flex items-center justify-center gap-6 pt-3 w-full select-none">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedProgressStatus(
+                        selectedProgressStatus === 'completed' ? null : 'completed'
+                      )
+                    }
+                    className={`flex items-center gap-2 transition-all cursor-pointer ${
+                      selectedProgressStatus === 'completed'
+                        ? 'font-bold opacity-100 scale-105'
+                        : selectedProgressStatus
+                          ? 'opacity-40 hover:opacity-80'
+                          : 'opacity-100 hover:opacity-80'
+                    }`}
+                  >
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#217e52] shrink-0" />
+                    <span className="text-xs font-medium text-slate-600">{t('Completed')}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedProgressStatus(
+                        selectedProgressStatus === 'in_progress' ? null : 'in_progress'
+                      )
+                    }
+                    className={`flex items-center gap-2 transition-all cursor-pointer ${
+                      selectedProgressStatus === 'in_progress'
+                        ? 'font-bold opacity-100 scale-105'
+                        : selectedProgressStatus
+                          ? 'opacity-40 hover:opacity-80'
+                          : 'opacity-100 hover:opacity-80'
+                    }`}
+                  >
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#11462c] shrink-0" />
+                    <span className="text-xs font-medium text-slate-600">{t('In Progress')}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedProgressStatus(
+                        selectedProgressStatus === 'pending' ? null : 'pending'
+                      )
+                    }
+                    className={`flex items-center gap-2 transition-all cursor-pointer ${
+                      selectedProgressStatus === 'pending'
+                        ? 'font-bold opacity-100 scale-105'
+                        : selectedProgressStatus
+                          ? 'opacity-40 hover:opacity-80'
+                          : 'opacity-100 hover:opacity-80'
+                    }`}
+                  >
+                    <svg className="w-2.5 h-2.5 rounded-full shrink-0 overflow-hidden" viewBox="0 0 10 10">
+                      <circle cx="5" cy="5" r="4.5" fill="url(#pendingStripes)" stroke="#94a3b8" strokeWidth="0.8" />
+                    </svg>
+                    <span className="text-xs font-medium text-slate-600">{t('Pending')}</span>
+                  </button>
                 </div>
               </div>
             </div>
