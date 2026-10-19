@@ -41,6 +41,16 @@ export default function CustomerIndex({ dbCustomers, stats, filters }) {
   const [editingCustomer, setEditingCustomer] = useState(null);
   const [actionProcessing, setActionProcessing] = useState(false);
 
+  // Sync selectedCustomer with updated customerList
+  React.useEffect(() => {
+    if (selectedCustomer) {
+      const updated = customerList.find((c) => c.id === selectedCustomer.id);
+      if (updated) {
+        setSelectedCustomer(updated);
+      }
+    }
+  }, [dbCustomers]);
+
   const handleSearch = (val) => {
     setSearchQuery(val);
     router.get(

@@ -25,7 +25,15 @@ class CustomerController extends Controller
         $search = $request->input('search');
         $status = $request->input('status');
 
-        $query = Customer::with('user');
+        $query = Customer::with([
+            'user',
+            'properties',
+            'payments',
+            'jobRequests.quotations.provider.user',
+            'jobRequests.quotations.provider.company',
+            'jobRequests.assignment.provider.user',
+            'jobRequests.assignment.provider.company',
+        ]);
 
         if ($search) {
             $query->whereHas('user', function ($q) use ($search) {
@@ -42,6 +50,31 @@ class CustomerController extends Controller
         }
 
         $customers = $query->latest()->paginate(10)->withQueryString();
+
+        $customerIds = $customers->pluck('id')->all();
+        $userIds = $customers->pluck('user_id')->filter()->all();
+
+        $allAuditLogs = AuditLog::with('admin')
+            ->where(function ($q) use ($customerIds, $userIds) {
+                $q->where(function ($sub) use ($customerIds) {
+                    $sub->where('entity_type', 'Customer')->whereIn('entity_id', $customerIds);
+                });
+                if (! empty($userIds)) {
+                    $q->orWhere(function ($sub) use ($userIds) {
+                        $sub->where('entity_type', 'User')->whereIn('entity_id', $userIds);
+                    });
+                }
+            })
+            ->latest()
+            ->get();
+
+        foreach ($customers as $cust) {
+            $custLogs = $allAuditLogs->filter(function ($log) use ($cust) {
+                return ($log->entity_type === 'Customer' && $log->entity_id == $cust->id)
+                    || ($log->entity_type === 'User' && $log->entity_id == $cust->user_id);
+            })->values();
+            $cust->setRelation('customAuditLogs', $custLogs);
+        }
 
         $stats = [
             'total' => User::where('role', 'customer')->count(),
@@ -91,7 +124,7 @@ class CustomerController extends Controller
 
             AuditLog::log(
                 auth()->id(),
-                'Customer created',
+                'Account Created',
                 'Customer',
                 $user->id,
                 "Created customer: {$user->full_name}"
@@ -116,10 +149,10 @@ class CustomerController extends Controller
 
         AuditLog::log(
             auth()->id(),
-            'Customer updated',
+            'Profile Updated',
             'Customer',
             $customer->id,
-            "Updated customer: {$customer->user->full_name}"
+            "Customer profile updated by admin: {$customer->user->full_name}"
         );
 
         return redirect()->back()->with('success', __('Customer updated successfully.'));
