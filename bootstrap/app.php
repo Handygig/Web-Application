@@ -33,5 +33,51 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (ValidationException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => __('Validation failed'), 'errors' => $e->validator->getMessageBag()], 422);
+            }
+        });
+
+        $exceptions->render(function (AuthorizationException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => __('You are not authorized to perform this action.'),
+                ], 403);
+            }
+        });
+
+        $exceptions->report(function (Throwable $exception) {
+            if (str_contains($exception->getMessage(), 'SQLSTATE[HY000] [2002]')) {
+                // Send email to admin once every 5 minutes
+                $lastReported = cache()->get('db_connection_error_last_reported', 0);
+                if (! $lastReported || time() - intval($lastReported) > 300) {
+                    Mail::to('deshanfdo27@gmail.com')->send(new ExceptionOccurred($exception));
+                    cache()->put('db_connection_error_last_reported', time(), 300);
+                }
+
+                return false;
+            }
+
+            /**
+             * laravel-responsecache correctly handles a race condition when the cached response is cleared or expired
+             * between calling 'hasBeenCached' and 'getCachedResponseFor'. However, it still does report when this happens.
+             * Because everything continues to work in this situation, and there is no bug, we are ignoring this message.
+             *
+             * See https://github.com/spatie/laravel-responsecache/pull/434.
+             */
+            if ($exception->getMessage() === 'Could not unserialize response, returning uncached response instead. Error: Could not unserialize serialized response ``') {
+                return false;
+            }
+
+            // Send email to admin if the exception is not ignored
+            if (config('app.env') === 'production') {
+                // Avoid sending too many emails in a short time about same exception
+                $lastExceptionReported = cache()->get('exception_last_reported_'.md5($exception->getMessage()), 0);
+                if (! $lastExceptionReported || time() - intval($lastExceptionReported) > 300) {
+                    cache()->put('exception_last_reported_'.md5($exception->getMessage()), time(), 300);
+                    Mail::to('deshanfdo27@gmail.com')->send(new ExceptionOccurred($exception));
+                }
+            }
+        });
     })->create();
