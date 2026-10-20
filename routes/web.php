@@ -155,6 +155,10 @@ Route::middleware('auth')->group(function () {
 
         // Notifications
         Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::patch('notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+        Route::delete('notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+        Route::delete('notifications', [NotificationController::class, 'clearAll'])->name('notifications.clearAll');
     });
 
     // Company Routes
@@ -163,6 +167,10 @@ Route::middleware('auth')->group(function () {
 
         // Notifications
         Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::patch('notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+        Route::delete('notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+        Route::delete('notifications', [NotificationController::class, 'clearAll'])->name('notifications.clearAll');
 
         // Service Areas
         Route::get('service-areas', [CompanyServiceAreaController::class, 'index'])->name('service-areas.index');

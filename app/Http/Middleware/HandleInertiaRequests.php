@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
@@ -55,6 +56,42 @@ class HandleInertiaRequests extends Middleware
                 'si' => 'සිංහල',
                 'ta' => 'தமிழ்',
             ],
+            'sharedNotifications' => function () use ($request) {
+                if (! $request->user()) {
+                    return [];
+                }
+
+                return Notification::where('recipient_user_id', $request->user()->id)
+                    ->orderBy('created_at', 'desc')
+                    ->take(4)
+                    ->get()
+                    ->map(function ($n) use ($request) {
+                        $isAdmin = $request->user()->role === 'admin';
+                        $routePrefix = $isAdmin ? 'admin' : 'company';
+                        $actionUrl = null;
+                        if ($n->type === 'kyc') {
+                            $actionUrl = $isAdmin ? route('admin.providers.kyc') : route('company.dashboard');
+                        } elseif ($n->type === 'booking') {
+                            $actionUrl = route($routePrefix . '.bookings.index');
+                        } else {
+                            $actionUrl = route($routePrefix . '.notifications.index');
+                        }
+
+                        return [
+                            'id' => $n->id,
+                            'title' => $n->title,
+                            'desc' => $n->message,
+                            'time' => $n->created_at ? $n->created_at->diffForHumans() : __('Recently'),
+                            'unread' => ! $n->is_read,
+                            'href' => $actionUrl,
+                        ];
+                    });
+            },
+            'unreadNotificationsCount' => function () use ($request) {
+                return $request->user()
+                    ? Notification::where('recipient_user_id', $request->user()->id)->where('is_read', false)->count()
+                    : 0;
+            },
         ];
     }
 }

@@ -1,17 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
-import { Bell, Globe, User, LogOut, Menu, Check, Shield } from 'lucide-react';
+import { Bell, Globe, User, LogOut, Menu, Check } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
 export default function Navbar({ onMenuToggle }) {
   const { t } = useTranslation();
   const { props } = usePage();
-  const { auth, locale, availableLocales } = props;
+  const { auth, locale, availableLocales, sharedNotifications, unreadNotificationsCount } = props;
 
   const [langOpen, setLangOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(auth?.user?.unread_notifications ?? 3);
+  const [unreadCount, setUnreadCount] = useState(unreadNotificationsCount ?? 0);
+  const [prevUnreadCount, setPrevUnreadCount] = useState(unreadNotificationsCount);
+
+  if (unreadNotificationsCount !== prevUnreadCount) {
+    setPrevUnreadCount(unreadNotificationsCount);
+    setUnreadCount(unreadNotificationsCount ?? 0);
+  }
 
   const userRoles = auth?.user?.roles?.map((r) => r.name) ?? [];
   const isAdmin = userRoles.includes('admin');
@@ -62,32 +68,13 @@ export default function Navbar({ onMenuToggle }) {
     ? displayName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
     : 'AP';
 
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: 'New KYC Submission',
-      desc: 'Electrical Services Provider submitted license verification',
-      time: '5 min ago',
-      unread: true,
-      href: isAdmin ? route('admin.providers.kyc') : route('company.dashboard'),
-    },
-    {
-      id: 2,
-      title: 'Booking Completed',
-      desc: 'Booking #BK-001246 was marked completed by provider',
-      time: '1 hour ago',
-      unread: true,
-      href: route((isAdmin ? 'admin' : 'company') + '.bookings.index'),
-    },
-    {
-      id: 3,
-      title: 'New Dispute Filed',
-      desc: 'Customer Sarah opened dispute on plumbing request #401',
-      time: '3 hours ago',
-      unread: true,
-      href: route((isAdmin ? 'admin' : 'company') + '.bookings.index'),
-    },
-  ]);
+  const [notifications, setNotifications] = useState(sharedNotifications || []);
+  const [prevShared, setPrevShared] = useState(sharedNotifications);
+
+  if (sharedNotifications !== prevShared) {
+    setPrevShared(sharedNotifications);
+    setNotifications(sharedNotifications || []);
+  }
 
   const langRef = useRef(null);
   const notifRef = useRef(null);
@@ -116,6 +103,28 @@ export default function Navbar({ onMenuToggle }) {
   const markAllRead = () => {
     setUnreadCount(0);
     setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
+    const prefix = isAdmin ? 'admin' : 'company';
+    try {
+      router.post(route(`${prefix}.notifications.markAllRead`), {}, { preserveScroll: true });
+    } catch (e) {
+      console.error('Error marking all as read:', e);
+    }
+  };
+
+  const handleNotificationItemClick = (n) => {
+    setNotifications((prev) =>
+      prev.map((item) => (item.id === n.id ? { ...item, unread: false } : item))
+    );
+    if (n.unread) {
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+      const prefix = isAdmin ? 'admin' : 'company';
+      try {
+        router.patch(route(`${prefix}.notifications.read`, n.id), {}, { preserveScroll: true });
+      } catch (e) {
+        console.error('Error marking notification as read:', e);
+      }
+    }
+    setNotifOpen(false);
   };
 
   // Locales list (fallback if props availableLocales is empty)
@@ -201,33 +210,34 @@ export default function Navbar({ onMenuToggle }) {
                 </div>
 
                 <div className="max-h-72 overflow-y-auto divide-y divide-slate-100 py-1">
-                  {notifications.map((n) => (
-                    <Link
-                      key={n.id}
-                      href={
-                        n.href || route((isAdmin ? 'admin' : 'company') + '.notifications.index')
-                      }
-                      onClick={() => {
-                        setNotifications((prev) =>
-                          prev.map((item) => (item.id === n.id ? { ...item, unread: false } : item))
-                        );
-                        setNotifOpen(false);
-                      }}
-                      className={`block p-3 transition-colors ${
-                        n.unread ? 'bg-indigo-50/30 hover:bg-indigo-50/60' : 'hover:bg-slate-50'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <h4 className="text-xs font-bold text-slate-900 hover:text-theme-accent transition">
-                          {n.title}
-                        </h4>
-                        <span className="text-[10px] font-medium text-slate-400 shrink-0">
-                          {n.time}
-                        </span>
-                      </div>
-                      <p className="mt-1 text-[11px] text-slate-600 leading-snug">{n.desc}</p>
-                    </Link>
-                  ))}
+                  {notifications.length === 0 ? (
+                    <div className="py-6 px-4 text-center text-xs text-slate-400">
+                      {t('No notifications found')}
+                    </div>
+                  ) : (
+                    notifications.map((n) => (
+                      <Link
+                        key={n.id}
+                        href={
+                          n.href || route((isAdmin ? 'admin' : 'company') + '.notifications.index')
+                        }
+                        onClick={() => handleNotificationItemClick(n)}
+                        className={`block p-3 transition-colors ${
+                          n.unread ? 'bg-emerald-50/30 hover:bg-emerald-50/60' : 'hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="text-xs font-bold text-slate-900 hover:text-emerald-800 transition">
+                            {n.title}
+                          </h4>
+                          <span className="text-[10px] font-medium text-slate-400 shrink-0">
+                            {n.time}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-[11px] text-slate-600 leading-snug">{n.desc}</p>
+                      </Link>
+                    ))
+                  )}
                 </div>
 
                 <div className="border-t border-slate-100 pt-1 text-center">
@@ -317,12 +327,6 @@ export default function Navbar({ onMenuToggle }) {
               <div className="absolute right-0 top-full mt-2.5 w-56 overflow-hidden rounded-2xl border border-slate-100 bg-white/95 p-1.5 shadow-2xl backdrop-blur-md z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                 {auth?.user && (
                   <div className="border-b border-slate-100/80 p-3 bg-slate-50/50 rounded-xl mb-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Shield className="h-3.5 w-3.5 text-theme-accent" />
-                      <span className="text-[11px] font-bold text-theme-accent uppercase tracking-wider">
-                        {roleName}
-                      </span>
-                    </div>
                     <p className="font-semibold text-xs text-slate-800 truncate">
                       {auth.user.full_name || auth.user.name}
                     </p>
