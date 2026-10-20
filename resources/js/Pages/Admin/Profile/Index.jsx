@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
 import {
   User,
@@ -16,12 +16,14 @@ import {
   RotateCcw,
   KeyRound,
   Loader2,
+  Calendar,
+  Clock,
+  Sparkles,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 import AppLayout from '@/Layouts/AppLayout';
-import PageHeader from '@/Components/Other/PageHeader';
-import TableCard from '@/Components/Cards/TableCard';
-import UnsavedChangesModal from '@/Components/Modals/UnsavedChangesModal';
 
 export default function ProfileIndex({ user: userProp, recentActivities = [] }) {
   const { t } = useTranslation();
@@ -33,10 +35,6 @@ export default function ProfileIndex({ user: userProp, recentActivities = [] }) 
     return userProp?.data || userProp || auth?.user || {};
   }, [userProp, auth?.user]);
 
-  // Tab Navigation State: 'personal' | 'security' | 'account'
-  const [activeTab, setActiveTab] = useState('personal');
-  const [pendingTab, setPendingTab] = useState(null);
-
   // Form State
   const buildInitialFormData = (u) => ({
     fullName: u?.full_name || '',
@@ -46,14 +44,17 @@ export default function ProfileIndex({ user: userProp, recentActivities = [] }) 
 
   const [savedData, setSavedData] = useState(() => buildInitialFormData(currentUser));
   const [formData, setFormData] = useState(() => buildInitialFormData(currentUser));
+  const [isDirty, setIsDirty] = useState(false);
+  const [prevUser, setPrevUser] = useState(currentUser);
 
   // Sync state if currentUser changes from server reload
-  useEffect(() => {
+  if (currentUser !== prevUser) {
+    setPrevUser(currentUser);
     const updated = buildInitialFormData(currentUser);
     setSavedData(updated);
     setFormData(updated);
     setIsDirty(false);
-  }, [currentUser]);
+  }
 
   // Password Form State
   const [passwords, setPasswords] = useState({
@@ -75,29 +76,24 @@ export default function ProfileIndex({ user: userProp, recentActivities = [] }) 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPasswordSubmitting, setIsPasswordSubmitting] = useState(false);
   const [isAvatarProcessing, setIsAvatarProcessing] = useState(false);
+  const [copiedText, setCopiedText] = useState('');
 
-  // Unsaved changes state
-  const [isDirty, setIsDirty] = useState(false);
-  const [showUnsavedModal, setShowUnsavedModal] = useState(false);
+  // Derived errors combining local validation and server pageErrors
+  const activeProfileErrors = useMemo(() => ({
+    ...profileErrors,
+    ...(pageErrors?.full_name ? { fullName: pageErrors.full_name } : {}),
+    ...(pageErrors?.email ? { email: pageErrors.email } : {}),
+    ...(pageErrors?.phone ? { phone: pageErrors.phone } : {}),
+  }), [profileErrors, pageErrors]);
 
-  // Sync page errors from Inertia if any
-  useEffect(() => {
-    if (pageErrors && Object.keys(pageErrors).length > 0) {
-      const pErrors = {};
-      const pwErrors = {};
-      if (pageErrors.full_name) pErrors.fullName = pageErrors.full_name;
-      if (pageErrors.email) pErrors.email = pageErrors.email;
-      if (pageErrors.phone) pErrors.phone = pageErrors.phone;
-      if (pageErrors.avatar) setFileError(pageErrors.avatar);
+  const activePasswordErrors = useMemo(() => ({
+    ...passwordErrors,
+    ...(pageErrors?.current_password ? { currentPassword: pageErrors.current_password } : {}),
+    ...(pageErrors?.new_password ? { newPassword: pageErrors.new_password } : {}),
+    ...(pageErrors?.new_password_confirmation ? { confirmPassword: pageErrors.new_password_confirmation } : {}),
+  }), [passwordErrors, pageErrors]);
 
-      if (pageErrors.current_password) pwErrors.currentPassword = pageErrors.current_password;
-      if (pageErrors.new_password) pwErrors.newPassword = pageErrors.new_password;
-      if (pageErrors.new_password_confirmation) pwErrors.confirmPassword = pageErrors.new_password_confirmation;
-
-      if (Object.keys(pErrors).length > 0) setProfileErrors(pErrors);
-      if (Object.keys(pwErrors).length > 0) setPasswordErrors(pwErrors);
-    }
-  }, [pageErrors]);
+  const activeFileError = fileError || pageErrors?.avatar || '';
 
   // Handle Form Change
   const handleChange = (field, value) => {
@@ -110,17 +106,6 @@ export default function ProfileIndex({ user: userProp, recentActivities = [] }) 
 
     if (profileErrors[field]) {
       setProfileErrors((prev) => ({ ...prev, [field]: '' }));
-    }
-  };
-
-  // Tab switching with unsaved changes check
-  const handleTabChange = (targetTab) => {
-    if (targetTab === activeTab) return;
-    if (isDirty) {
-      setPendingTab(targetTab);
-      setShowUnsavedModal(true);
-    } else {
-      setActiveTab(targetTab);
     }
   };
 
@@ -296,6 +281,12 @@ export default function ProfileIndex({ user: userProp, recentActivities = [] }) 
     );
   };
 
+  const handleCopy = (text, label) => {
+    navigator.clipboard.writeText(text);
+    setCopiedText(label);
+    setTimeout(() => setCopiedText(''), 2000);
+  };
+
   // Derived user details for hero & account metadata
   const displayName = formData.fullName || currentUser.full_name || t('Administrator');
   const displayEmail = formData.email || currentUser.email || '';
@@ -320,11 +311,10 @@ export default function ProfileIndex({ user: userProp, recentActivities = [] }) 
   const createdDate = currentUser.created_at
     ? new Date(currentUser.created_at).toLocaleDateString(undefined, {
         year: 'numeric',
-        month: 'long',
+        month: 'short',
         day: 'numeric',
       })
-    : '—';
-  const lastActivityTime = recentActivities?.[0]?.formatted_time || recentActivities?.[0]?.time || t('Active now');
+    : 'Oct 2024';
 
   return (
     <AppLayout>
@@ -333,180 +323,219 @@ export default function ProfileIndex({ user: userProp, recentActivities = [] }) 
       <div className="flex w-full flex-col gap-6">
         {/* Toast Alert Notification */}
         {toastMessage && (
-          <div className="fixed top-20 right-6 z-[120] flex items-center gap-3 rounded-2xl bg-slate-900 px-5 py-3 text-xs font-semibold text-white shadow-2xl ring-1 ring-slate-700 animate-slideDown">
-            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+          <div className="fixed top-20 right-6 z-[120] flex items-center gap-2.5 rounded-2xl bg-slate-900/95 backdrop-blur-md px-4 py-3 text-xs font-semibold text-white shadow-2xl border border-slate-700 animate-in fade-in slide-in-from-top-4 duration-200">
+            <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
             <span>{toastMessage}</span>
           </div>
         )}
 
-        {/* Page Header */}
-        <PageHeader
-          title={t('My Profile')}
-          description={t('Manage your personal information and account settings.')}
-        />
-
-        {/* 1. TOP HERO PROFILE BANNER CARD */}
-        <div className="relative overflow-hidden rounded-[24px] border border-slate-200/80 bg-white p-6 sm:p-8 shadow-2xs">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            {/* Avatar & Info */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5">
-              {/* Avatar Box */}
-              <div className="relative shrink-0 group">
-                <div className="flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-theme-accent to-indigo-700 font-bold text-white text-3xl shadow-lg ring-4 ring-slate-50 overflow-hidden">
-                  {avatarUrl ? (
-                    <img
-                      src={avatarUrl}
-                      alt={displayName}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <span>{initials}</span>
-                  )}
-
-                  {isAvatarProcessing && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px]">
-                      <Loader2 className="h-6 w-6 animate-spin text-white" />
-                    </div>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  disabled={isAvatarProcessing}
-                  onClick={() => fileInputRef.current?.click()}
-                  className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-white shadow-md hover:bg-theme-accent transition disabled:opacity-50"
-                  title={t('Change Photo')}
-                >
-                  <Camera className="h-4 w-4" />
-                </button>
-              </div>
-
-              {/* Hidden File Input */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/jpg,image/png,image/webp"
-                onChange={handlePhotoSelect}
-                className="hidden"
-              />
-
-              {/* User Identity Details */}
-              <div className="space-y-1">
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
-                  <h2 className="text-2xl font-bold text-slate-900">{displayName}</h2>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-0.5 text-xs font-bold text-emerald-700 border border-emerald-200">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    {displayStatus}
-                  </span>
-                </div>
-
-                <p className="text-xs text-slate-500 font-medium">{displayEmail}</p>
-
-                <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-theme-accent border border-indigo-100">
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                    {displayRole}
-                  </span>
-                  <span className="font-mono text-xs font-semibold text-slate-400">
-                    ID: {displayUserId}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Photo Action Buttons */}
-            <div className="flex items-center gap-2.5 shrink-0 self-center md:self-auto">
-              <button
-                type="button"
-                disabled={isAvatarProcessing}
-                onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition disabled:opacity-50"
-              >
-                {isAvatarProcessing ? (
-                  <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
-                ) : (
-                  <Camera className="h-4 w-4 text-slate-500" />
-                )}
-                {t('Change Photo')}
-              </button>
-
-              {avatarUrl && (
-                <button
-                  type="button"
-                  disabled={isAvatarProcessing}
-                  onClick={handleRemovePhoto}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50/70 px-3.5 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-100 transition shadow-2xs disabled:opacity-50"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  {t('Remove Photo')}
-                </button>
-              )}
-            </div>
-          </div>
-
-          {fileError && (
-            <p className="mt-3 text-xs font-medium text-red-500 text-center sm:text-left">
-              {fileError}
+        {/* Top Header Row */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+              {t('Account Settings')}
+            </h1>
+            <p className="text-sm font-medium text-slate-500 mt-0.5">
+              {t('Manage your personal profile, authentication, and security preferences.')}
             </p>
-          )}
-        </div>
-
-        {/* 2. NAVIGATION SECTION TABS */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 pb-1">
-          <div className="flex flex-wrap items-center gap-2">
-            {[
-              { id: 'personal', label: t('Personal Details'), icon: User },
-              { id: 'security', label: t('Security & Password'), icon: KeyRound },
-              { id: 'account', label: t('Account Overview & Activity'), icon: History },
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => handleTabChange(tab.id)}
-                  className={`inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all ${
-                    isActive
-                      ? 'bg-slate-900 text-white shadow-md'
-                      : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200/80 hover:bg-slate-50'
-                  }`}
-                >
-                  <Icon
-                    className={`h-4 w-4 ${isActive ? 'text-theme-accent' : 'text-slate-400'}`}
-                  />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
           </div>
 
           {isDirty && (
-            <span className="text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 animate-pulse">
+            <span className="self-start sm:self-auto inline-flex items-center gap-2 text-xs font-semibold text-amber-800 bg-amber-50 px-3.5 py-1.5 rounded-full border border-amber-200 shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
               {t('Unsaved changes')}
             </span>
           )}
         </div>
 
-        {/* 3. TABBED CONTENT SECTIONS */}
-
-        {/* TAB 1: PERSONAL DETAILS */}
-        {activeTab === 'personal' && (
-          <TableCard>
-            <div className="p-6 sm:p-8 space-y-6">
-              <div className="border-b border-slate-100 pb-4">
-                <h3 className="text-lg font-bold text-slate-900">{t('Personal Information')}</h3>
-                <p className="text-xs text-slate-500">
-                  {t('Manage your basic personal profile information.')}
-                </p>
+        {/* MAIN BALANCED 2-COLUMN GRID (Matching page width and spacing) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* LEFT COLUMN (4 of 12 cols): Single Unified Identity & Account Overview Card */}
+          <div className="lg:col-span-4">
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+              {/* Header Decorative Banner */}
+              <div className="h-28 bg-gradient-to-r from-[#0f4a2d] to-[#1e7246] relative p-4 flex justify-end items-start">
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-200 bg-black/25 backdrop-blur-md px-3 py-1 rounded-full border border-emerald-400/20 shadow-2xs">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-300" />
+                  {displayRole}
+                </span>
               </div>
 
-              <form onSubmit={handleSaveProfile} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {/* Card Body */}
+              <div className="px-6 pb-6 pt-0 relative">
+                {/* Floating Avatar */}
+                <div className="relative -mt-12 mb-4 inline-block">
+                  <div className="w-20 h-20 rounded-2xl bg-white p-1 shadow-md">
+                    <div className="w-full h-full rounded-xl bg-gradient-to-br from-[#0f4a2d] to-[#195e3a] flex items-center justify-center text-white font-black text-2xl overflow-hidden relative">
+                      {avatarUrl ? (
+                        <img
+                          src={avatarUrl}
+                          alt={displayName}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <span>{initials}</span>
+                      )}
+
+                      {isAvatarProcessing && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs">
+                          <Loader2 className="h-5 w-5 animate-spin text-white" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Camera overlay button */}
+                  <button
+                    type="button"
+                    disabled={isAvatarProcessing}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#0f4a2d] hover:bg-[#145e39] text-white flex items-center justify-center shadow-md transition disabled:opacity-50 ring-2 ring-white"
+                    title={t('Change Photo')}
+                  >
+                    <Camera className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  onChange={handlePhotoSelect}
+                  className="hidden"
+                />
+
+                {/* Name & Email */}
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-lg font-bold text-slate-900 truncate">
+                      {displayName}
+                    </h2>
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" title={displayStatus} />
+                  </div>
+                  <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
+                    {displayEmail}
+                  </p>
+                </div>
+
+                {activeFileError && (
+                  <p className="mt-2 text-xs font-semibold text-rose-500">
+                    {activeFileError}
+                  </p>
+                )}
+
+                {/* Avatar Action Buttons */}
+                <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-100">
+                  <button
+                    type="button"
+                    disabled={isAvatarProcessing}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 py-2 px-3 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-semibold transition shadow-2xs text-center"
+                  >
+                    {t('Change Avatar')}
+                  </button>
+                  {avatarUrl && (
+                    <button
+                      type="button"
+                      disabled={isAvatarProcessing}
+                      onClick={handleRemovePhoto}
+                      className="py-2 px-3 rounded-xl border border-rose-100 text-rose-600 hover:bg-rose-50 text-xs font-semibold transition shadow-2xs"
+                      title={t('Remove Photo')}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Subtle Divider */}
+                <div className="border-t border-slate-100 my-5" />
+
+                {/* Integrated Account Overview */}
+                <div className="space-y-3.5">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                      {t('Account Overview')}
+                    </h3>
+                    <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                      {t('Verified')}
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs">
+                    {/* User ID */}
+                    <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90">
+                      <span className="text-slate-500 font-medium">{t('Admin ID')}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(displayUserId, 'id')}
+                        className="flex items-center gap-1.5 font-mono font-bold text-slate-800 hover:text-emerald-700 transition"
+                        title={t('Click to copy ID')}
+                      >
+                        <span>{displayUserId}</span>
+                        {copiedText === 'id' ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5 text-slate-400" />
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Status */}
+                    <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90">
+                      <span className="text-slate-500 font-medium">{t('Status')}</span>
+                      <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/60">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        {displayStatus}
+                      </span>
+                    </div>
+
+                    {/* Member Since */}
+                    <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90">
+                      <span className="text-slate-500 font-medium flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                        {t('Member Since')}
+                      </span>
+                      <span className="font-semibold text-slate-700">{createdDate}</span>
+                    </div>
+
+                    {/* Access Level */}
+                    <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90">
+                      <span className="text-slate-500 font-medium flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-slate-400" />
+                        {t('Permissions')}
+                      </span>
+                      <span className="font-semibold text-slate-800">{t('Super Administrator')}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN (8 of 12 cols): Personal Info, Security, & Recent Audit Logs */}
+          <div className="lg:col-span-8 space-y-6">
+            {/* 1. PERSONAL INFORMATION CARD */}
+            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-100 shadow-sm space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+                    {t('Personal Information')}
+                  </h3>
+                  <p className="text-xs text-slate-400 font-medium mt-0.5">
+                    {t('Update your name, primary email address, and phone contact.')}
+                  </p>
+                </div>
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-[#0f4a2d]">
+                  <User className="w-4 h-4" />
+                </div>
+              </div>
+
+              <form onSubmit={handleSaveProfile} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Full Name */}
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                      {t('Full Name')} *
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                      {t('Full Name')} <span className="text-rose-500">*</span>
                     </label>
                     <div className="relative">
                       <User className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
@@ -516,24 +545,24 @@ export default function ProfileIndex({ user: userProp, recentActivities = [] }) 
                         value={formData.fullName}
                         onChange={(e) => handleChange('fullName', e.target.value)}
                         placeholder={t('Enter full name')}
-                        className={`w-full rounded-xl border pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:outline-none transition-all ${
-                          profileErrors.fullName
-                            ? 'border-red-500 focus:border-red-500'
-                            : 'border-slate-200 focus:border-theme-accent'
+                        className={`w-full rounded-xl border pl-10 pr-4 py-2 text-xs sm:text-sm text-slate-800 focus:outline-none transition-all ${
+                          activeProfileErrors.fullName
+                            ? 'border-red-500 focus:border-red-500 ring-1 ring-red-200'
+                            : 'border-slate-200 focus:border-[#0f4a2d] focus:ring-1 focus:ring-[#0f4a2d]/20'
                         }`}
                       />
                     </div>
-                    {profileErrors.fullName && (
-                      <p className="mt-1 text-xs font-medium text-red-500">
-                        {profileErrors.fullName}
+                    {activeProfileErrors.fullName && (
+                      <p className="mt-1 text-xs font-medium text-rose-500">
+                        {activeProfileErrors.fullName}
                       </p>
                     )}
                   </div>
 
                   {/* Email */}
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                      {t('Email Address')} *
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                      {t('Email Address')} <span className="text-rose-500">*</span>
                     </label>
                     <div className="relative">
                       <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
@@ -543,21 +572,23 @@ export default function ProfileIndex({ user: userProp, recentActivities = [] }) 
                         value={formData.email}
                         onChange={(e) => handleChange('email', e.target.value)}
                         placeholder="admin@example.com"
-                        className={`w-full rounded-xl border pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:outline-none transition-all ${
-                          profileErrors.email
-                            ? 'border-red-500 focus:border-red-500'
-                            : 'border-slate-200 focus:border-theme-accent'
+                        className={`w-full rounded-xl border pl-10 pr-4 py-2 text-xs sm:text-sm text-slate-800 focus:outline-none transition-all ${
+                          activeProfileErrors.email
+                            ? 'border-red-500 focus:border-red-500 ring-1 ring-red-200'
+                            : 'border-slate-200 focus:border-[#0f4a2d] focus:ring-1 focus:ring-[#0f4a2d]/20'
                         }`}
                       />
                     </div>
-                    {profileErrors.email && (
-                      <p className="mt-1 text-xs font-medium text-red-500">{profileErrors.email}</p>
+                    {activeProfileErrors.email && (
+                      <p className="mt-1 text-xs font-medium text-rose-500">
+                        {activeProfileErrors.email}
+                      </p>
                     )}
                   </div>
 
                   {/* Phone */}
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                       {t('Phone Number')}
                     </label>
                     <div className="relative">
@@ -567,284 +598,254 @@ export default function ProfileIndex({ user: userProp, recentActivities = [] }) 
                         value={formData.phone}
                         onChange={(e) => handleChange('phone', e.target.value)}
                         placeholder="+94 77 123 4567"
-                        className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:border-theme-accent focus:outline-none"
+                        className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2 text-xs sm:text-sm text-slate-800 focus:border-[#0f4a2d] focus:ring-1 focus:ring-[#0f4a2d]/20 focus:outline-none"
                       />
                     </div>
-                    {profileErrors.phone && (
-                      <p className="mt-1 text-xs font-medium text-red-500">{profileErrors.phone}</p>
+                    {activeProfileErrors.phone && (
+                      <p className="mt-1 text-xs font-medium text-rose-500">
+                        {activeProfileErrors.phone}
+                      </p>
                     )}
                   </div>
                 </div>
 
-                {/* Save / Cancel Footer */}
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                {/* Action Buttons */}
+                <div className="pt-3 flex items-center justify-end gap-2.5">
                   <button
                     type="button"
                     onClick={handleCancelProfile}
-                    disabled={isSubmitting}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition disabled:opacity-50"
+                    disabled={isSubmitting || !isDirty}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition disabled:opacity-40"
                   >
-                    <RotateCcw className="h-4 w-4 text-slate-500" />
-                    {t('Cancel')}
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    {t('Reset')}
                   </button>
+
                   <button
                     type="submit"
-                    disabled={isSubmitting}
-                    className="inline-flex items-center gap-2 rounded-xl bg-theme-accent px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-theme-accent/20 transition-all hover:bg-theme-accent-hover active:scale-95 disabled:opacity-50"
+                    disabled={isSubmitting || !isDirty}
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#0f4a2d] hover:bg-[#0c3e25] px-5 py-2 text-xs font-semibold text-white shadow-2xs transition-all active:scale-95 disabled:opacity-50"
                   >
                     {isSubmitting ? (
-                      <Loader2 className="h-4 w-4 animate-spin text-white" />
+                      <Loader2 className="h-3.5 w-3.5 animate-spin text-white" />
                     ) : (
-                      <Save className="h-4 w-4" />
+                      <Save className="h-3.5 w-3.5" />
                     )}
                     {t('Save Changes')}
                   </button>
                 </div>
               </form>
             </div>
-          </TableCard>
-        )}
 
-        {/* TAB 2: SECURITY & PASSWORD */}
-        {activeTab === 'security' && (
-          <TableCard>
-            <div className="p-6 sm:p-8 space-y-6">
-              <div className="border-b border-slate-100 pb-4">
-                <h3 className="text-lg font-bold text-slate-900">{t('Change Password')}</h3>
-                <p className="text-xs text-slate-500">
-                  {t('Ensure your account is using a long and secure password.')}
-                </p>
+            {/* 2. SECURITY & PASSWORD CARD */}
+            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-100 shadow-sm space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+                    {t('Security & Authentication')}
+                  </h3>
+                  <p className="text-xs text-slate-400 font-medium mt-0.5">
+                    {t('Update your administrator password and safeguard your login credentials.')}
+                  </p>
+                </div>
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-[#0f4a2d]">
+                  <KeyRound className="w-4 h-4" />
+                </div>
               </div>
 
-              <form onSubmit={handleChangePassword} className="max-w-xl space-y-4">
-                {/* Current Password */}
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                    {t('Current Password')} *
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
-                    <input
-                      type={showCurrent ? 'text' : 'password'}
-                      required
-                      value={passwords.currentPassword}
-                      onChange={(e) =>
-                        setPasswords({ ...passwords, currentPassword: e.target.value })
-                      }
-                      placeholder="••••••••"
-                      className={`w-full rounded-xl border pl-10 pr-10 py-2.5 text-sm text-slate-800 focus:outline-none transition-all ${
-                        passwordErrors.currentPassword
-                          ? 'border-red-500 focus:border-red-500'
-                          : 'border-slate-200 focus:border-theme-accent'
-                      }`}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowCurrent(!showCurrent)}
-                      className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 transition"
-                    >
-                      {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {/* Current Password */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                      {t('Current Password')} <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
+                      <input
+                        type={showCurrent ? 'text' : 'password'}
+                        required
+                        value={passwords.currentPassword}
+                        onChange={(e) =>
+                          setPasswords({ ...passwords, currentPassword: e.target.value })
+                        }
+                        placeholder="••••••••"
+                        className={`w-full rounded-xl border pl-10 pr-9 py-2 text-xs sm:text-sm text-slate-800 focus:outline-none transition-all ${
+                          activePasswordErrors.currentPassword
+                            ? 'border-red-500 focus:border-red-500'
+                            : 'border-slate-200 focus:border-[#0f4a2d] focus:ring-1 focus:ring-[#0f4a2d]/20'
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowCurrent(!showCurrent)}
+                        className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 transition"
+                      >
+                        {showCurrent ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      </button>
+                    </div>
+                    {activePasswordErrors.currentPassword && (
+                      <p className="mt-1 text-xs font-medium text-rose-500">
+                        {activePasswordErrors.currentPassword}
+                      </p>
+                    )}
                   </div>
-                  {passwordErrors.currentPassword && (
-                    <p className="mt-1 text-xs font-medium text-red-500">
-                      {passwordErrors.currentPassword}
-                    </p>
-                  )}
+
+                  {/* New Password */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                      {t('New Password')} <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
+                      <input
+                        type={showNew ? 'text' : 'password'}
+                        required
+                        value={passwords.newPassword}
+                        onChange={(e) => {
+                          setPasswords({ ...passwords, newPassword: e.target.value });
+                          if (passwordErrors.newPassword)
+                            setPasswordErrors({ ...passwordErrors, newPassword: '' });
+                        }}
+                        placeholder="••••••••"
+                        className={`w-full rounded-xl border pl-10 pr-9 py-2 text-xs sm:text-sm text-slate-800 focus:outline-none transition-all ${
+                          activePasswordErrors.newPassword
+                            ? 'border-red-500 focus:border-red-500'
+                            : 'border-slate-200 focus:border-[#0f4a2d] focus:ring-1 focus:ring-[#0f4a2d]/20'
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNew(!showNew)}
+                        className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 transition"
+                      >
+                        {showNew ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      </button>
+                    </div>
+                    {activePasswordErrors.newPassword && (
+                      <p className="mt-1 text-xs font-medium text-rose-500">
+                        {activePasswordErrors.newPassword}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Confirm Password */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                      {t('Confirm Password')} <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
+                      <input
+                        type={showConfirm ? 'text' : 'password'}
+                        required
+                        value={passwords.confirmPassword}
+                        onChange={(e) => {
+                          setPasswords({ ...passwords, confirmPassword: e.target.value });
+                          if (passwordErrors.confirmPassword)
+                            setPasswordErrors({ ...passwordErrors, confirmPassword: '' });
+                        }}
+                        placeholder="••••••••"
+                        className={`w-full rounded-xl border pl-10 pr-9 py-2 text-xs sm:text-sm text-slate-800 focus:outline-none transition-all ${
+                          activePasswordErrors.confirmPassword
+                            ? 'border-red-500 focus:border-red-500'
+                            : 'border-slate-200 focus:border-[#0f4a2d] focus:ring-1 focus:ring-[#0f4a2d]/20'
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirm(!showConfirm)}
+                        className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 transition"
+                      >
+                        {showConfirm ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      </button>
+                    </div>
+                    {activePasswordErrors.confirmPassword && (
+                      <p className="mt-1 text-xs font-medium text-rose-500">
+                        {activePasswordErrors.confirmPassword}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                {/* New Password */}
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                    {t('New Password')} *
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
-                    <input
-                      type={showNew ? 'text' : 'password'}
-                      required
-                      value={passwords.newPassword}
-                      onChange={(e) => {
-                        setPasswords({ ...passwords, newPassword: e.target.value });
-                        if (passwordErrors.newPassword)
-                          setPasswordErrors({ ...passwordErrors, newPassword: '' });
-                      }}
-                      placeholder="••••••••"
-                      className={`w-full rounded-xl border pl-10 pr-10 py-2.5 text-sm text-slate-800 focus:outline-none transition-all ${
-                        passwordErrors.newPassword
-                          ? 'border-red-500 focus:border-red-500'
-                          : 'border-slate-200 focus:border-theme-accent'
-                      }`}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowNew(!showNew)}
-                      className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 transition"
-                    >
-                      {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
+                <div className="pt-2 flex items-center justify-between">
+                  <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                    <span>{t('Must be at least 8 characters long')}</span>
                   </div>
-                  {passwordErrors.newPassword && (
-                    <p className="mt-1 text-xs font-medium text-red-500">
-                      {passwordErrors.newPassword}
-                    </p>
-                  )}
-                </div>
 
-                {/* Confirm Password */}
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                    {t('Confirm New Password')} *
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
-                    <input
-                      type={showConfirm ? 'text' : 'password'}
-                      required
-                      value={passwords.confirmPassword}
-                      onChange={(e) => {
-                        setPasswords({ ...passwords, confirmPassword: e.target.value });
-                        if (passwordErrors.confirmPassword)
-                          setPasswordErrors({ ...passwordErrors, confirmPassword: '' });
-                      }}
-                      placeholder="••••••••"
-                      className={`w-full rounded-xl border pl-10 pr-10 py-2.5 text-sm text-slate-800 focus:outline-none transition-all ${
-                        passwordErrors.confirmPassword
-                          ? 'border-red-500 focus:border-red-500'
-                          : 'border-slate-200 focus:border-theme-accent'
-                      }`}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirm(!showConfirm)}
-                      className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 transition"
-                    >
-                      {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                  {passwordErrors.confirmPassword && (
-                    <p className="mt-1 text-xs font-medium text-red-500">
-                      {passwordErrors.confirmPassword}
-                    </p>
-                  )}
-                </div>
-
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-start">
                   <button
                     type="submit"
                     disabled={isPasswordSubmitting}
-                    className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-slate-800 active:scale-95 disabled:opacity-50"
+                    className="inline-flex items-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 px-5 py-2 text-xs font-semibold text-white shadow-2xs transition-all active:scale-95 disabled:opacity-50"
                   >
                     {isPasswordSubmitting ? (
-                      <Loader2 className="h-4 w-4 animate-spin text-white" />
+                      <Loader2 className="h-3.5 w-3.5 animate-spin text-white" />
                     ) : (
-                      <Lock className="h-4 w-4" />
+                      <Lock className="h-3.5 w-3.5" />
                     )}
-                    {t('Change Password')}
+                    {t('Update Password')}
                   </button>
                 </div>
               </form>
             </div>
-          </TableCard>
-        )}
 
-        {/* TAB 3: ACCOUNT OVERVIEW & ACTIVITY */}
-        {activeTab === 'account' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Account Metadata Card */}
-            <TableCard>
-              <div className="p-6 space-y-4">
-                <div className="border-b border-slate-100 pb-3">
-                  <h3 className="text-base font-bold text-slate-900">{t('Account Metadata')}</h3>
-                  <p className="text-xs text-slate-500">
-                    {t('Overview of system roles and account permissions.')}
+            {/* 3. RECENT ACTIVITY AUDIT LOG CARD */}
+            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+                    {t('Recent Activity Log')}
+                  </h3>
+                  <p className="text-xs text-slate-400 font-medium mt-0.5">
+                    {t('System logs and administrative actions executed on this account.')}
                   </p>
                 </div>
 
-                <div className="space-y-3.5 text-xs">
-                  <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
-                    <span className="text-slate-500 font-medium">{t('User ID')}</span>
-                    <span className="font-mono font-bold text-slate-900">{displayUserId}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
-                    <span className="text-slate-500 font-medium">{t('Role')}</span>
-                    <span className="font-bold text-slate-800">{displayRole}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
-                    <span className="text-slate-500 font-medium">{t('Account Status')}</span>
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                      {displayStatus}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
-                    <span className="text-slate-500 font-medium">{t('Created Date')}</span>
-                    <span className="font-semibold text-slate-700">{createdDate}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50">
-                    <span className="text-slate-500 font-medium">{t('Last Activity')}</span>
-                    <span className="font-semibold text-slate-700">{lastActivityTime}</span>
-                  </div>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full">
+                  <History className="w-3.5 h-3.5 text-slate-500" />
+                  <span>{recentActivities?.length || 0} {t('events')}</span>
                 </div>
               </div>
-            </TableCard>
 
-            {/* Recent Activity Timeline */}
-            <TableCard>
-              <div className="p-6 space-y-4">
-                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-                  <History className="h-4 w-4 text-theme-accent" />
-                  <h3 className="text-base font-bold text-slate-900">
-                    {t('Recent Activity Timeline')}
-                  </h3>
-                </div>
-
-                {recentActivities && recentActivities.length > 0 ? (
-                  <div className="space-y-4 pl-2 border-l-2 border-slate-100 text-xs">
-                    {recentActivities.map((act) => (
-                      <div key={act.id || act.time} className="relative pl-4">
-                        <span className="absolute -left-[17px] top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white ring-2 ring-indigo-200">
-                          <span className="h-1.5 w-1.5 rounded-full bg-theme-accent" />
-                        </span>
-                        <span className="font-bold text-slate-900">{act.time || act.formatted_time}</span>
-                        <p className="text-slate-600 mt-0.5">{act.title}</p>
+              {recentActivities && recentActivities.length > 0 ? (
+                <div className="space-y-2 pt-1">
+                  {recentActivities.slice(0, 5).map((act, index) => (
+                    <div
+                      key={act.id || index}
+                      className="flex items-center justify-between gap-3 p-2.5 rounded-2xl hover:bg-slate-50 transition"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
+                          <History className="w-3.5 h-3.5" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-slate-800 truncate">
+                            {act.title}
+                          </p>
+                          <p className="text-[11px] text-slate-400 truncate">
+                            {act.action || t('Admin Event')}
+                          </p>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="py-8 text-center">
-                    <History className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-                    <p className="text-xs font-semibold text-slate-500">{t('No recent activity recorded yet.')}</p>
-                    <p className="text-[11px] text-slate-400 mt-1">{t('Account events and administrative changes will appear here.')}</p>
-                  </div>
-                )}
-              </div>
-            </TableCard>
-          </div>
-        )}
-      </div>
 
-      {/* Unsaved Changes Confirmation Modal */}
-      <UnsavedChangesModal
-        open={showUnsavedModal}
-        onStay={() => {
-          setShowUnsavedModal(false);
-          setPendingTab(null);
-        }}
-        onLeave={() => {
-          setShowUnsavedModal(false);
-          setIsDirty(false);
-          setFormData(savedData);
-          setProfileErrors({});
-          if (pendingTab) {
-            setActiveTab(pendingTab);
-            setPendingTab(null);
-          }
-        }}
-      />
+                      <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1 shrink-0">
+                        <Clock className="w-3 h-3 text-slate-300" />
+                        {act.time || act.formatted_time}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-8 text-center text-xs text-slate-400">
+                  <History className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+                  <span>{t('No recent activity recorded')}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </AppLayout>
   );
 }
