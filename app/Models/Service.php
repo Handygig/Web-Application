@@ -14,7 +14,6 @@ class Service extends Model
         'service_category_id',
         'name',
         'description',
-        'base_price',
         'image',
         'is_active',
     ];
@@ -26,7 +25,6 @@ class Service extends Model
     protected function casts(): array
     {
         return [
-            'base_price' => 'decimal:2',
             'is_active' => 'boolean',
         ];
     }

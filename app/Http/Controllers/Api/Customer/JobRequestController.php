@@ -18,7 +18,7 @@ class JobRequestController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $customer = $request->user()->customer;
-        $jobRequests = JobRequest::with(['property', 'serviceCategory'])
+        $jobRequests = JobRequest::with(['property', 'serviceCategory', 'card'])
             ->where('customer_id', $customer?->id)
             ->latest()
             ->get();
@@ -35,9 +35,15 @@ class JobRequestController extends Controller
 
         $data = $request->validated();
         $data['status'] = 'pending';
+        $data['payment_method'] = $data['payment_method'] ?? 'card';
+
+        if ($data['payment_method'] === 'card' && empty($data['card_id']) && $customer) {
+            $data['card_id'] = $customer->cards()->where('is_default', true)->value('id')
+                ?? $customer->cards()->value('id');
+        }
 
         $jobRequest = $customer->jobRequests()->create($data);
-        $jobRequest->load(['property', 'serviceCategory']);
+        $jobRequest->load(['property', 'serviceCategory', 'card']);
 
         return (new JobRequestResource($jobRequest))
             ->response()
@@ -54,7 +60,7 @@ class JobRequestController extends Controller
             return response()->json(['message' => __('Unauthorized')], 403);
         }
 
-        $jobRequest->load(['property', 'serviceCategory', 'quotations.provider.user', 'assignment.provider.user']);
+        $jobRequest->load(['property', 'serviceCategory', 'card', 'quotations.provider.user', 'assignment.provider.user']);
 
         return new JobRequestResource($jobRequest);
     }

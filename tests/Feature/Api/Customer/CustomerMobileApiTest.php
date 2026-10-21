@@ -11,6 +11,7 @@ use App\Models\Property;
 use App\Models\Provider;
 use App\Models\Quotation;
 use App\Models\Review;
+use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\User;
 use Database\Seeders\RoleAndPermissionSeeder;
@@ -57,6 +58,30 @@ class CustomerMobileApiTest extends TestCase
             ->assertJsonFragment([
                 'name' => 'Plumbing',
             ]);
+    }
+
+    public function test_services_catalog_excludes_pricing(): void
+    {
+        $category = ServiceCategory::create([
+            'service_name' => 'Electrical',
+            'description' => 'Wiring and socket repairs',
+            'is_active' => true,
+        ]);
+
+        Service::create([
+            'service_category_id' => $category->id,
+            'name' => 'Ceiling Fan Installation',
+            'description' => 'Install and balance ceiling fan',
+            'is_active' => true,
+        ]);
+
+        $response = $this->actingAs($this->user, 'sanctum')
+            ->getJson('/api/customer/services');
+
+        $response->assertStatus(200)
+            ->assertJsonPath('data.0.name', 'Ceiling Fan Installation')
+            ->assertJsonMissingPath('data.0.base_price')
+            ->assertJsonMissingPath('data.0.price');
     }
 
     public function test_can_manage_properties(): void
@@ -116,27 +141,80 @@ class CustomerMobileApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        // 1. Create job request
+        // 1. Create job request with cash payment
         $response = $this->actingAs($this->user, 'sanctum')
             ->postJson('/api/customer/job-requests', [
                 'property_id' => $property->id,
                 'service_category_id' => $category->id,
                 'description' => 'Fix heater issues',
                 'preferred_date' => now()->addDays(2)->toIso8601String(),
+                'payment_method' => 'cash',
             ]);
 
         $response->assertStatus(201)
             ->assertJsonPath('data.description', 'Fix heater issues')
-            ->assertJsonPath('data.status', 'pending');
+            ->assertJsonPath('data.status', 'pending')
+            ->assertJsonPath('data.payment_method', 'cash');
 
         $requestId = $response->json('data.id');
+
+        // Create a card and test card payment booking
+        $card = CustomerCard::create([
+            'customer_id' => $this->customer->id,
+            'card_type' => 'visa',
+            'masked_card_number' => '**** **** **** 4242',
+            'expiry_date' => '12/28',
+            'card_holder_name' => 'Jane Doe',
+            'is_default' => true,
+        ]);
+
+        $cardBookingResponse = $this->actingAs($this->user, 'sanctum')
+            ->postJson('/api/customer/job-requests', [
+                'property_id' => $property->id,
+                'service_category_id' => $category->id,
+                'description' => 'Fix AC compressor',
+                'preferred_date' => now()->addDays(3)->toIso8601String(),
+                'payment_method' => 'card',
+                'card_id' => $card->id,
+            ]);
+
+        $cardBookingResponse->assertStatus(201)
+            ->assertJsonPath('data.payment_method', 'card')
+            ->assertJsonPath('data.card_id', $card->id);
+
+        // Validation test: Cannot use a card or property belonging to someone else
+        $otherUser = User::create([
+            'role' => 'customer',
+            'full_name' => 'Other Customer',
+            'email' => 'other@example.com',
+            'phone' => '+15555557777',
+            'status' => 'active',
+        ]);
+        $otherCustomer = Customer::create(['user_id' => $otherUser->id]);
+        $otherProperty = Property::create([
+            'customer_id' => $otherCustomer->id,
+            'label' => 'Other Home',
+            'address_line' => '456 Other St',
+            'city' => 'Metropolis',
+        ]);
+
+        $invalidResponse = $this->actingAs($this->user, 'sanctum')
+            ->postJson('/api/customer/job-requests', [
+                'property_id' => $otherProperty->id,
+                'service_category_id' => $category->id,
+                'description' => 'Invalid property booking',
+                'preferred_date' => now()->addDays(2)->toIso8601String(),
+            ]);
+
+        $invalidResponse->assertStatus(422)
+            ->assertJsonValidationErrors(['property_id']);
 
         // 2. List job requests
         $response = $this->actingAs($this->user, 'sanctum')
             ->getJson('/api/customer/job-requests');
 
         $response->assertStatus(200)
-            ->assertJsonCount(1, 'data');
+            ->assertJsonCount(2, 'data');
 
         // 3. Show specific job request
         $response = $this->actingAs($this->user, 'sanctum')

@@ -16,8 +16,6 @@ class ServiceResource extends JsonResource
             'category_id' => $this->service_category_id,
             'category' => $this->category?->service_name ?? '',
             'description' => $this->description,
-            'base_price' => $this->base_price !== null ? (float) $this->base_price : null,
-            'price' => $this->base_price !== null ? 'From $'.number_format((float) $this->base_price, 0) : 'Flexible',
             'image_url' => $this->image_url,
             'is_active' => (bool) $this->is_active,
         ];

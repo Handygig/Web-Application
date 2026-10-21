@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(['customer_id', 'property_id', 'service_category_id', 'title', 'budget', 'history', 'description', 'preferred_date', 'status'])]
+#[Fillable(['customer_id', 'property_id', 'service_category_id', 'title', 'budget', 'history', 'description', 'preferred_date', 'status', 'payment_method', 'card_id'])]
 class JobRequest extends Model
 {
     protected function casts(): array
@@ -26,6 +26,11 @@ class JobRequest extends Model
     public function property(): BelongsTo
     {
         return $this->belongsTo(Property::class);
+    }
+
+    public function card(): BelongsTo
+    {
+        return $this->belongsTo(CustomerCard::class, 'card_id');
     }
 
     public function serviceCategory(): BelongsTo
