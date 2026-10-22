@@ -1,5 +1,5 @@
 # Use the official PHP 8.4 image with Apache
-FROM php:8.4-apache
+FROM php:8.4.27-apache
 
 # Set working directory for Apache's web root
 WORKDIR /var/www/html
