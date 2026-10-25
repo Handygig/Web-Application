@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Customer\ExclusiveOfferController as CustomerExclus
 use App\Http\Controllers\Api\Customer\FaqController as CustomerFaqController;
 use App\Http\Controllers\Api\Customer\NotificationController as CustomerNotificationController;
 use App\Http\Controllers\Api\Customer\RewardController as CustomerRewardController;
+use App\Http\Controllers\Api\Customer\ProviderSearchController;
 use App\Http\Controllers\Api\Customer\ServiceCategoryController;
 use App\Http\Controllers\Api\Customer\ServiceController as CustomerServiceController;
 use App\Http\Controllers\Api\Provider\AuthController as ProviderAuthController;
@@ -50,6 +51,7 @@ Route::get('services/{service}', [CustomerServiceController::class, 'show']);
 Route::get('exclusive-offers', [CustomerExclusiveOfferController::class, 'index']);
 Route::get('faqs', [CustomerFaqController::class, 'index']);
 Route::get('faqs/categories', [CustomerFaqController::class, 'categories']);
+Route::get('providers/search', [ProviderSearchController::class, 'search']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user/profile', [AuthController::class, 'profile']);
@@ -59,6 +61,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Protected Customer API Routes
     Route::middleware('role:customer')->prefix('customer')->group(function () {
         Route::put('complete-profile', [CustomerAuthController::class, 'completeProfile']);
+
+        // Providers Search & Locator
+        Route::get('providers/search', [ProviderSearchController::class, 'search']);
 
         // Service Categories & Services
         Route::get('service-categories', [ServiceCategoryController::class, 'index']);
