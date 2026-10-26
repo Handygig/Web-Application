@@ -70,34 +70,15 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Morning Shift (08:00 - 16:00)',
       rating: 4.9,
       completedJobs: 142,
-      avatar:
-        'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80',
+      avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80',
       location: 'Downtown District 4',
       joinedDate: 'Jan 2024',
       emergencyContact: 'Sarah Miller — +94 71 987 1234 (Spouse)',
       certifications: 'Master Plumber License #LK-884, Backflow Prevention Certified.',
       recentJobs: [
-        {
-          id: 'JOB-4089',
-          client: 'Sarah Jenkins',
-          service: 'Emergency Pipe Leak Repair',
-          status: 'In Progress',
-          date: 'Today',
-        },
-        {
-          id: 'JOB-4055',
-          client: 'Michael Scott',
-          service: 'Water Heater Replacement',
-          status: 'Completed',
-          date: 'Yesterday',
-        },
-        {
-          id: 'JOB-4012',
-          client: 'Pam Beesly',
-          service: 'Drain Clog Removal',
-          status: 'Completed',
-          date: '3 days ago',
-        },
+        { id: 'JOB-4089', client: 'Sarah Jenkins', service: 'Emergency Pipe Leak Repair', status: 'In Progress', date: 'Today' },
+        { id: 'JOB-4055', client: 'Michael Scott', service: 'Water Heater Replacement', status: 'Completed', date: 'Yesterday' },
+        { id: 'JOB-4012', client: 'Pam Beesly', service: 'Drain Clog Removal', status: 'Completed', date: '3 days ago' },
       ],
     },
     {
@@ -114,27 +95,14 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Day Shift (09:00 - 17:00)',
       rating: 4.85,
       completedJobs: 98,
-      avatar:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
       location: 'Northside Suburbs',
       joinedDate: 'Mar 2024',
       emergencyContact: 'Carlos Rivera — +94 71 321 7654 (Brother)',
       certifications: 'EPA Universal HVAC Certification, NATE Certified.',
       recentJobs: [
-        {
-          id: 'JOB-4084',
-          client: 'Robert Chen',
-          service: 'HVAC Unit Diagnostics & Tune-up',
-          status: 'In Progress',
-          date: 'Today',
-        },
-        {
-          id: 'JOB-4040',
-          client: 'Jim Halpert',
-          service: 'Central AC Refrigerant Refill',
-          status: 'Completed',
-          date: '2 days ago',
-        },
+        { id: 'JOB-4084', client: 'Robert Chen', service: 'HVAC Unit Diagnostics & Tune-up', status: 'In Progress', date: 'Today' },
+        { id: 'JOB-4040', client: 'Jim Halpert', service: 'Central AC Refrigerant Refill', status: 'Completed', date: '2 days ago' },
       ],
     },
     {
@@ -151,27 +119,14 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Day Shift (08:30 - 16:30)',
       rating: 4.95,
       completedJobs: 176,
-      avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
       location: 'Commercial Zone West',
       joinedDate: 'Nov 2023',
       emergencyContact: 'Martha Wilson — +94 71 876 1234 (Mother)',
       certifications: 'Commercial Master Electrician License #EL-9901.',
       recentJobs: [
-        {
-          id: 'JOB-4081',
-          client: 'Marcus Brody',
-          service: 'Commercial Electrical Panel Upgrade',
-          status: 'Scheduled',
-          date: 'Today, 2:30 PM',
-        },
-        {
-          id: 'JOB-4029',
-          client: 'Angela Martin',
-          service: 'Lighting Circuit Installation',
-          status: 'Completed',
-          date: '4 days ago',
-        },
+        { id: 'JOB-4081', client: 'Marcus Brody', service: 'Commercial Electrical Panel Upgrade', status: 'Scheduled', date: 'Today, 2:30 PM' },
+        { id: 'JOB-4029', client: 'Angela Martin', service: 'Lighting Circuit Installation', status: 'Completed', date: '4 days ago' },
       ],
     },
     {
@@ -188,20 +143,13 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Morning Shift (07:00 - 15:00)',
       rating: 4.78,
       completedJobs: 84,
-      avatar:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
       location: 'Westside Avenue',
       joinedDate: 'May 2024',
       emergencyContact: 'Priya Patel — +94 71 234 9988 (Wife)',
       certifications: 'Journeyman Plumber License #PL-3312.',
       recentJobs: [
-        {
-          id: 'JOB-4078',
-          client: 'Elena Rostova',
-          service: 'High-Pressure Sewer Line Cleansing',
-          status: 'In Progress',
-          date: 'Today',
-        },
+        { id: 'JOB-4078', client: 'Elena Rostova', service: 'High-Pressure Sewer Line Cleansing', status: 'In Progress', date: 'Today' },
       ],
     },
     {
@@ -218,20 +166,13 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Day Shift (09:00 - 17:00)',
       rating: 4.92,
       completedJobs: 115,
-      avatar:
-        'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
       location: 'Central Plaza',
       joinedDate: 'Feb 2024',
       emergencyContact: 'Luis Gomez — +94 71 443 8877 (Father)',
       certifications: 'OSHA 30 Maintenance Certification, Multi-Trade Skilled.',
       recentJobs: [
-        {
-          id: 'JOB-4033',
-          client: 'Dwight Schrute',
-          service: 'Drywall Repair & Fixture Fitting',
-          status: 'Completed',
-          date: 'Yesterday',
-        },
+        { id: 'JOB-4033', client: 'Dwight Schrute', service: 'Drywall Repair & Fixture Fitting', status: 'Completed', date: 'Yesterday' },
       ],
     },
     {
@@ -248,20 +189,13 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Evening Shift (14:00 - 22:00)',
       rating: 4.88,
       completedJobs: 67,
-      avatar:
-        'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
+      avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
       location: 'Eastside Sector',
       joinedDate: 'Jun 2024',
       emergencyContact: 'Tanya Vance — +94 71 112 9900 (Sister)',
       certifications: 'HVAC Duct & Air Flow Diagnostics Certified.',
       recentJobs: [
-        {
-          id: 'JOB-4019',
-          client: 'Stanley Hudson',
-          service: 'Ductwork Inspection',
-          status: 'Completed',
-          date: '3 days ago',
-        },
+        { id: 'JOB-4019', client: 'Stanley Hudson', service: 'Ductwork Inspection', status: 'Completed', date: '3 days ago' },
       ],
     },
     {
@@ -278,20 +212,13 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Morning Shift (08:00 - 16:00)',
       rating: 4.96,
       completedJobs: 130,
-      avatar:
-        'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+      avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
       location: 'Tech Corridor',
       joinedDate: 'Jan 2024',
       emergencyContact: 'Kevin Chen — +94 71 776 5544 (Husband)',
       certifications: 'Residential & EV Charger Installation Specialist.',
       recentJobs: [
-        {
-          id: 'JOB-4022',
-          client: 'Oscar Martinez',
-          service: 'EV Charger Installation',
-          status: 'Completed',
-          date: '4 days ago',
-        },
+        { id: 'JOB-4022', client: 'Oscar Martinez', service: 'EV Charger Installation', status: 'Completed', date: '4 days ago' },
       ],
     },
     {
@@ -308,8 +235,7 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Day Shift (08:00 - 16:00)',
       rating: 4.75,
       completedJobs: 52,
-      avatar:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
       location: 'Southside Heights',
       joinedDate: 'Jul 2024',
       emergencyContact: 'Laura Taylor — +94 71 334 1122 (Mother)',
@@ -328,10 +254,9 @@ export default function EmployeeIndex() {
       activeAssignment: null,
       hourlyRate: '38.00',
       shiftAssignment: 'Off Duty',
-      rating: 4.7,
+      rating: 4.70,
       completedJobs: 41,
-      avatar:
-        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+      avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
       location: 'Suburban North',
       joinedDate: 'Aug 2024',
       emergencyContact: 'George Bennett — +94 71 998 1122 (Father)',
@@ -352,8 +277,7 @@ export default function EmployeeIndex() {
       shiftAssignment: 'Off Duty',
       rating: 4.82,
       completedJobs: 79,
-      avatar:
-        'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
       location: 'Downtown East',
       joinedDate: 'Apr 2024',
       emergencyContact: 'Neville Abbott — +94 71 667 8899 (Brother)',
@@ -382,11 +306,11 @@ export default function EmployeeIndex() {
   const [deletingTech, setDeletingTech] = useState(null);
 
   // Calculate Key Metrics
-  const totalStaff = technicians.length;
-  const currentlyOnShift = technicians.filter(
+  const totalStaff = activeTechnicians.length;
+  const currentlyOnShift = activeTechnicians.filter(
     (t) => t.status === 'on_shift_job' || t.status === 'available' || t.status === 'on_break'
   ).length;
-  const availableForDispatch = technicians.filter((t) => t.status === 'available').length;
+  const availableForDispatch = activeTechnicians.filter((t) => t.status === 'available').length;
   const avgRating = useMemo(() => {
     if (!activeTechnicians.length) return '0.0';
     const sum = activeTechnicians.reduce((acc, curr) => acc + curr.rating, 0);
@@ -409,10 +333,7 @@ export default function EmployeeIndex() {
 
       let matchesStatus = true;
       if (statusFilter === 'on_shift') {
-        matchesStatus =
-          tech.status === 'on_shift_job' ||
-          tech.status === 'available' ||
-          tech.status === 'on_break';
+        matchesStatus = tech.status === 'on_shift_job' || tech.status === 'available' || tech.status === 'on_break';
       } else if (statusFilter === 'available') {
         matchesStatus = tech.status === 'available';
       } else if (statusFilter === 'on_shift_job') {
@@ -423,9 +344,7 @@ export default function EmployeeIndex() {
         matchesStatus = tech.status === 'on_break';
       }
 
-      // Skill filter
-      const matchesSkill =
-        skillFilter === 'all' || tech.specialization.toLowerCase() === skillFilter.toLowerCase();
+      const matchesSkill = skillFilter === 'all' || tech.specialization.toLowerCase() === skillFilter.toLowerCase();
 
       return matchesSearch && matchesStatus && matchesSkill;
     });
@@ -488,9 +407,7 @@ export default function EmployeeIndex() {
       );
       showToast(t('Employee updated successfully'), 'success');
     } else {
-      // Create new auto-generated ID
-      const newIdNumber =
-        Math.max(...technicians.map((t) => parseInt(t.id.replace('TECH-', ''), 10) || 100)) + 1;
+      const newIdNumber = Math.max(...technicians.map((t) => parseInt(t.id.replace('TECH-', ''), 10) || 100)) + 1;
       const newTech = {
         id: `TECH-${newIdNumber}`,
         ...savedData,
@@ -506,32 +423,8 @@ export default function EmployeeIndex() {
       showToast(t('Employee created successfully'), 'success');
     }
 
-    setIsModalOpen(false);
-  };
-
-  // Quick Shift Status Toggle
-  const handleToggleShiftStatus = (techId) => {
-    setTechnicians((prev) =>
-      prev.map((t) => {
-        if (t.id !== techId) return t;
-        let nextStatus = 'available';
-        if (t.status === 'available') nextStatus = 'off_duty';
-        else if (t.status === 'off_duty') nextStatus = 'available';
-        else if (t.status === 'on_break') nextStatus = 'available';
-        else if (t.status === 'on_shift_job') nextStatus = 'available';
-
-        return {
-          ...t,
-          status: nextStatus,
-          shiftAssignment:
-            nextStatus === 'off_duty'
-              ? 'Off Duty'
-              : t.shiftAssignment === 'Off Duty'
-                ? 'Day Shift (08:00 - 16:00)'
-                : t.shiftAssignment,
-        };
-      })
-    );
+    setIsFormDrawerOpen(false);
+    setEditingTech(null);
   };
 
   // Confirm Delete with Toast Feedback
@@ -574,63 +467,13 @@ export default function EmployeeIndex() {
         };
       case 'off_duty':
       default:
-        return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200 shadow-xs">
-            <span className="w-2 h-2 rounded-full bg-slate-400" />
-            {t('Off Duty')}
-          </span>
-        );
+        return {
+          label: t('Off Duty'),
+          badgeClass: 'bg-slate-100 text-slate-700 border-slate-200',
+          dotClass: 'bg-slate-400',
+        };
     }
   };
-
-  const getSpecializationBadge = (spec) => {
-    switch (spec.toLowerCase()) {
-      case 'plumbing':
-        return (
-          <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200">
-            {spec}
-          </span>
-        );
-      case 'hvac':
-        return (
-          <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200">
-            {spec}
-          </span>
-        );
-      case 'electrical':
-        return (
-          <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-            {spec}
-          </span>
-        );
-      case 'roofing':
-        return (
-          <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">
-            {spec}
-          </span>
-        );
-      default:
-        return (
-          <span className="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-            {spec}
-          </span>
-        );
-    }
-  };
-
-  const employeeTabs = [
-    { key: 'all', label: `${t('All')} (${totalStaff})` },
-    { key: 'available', label: `${t('Available')} (${availableForDispatch})` },
-    { key: 'on_shift_job', label: `${t('On Shift - In Job')} (${currentlyOnShift})` },
-    {
-      key: 'on_break',
-      label: `${t('On Break')} (${technicians.filter((t) => t.status === 'on_break').length})`,
-    },
-    {
-      key: 'off_duty',
-      label: `${t('Off Duty')} (${technicians.filter((t) => t.status === 'off_duty').length})`,
-    },
-  ];
 
   return (
     <AppLayout>
@@ -704,16 +547,15 @@ export default function EmployeeIndex() {
           {/* Results Counter directly above filter bar */}
           <div className="flex items-center justify-between px-1">
             <div className="text-xs text-slate-500 font-medium">
-              {t('Showing')}{' '}
-              <span className="font-bold text-slate-900">{filteredTechnicians.length}</span>{' '}
-              {t('technicians')}
+              {t('Showing')} <span className="font-bold text-slate-900">{filteredTechnicians.length}</span> {t('technicians')}
             </div>
           </div>
 
           {/* Filter & Search Bar */}
           <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-            {/* Search Box */}
-            <div className="relative flex-1">
+            
+            {/* Search Input Box */}
+            <div className="relative w-full lg:w-1/2">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
@@ -739,8 +581,9 @@ export default function EmployeeIndex() {
               )}
             </div>
 
-            {/* Filter Dropdowns & View Toggle */}
-            <div className="flex flex-wrap items-center gap-3">
+            {/* Filter Dropdowns */}
+            <div className="flex flex-wrap items-center gap-3 justify-between lg:justify-end">
+              
               {/* Status Dropdown */}
               <div className="relative flex items-center">
                 <Filter className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
@@ -788,560 +631,205 @@ export default function EmployeeIndex() {
 
         {/* 4. TECHNICIAN DATA TABLE CONTAINER */}
         <TableCard>
-          {filteredTechnicians.length === 0 ? (
-            <div className="p-8 text-center">
-              <div className="w-14 h-14 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
-                <Users className="w-7 h-7" />
-              </div>
-              <h3 className="text-lg font-extrabold text-slate-900">
-                {t('No technicians match your search')}
-              </h3>
-              <p className="text-sm text-slate-500 mt-1 max-w-md mx-auto">
-                {t(
-                  'Try adjusting your search query, status filters, or skill selection to see field staff.'
-                )}
-              </p>
-              <button
-                onClick={() => {
-                  setSearchQuery('');
-                  setStatusFilter('all');
-                  setSkillFilter('all');
-                }}
-                className="mt-4 px-4 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold text-xs rounded-xl transition-all"
-              >
-                {t('Reset Filters')}
-              </button>
-            </div>
-          ) : viewMode === 'table' ? (
-            /* --- TABLE VIEW --- */
-            <div className="bg-white rounded-2xl border border-[#E2E4D9] shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse table-fixed">
-                  <thead>
-                    <tr className="bg-[#F9FAF7] border-b border-[#E2E4D9] text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      <th className="py-3.5 px-6 w-64">{t('Technician')}</th>
-                      <th className="py-3.5 px-6 w-44">{t('Specialization')}</th>
-                      <th className="py-3.5 px-6 w-48">{t('Status')}</th>
-                      <th className="py-3.5 px-6 w-40">{t('Active Job')}</th>
-                      <th className="py-3.5 px-6 w-36">{t('Rating & Jobs')}</th>
-                      <th className="py-3.5 px-6 w-32">{t('Hourly Rate')}</th>
-                      <th className="py-3.5 px-6 w-36 text-right">{t('Actions')}</th>
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[850px]">
+                <thead>
+                  <tr className="bg-slate-50/60 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    <th className="px-6 py-4">{t('Technician')}</th>
+                    <th className="px-6 py-4">{t('Specialization')}</th>
+                    <th className="px-6 py-4">{t('Status')}</th>
+                    <th className="px-6 py-4">{t('Active Job')}</th>
+                    <th className="px-6 py-4">{t('Rating & Jobs')}</th>
+                    <th className="px-6 py-4">{t('Hourly Rate')}</th>
+                    <th className="px-6 py-4 text-right">{t('Actions')}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-sm">
+                  {filteredTechnicians.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="px-6 py-12 text-center text-slate-400 font-medium">
+                        <div className="flex flex-col items-center justify-center space-y-2">
+                          <AlertTriangle className="w-8 h-8 text-slate-300" />
+                          <p>{t('No technicians found matching your search or filters.')}</p>
+                        </div>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#F0F2EA] text-sm">
-                    {filteredTechnicians.map((tech) => (
-                      <tr key={tech.id} className="hover:bg-[#FAFBF7] transition-colors group">
-                        {/* Technician Info Column */}
-                        <td className="py-4 px-6 align-middle">
-                          <div className="flex items-center gap-3">
-                            <img
-                              src={tech.avatar}
-                              alt={tech.firstName}
-                              className="w-10 h-10 rounded-full object-cover border border-[#E2E4D9] shadow-2xs shrink-0"
-                            />
-                            <div className="space-y-0.5 min-w-0">
-                              <div className="font-bold text-gray-900 flex items-center gap-2">
-                                <span className="truncate">
-                                  {tech.firstName} {tech.lastName}
-                                </span>
-                                <span className="font-mono text-xs font-bold text-[#5E6933] bg-[#EBF5EC] px-2 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap shrink-0">
-                                  {tech.id}
-                                </span>
+                  ) : (
+                    paginatedTechnicians.map((tech) => {
+                      const statusConfig = getStatusConfig(tech.status);
+                      const techName = `${tech.firstName || ''} ${tech.lastName || ''}`.trim() || tech.name || 'Technician';
+                      const techAvatar = tech.avatar_url || tech.avatar || tech.profile_image || null;
+                      const techInitials = techName
+                        ? techName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+                        : 'T';
+
+                      return (
+                        <tr
+                          key={tech.id}
+                          onClick={() => handleViewDetails(tech)}
+                          className="hover:bg-slate-50/70 transition-colors cursor-pointer group"
+                        >
+                          {/* 1. Technician Info */}
+                          <td className="px-6 py-4 align-middle">
+                            <div className="flex items-center gap-3">
+                              {techAvatar ? (
+                                <img
+                                  src={techAvatar}
+                                  alt={techName}
+                                  className="w-9 h-9 rounded-full object-cover border border-slate-200 shrink-0"
+                                />
+                              ) : (
+                                <div className="w-9 h-9 rounded-full bg-theme-accent/10 text-theme-accent font-bold text-xs flex items-center justify-center shrink-0 border border-theme-accent/20">
+                                  {techInitials}
+                                </div>
+                              )}
+                              <div className="min-w-0 space-y-0.5">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-bold text-slate-900 text-sm truncate max-w-[160px]">
+                                    {tech.firstName} {tech.lastName}
+                                  </span>
+                                  <span className="font-mono text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/80 shrink-0">
+                                    {tech.id}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium truncate max-w-[200px]">
+                                  <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                  <span className="truncate">{tech.phone}</span>
+                                </div>
                               </div>
-                              <div className="flex items-center gap-3 text-xs text-gray-500 whitespace-nowrap">
-                                <span className="flex items-center gap-1">
-                                  <Phone className="w-3 h-3 text-gray-400" />
-                                  {tech.phone}
-                                </span>
+                            </div>
+                          </td>
+
+                          {/* 2. Specialization */}
+                          <td className="px-6 py-4 align-middle whitespace-nowrap">
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200/70 text-slate-700 text-xs font-semibold">
+                              {getCategoryIcon(tech.specialization)}
+                              <span>{tech.specialization}</span>
+                            </div>
+                          </td>
+
+                          {/* 3. Status Dropdown Pill */}
+                          <td className="px-6 py-4 align-middle whitespace-nowrap">
+                            <div
+                              className="relative inline-flex items-center"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <div
+                                className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold border ${statusConfig.badgeClass} shadow-2xs transition-all hover:brightness-95`}
+                              >
+                                <span className={`h-2 w-2 rounded-full shrink-0 ${statusConfig.dotClass}`} />
+                                <select
+                                  value={tech.status}
+                                  onChange={(e) => handleStatusChange(tech.id, e.target.value)}
+                                  className="bg-transparent appearance-none bg-none [background-image:none] border-none py-0 pl-0 pr-4 text-xs font-bold focus:ring-0 focus:outline-none cursor-pointer leading-tight text-inherit outline-none shadow-none"
+                                >
+                                  <option value="available" className="bg-white text-slate-800 font-medium">
+                                    {t('Available')}
+                                  </option>
+                                  <option value="on_shift_job" className="bg-white text-slate-800 font-medium">
+                                    {t('In Job')}
+                                  </option>
+                                  <option value="on_break" className="bg-white text-slate-800 font-medium">
+                                    {t('On Break')}
+                                  </option>
+                                  <option value="off_duty" className="bg-white text-slate-800 font-medium">
+                                    {t('Off Duty')}
+                                  </option>
+                                </select>
+                                <ChevronDown className="w-3 h-3 absolute right-2.5 pointer-events-none opacity-60 shrink-0" />
                               </div>
                             </div>
-                          </div>
-                        </td>
+                          </td>
 
-                        {/* Specialization / Role Column */}
-                        <td className="py-4 px-6 align-middle">
-                          <div className="space-y-1">
-                            <div>{getSpecializationBadge(tech.specialization)}</div>
-                            <div className="text-xs font-medium text-gray-500 truncate">
-                              {tech.roleTitle}
+                          {/* 4. Active Job */}
+                          <td className="px-6 py-4 align-middle whitespace-nowrap">
+                            {tech.activeAssignment ? (
+                              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200/80 text-xs font-bold">
+                                <Briefcase className="w-3.5 h-3.5 text-amber-600" />
+                                <span>{tech.activeAssignment}</span>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-slate-400 font-medium italic">
+                                {t('Unassigned')}
+                              </span>
+                            )}
+                          </td>
+
+                          {/* 5. Rating & Jobs */}
+                          <td className="px-6 py-4 align-middle whitespace-nowrap">
+                            <div className="flex items-center gap-1.5">
+                              <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                              <span className="font-extrabold text-slate-900 text-sm">{tech.rating}</span>
+                              <span className="text-xs text-slate-400 font-medium">({tech.completedJobs} {t('jobs')})</span>
                             </div>
-                          </div>
-                        </td>
+                          </td>
 
-                        {/* Status Badge Column */}
-                        <td className="py-4 px-6 align-middle whitespace-nowrap">
-                          <div className="space-y-1">
-                            {getStatusBadge(tech.status)}
-                            <div className="text-[11px] font-medium text-gray-400 flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {tech.shiftAssignment}
+                          {/* 6. Hourly Rate */}
+                          <td className="px-6 py-4 align-middle whitespace-nowrap">
+                            <span className="font-bold text-slate-900 text-sm">${tech.hourlyRate}/hr</span>
+                          </td>
+
+                          {/* 7. Actions */}
+                          <td className="px-6 py-4 align-middle text-right whitespace-nowrap">
+                            <div className="flex items-center justify-end gap-1">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleViewDetails(tech);
+                                }}
+                                title={t('View Details')}
+                                className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleOpenEditDrawer(tech);
+                                }}
+                                title={t('Edit Details')}
+                                className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeletingTech(tech);
+                                }}
+                                title={t('Delete')}
+                                className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
                             </div>
-                          </div>
-                        </td>
-
-                        {/* Active Assignment Column */}
-                        <td className="py-4 px-6 align-middle whitespace-nowrap">
-                          {tech.activeAssignment ? (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
-                              <Briefcase className="w-3.5 h-3.5 text-amber-600" />
-                              {tech.activeAssignment}
-                            </span>
-                          ) : (
-                            <span className="text-xs font-medium text-gray-400 italic">
-                              {t('Unassigned')}
-                            </span>
-                          )}
-                        </td>
-
-                        {/* Rating & Jobs Column */}
-                        <td className="py-4 px-6 align-middle whitespace-nowrap">
-                          <div className="flex items-center gap-1.5">
-                            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                            <span className="font-extrabold text-gray-900">{tech.rating}</span>
-                            <span className="text-xs text-gray-400 font-medium">
-                              ({tech.completedJobs} {t('jobs')})
-                            </span>
-                          </div>
-                        </td>
-
-                        {/* Hourly Rate Column */}
-                        <td className="py-4 px-6 align-middle whitespace-nowrap">
-                          <span className="font-bold text-gray-900">${tech.hourlyRate}/hr</span>
-                        </td>
-
-                        {/* Actions Column */}
-                        <td className="py-4 px-6 align-middle text-right whitespace-nowrap">
-                          <div className="flex items-center justify-end gap-1">
-                            {/* Schedule / History Button */}
-                            <button
-                              onClick={() => setSelectedTechForSchedule(tech)}
-                              className="p-1.5 text-gray-600 hover:text-gray-900 border border-[#E2E4D9] bg-white hover:bg-gray-50 rounded-lg transition-all shadow-2xs"
-                              title={t('View Schedule & History')}
-                            >
-                              <Calendar className="w-3.5 h-3.5" />
-                            </button>
-
-                            {/* Quick Shift Toggle Button */}
-                            <button
-                              onClick={() => handleToggleShiftStatus(tech.id)}
-                              className="p-1.5 text-gray-600 hover:text-emerald-700 border border-[#E2E4D9] bg-white hover:bg-emerald-50 rounded-lg transition-all shadow-2xs"
-                              title={t('Toggle Shift Status')}
-                            >
-                              <RefreshCw className="w-3.5 h-3.5" />
-                            </button>
-
-                            {/* Edit Button */}
-                            <button
-                              onClick={() => handleOpenEditModal(tech)}
-                              className="p-1.5 text-gray-600 hover:text-blue-600 border border-[#E2E4D9] bg-white hover:bg-blue-50 rounded-lg transition-all shadow-2xs"
-                              title={t('Edit Technician Details')}
-                            >
-                              <Edit2 className="w-3.5 h-3.5" />
-                            </button>
-
-                            {/* Delete Button */}
-                            <button
-                              onClick={() => handleDeleteTech(tech.id)}
-                              className="p-1.5 text-gray-600 hover:text-rose-600 border border-[#E2E4D9] bg-white hover:bg-rose-50 rounded-lg transition-all shadow-2xs"
-                              title={t('Remove Technician')}
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* TABLE FOOTER / PAGINATION */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#F9FAF7] px-6 py-3.5 border-t border-[#E2E4D9] text-xs text-gray-600">
-                <div className="whitespace-nowrap">
-                  {t('Showing')} <span className="font-bold text-gray-900">1</span>–
-                  <span className="font-bold text-gray-900">{filteredTechnicians.length}</span>{' '}
-                  {t('of')}{' '}
-                  <span className="font-bold text-gray-900">{filteredTechnicians.length}</span>{' '}
-                  {t('technicians')}
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="px-3 py-1 font-semibold text-gray-800">{t('Page 1 of 1')}</span>
-                </div>
-              </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
-          ) : (
-            /* --- GRID CARD VIEW --- */
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filteredTechnicians.map((tech) => (
-                <div
-                  key={tech.id}
-                  className="bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4"
-                >
-                  {/* Card Top Header */}
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={tech.avatar}
-                        alt={tech.firstName}
-                        className="w-12 h-12 rounded-2xl object-cover border border-slate-200 shadow-xs"
-                      />
-                      <div>
-                        <div className="font-extrabold text-slate-900 text-base leading-tight">
-                          {tech.firstName} {tech.lastName}
-                        </div>
-                        <div className="text-xs font-medium text-slate-500 mt-0.5">
-                          {tech.roleTitle}
-                        </div>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
-                      {tech.id}
-                    </span>
-                  </div>
 
-                  {/* Status & Specialization Row */}
-                  <div className="flex items-center justify-between gap-2 pt-1">
-                    <div>{getStatusBadge(tech.status)}</div>
-                    <div>{getSpecializationBadge(tech.specialization)}</div>
-                  </div>
-
-                  {/* Details Container */}
-                  <div className="bg-slate-50/80 rounded-2xl p-3.5 space-y-2 border border-slate-100 text-xs">
-                    <div className="flex items-center justify-between text-slate-600">
-                      <span className="flex items-center gap-1.5 text-slate-400">
-                        <Briefcase className="w-3.5 h-3.5" />
-                        {t('Active Assignment')}
-                      </span>
-                      {tech.activeAssignment ? (
-                        <span className="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
-                          {tech.activeAssignment}
-                        </span>
-                      ) : (
-                        <span className="text-slate-400 italic">{t('Unassigned')}</span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center justify-between text-slate-600">
-                      <span className="flex items-center gap-1.5 text-slate-400">
-                        <Clock className="w-3.5 h-3.5" />
-                        {t('Shift')}
-                      </span>
-                      <span className="font-semibold text-slate-700 truncate max-w-[170px]">
-                        {tech.shiftAssignment}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-slate-600">
-                      <span className="flex items-center gap-1.5 text-slate-400">
-                        <DollarSign className="w-3.5 h-3.5" />
-                        {t('Pay Rate')}
-                      </span>
-                      <span className="font-bold text-slate-900">${tech.hourlyRate}/hr</span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-slate-600 pt-1 border-t border-slate-200/60">
-                      <span className="flex items-center gap-1 text-slate-400">
-                        <Phone className="w-3 h-3" />
-                        {tech.phone}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                        <span className="font-extrabold text-slate-900">{tech.rating}</span>
-                        <span className="text-[11px] text-slate-400">({tech.completedJobs})</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Card Action Buttons */}
-                  <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
-                    <button
-                      onClick={() => setSelectedTechForSchedule(tech)}
-                      className="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
-                    >
-                      <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                      <span>{t('Schedule')}</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleToggleShiftStatus(tech.id)}
-                      className="py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-all border border-emerald-200"
-                      title={t('Quick Toggle Shift Status')}
-                    >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                    </button>
-
-                    <button
-                      onClick={() => handleOpenEditModal(tech)}
-                      className="py-2 px-3 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs font-bold flex items-center justify-center transition-all"
-                      title={t('Edit Details')}
-                    >
-                      <Edit2 className="w-3.5 h-3.5" />
-                    </button>
-
-                    <button
-                      onClick={() => setDeletingTech(tech)}
-                      className="py-2 px-3 bg-slate-100 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-xl text-xs font-bold flex items-center justify-center transition-all"
-                      title={t('Delete')}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </TableCard>
-
-        {/* 5. ADD / EDIT TECHNICIAN MODAL */}
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-              {/* Modal Header */}
-              <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <div>
-                  <h3 className="text-xl font-extrabold text-slate-900">
-                    {editingTech ? t('Edit Technician Details') : t('Add New Field Technician')}
-                  </h3>
-                  <p className="text-xs font-medium text-slate-500 mt-0.5">
-                    {editingTech
-                      ? t('Update staff profile, pay rates, and shift parameters')
-                      : t('Register a new team member to your provider workforce')}
-                  </p>
-                </div>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+            {/* TABLE FOOTER / PAGINATION */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/60 px-6 py-3.5 border-t border-slate-100 text-xs text-slate-600">
+              <div className="whitespace-nowrap">
+                {t('Showing')}{' '}
+                <span className="font-bold text-slate-900">
+                  {filteredTechnicians.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}
+                </span>
+                –
+                <span className="font-bold text-slate-900">
+                  {Math.min(currentPage * itemsPerPage, filteredTechnicians.length)}
+                </span>{' '}
+                {t('of')} <span className="font-bold text-slate-900">{filteredTechnicians.length}</span> {t('technicians')}
               </div>
-
-              {/* Modal Form Body */}
-              <form onSubmit={handleSubmitForm} className="p-6 space-y-4">
-                {/* Names Row */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                      {t('First Name')} *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.firstName}
-                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      placeholder="e.g. David"
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                      {t('Last Name')} *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.lastName}
-                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      placeholder="e.g. Miller"
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Contact Row */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                      {t('Phone Number')} *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="+1 (555) 000-0000"
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                      {t('Email Address')} *
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="tech@company.com"
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Specialization & Role Title */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                      {t('Primary Specialization')} *
-                    </label>
-                    <select
-                      value={formData.specialization}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          specialization: e.target.value,
-                          roleTitle: `${e.target.value} Specialist`,
-                        })
-                      }
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none"
-                    >
-                      <option value="Plumbing">{t('Plumbing')}</option>
-                      <option value="HVAC">{t('HVAC')}</option>
-                      <option value="Electrical">{t('Electrical')}</option>
-                      <option value="General Repair">{t('General Repair')}</option>
-                      <option value="Roofing">{t('Roofing')}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                      {t('Role Title')}
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.roleTitle}
-                      onChange={(e) => setFormData({ ...formData, roleTitle: e.target.value })}
-                      placeholder="e.g. Master Plumber"
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Hourly Rate & Shift Assignment */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                      {t('Hourly Rate ($ USD)')}
-                    </label>
-                    <input
-                      type="number"
-                      step="0.50"
-                      value={formData.hourlyRate}
-                      onChange={(e) => setFormData({ ...formData, hourlyRate: e.target.value })}
-                      placeholder="45.00"
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                      {t('Shift Assignment')}
-                    </label>
-                    <select
-                      value={formData.shiftAssignment}
-                      onChange={(e) =>
-                        setFormData({ ...formData, shiftAssignment: e.target.value })
-                      }
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:bg-white focus:ring-2 focus:ring-[#5E6933]/30 focus:border-[#5E6933] outline-none"
-                    >
-                      <option value="Morning Shift (08:00 - 16:00)">
-                        Morning Shift (08:00 - 16:00)
-                      </option>
-                      <option value="Day Shift (09:00 - 17:00)">Day Shift (09:00 - 17:00)</option>
-                      <option value="Evening Shift (14:00 - 22:00)">
-                        Evening Shift (14:00 - 22:00)
-                      </option>
-                      <option value="On-Call Duty">On-Call Duty</option>
-                      <option value="Off Duty">Off Duty</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Status Selector */}
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                    {t('Current Status')}
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {[
-                      {
-                        id: 'available',
-                        label: t('Available'),
-                        color: 'bg-emerald-50 text-emerald-800 border-emerald-300',
-                      },
-                      {
-                        id: 'on_shift_job',
-                        label: t('In Job'),
-                        color: 'bg-blue-50 text-blue-800 border-blue-300',
-                      },
-                      {
-                        id: 'on_break',
-                        label: t('On Break'),
-                        color: 'bg-amber-50 text-amber-800 border-amber-300',
-                      },
-                      {
-                        id: 'off_duty',
-                        label: t('Off Duty'),
-                        color: 'bg-slate-100 text-slate-700 border-slate-300',
-                      },
-                    ].map((st) => (
-                      <button
-                        type="button"
-                        key={st.id}
-                        onClick={() => setFormData({ ...formData, status: st.id })}
-                        className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
-                          formData.status === st.id
-                            ? `${st.color} shadow-xs ring-2 ring-offset-1 ring-slate-400`
-                            : 'bg-slate-50 border-slate-200 text-slate-500'
-                        }`}
-                      >
-                        {st.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Submit Buttons */}
-                <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="px-5 py-2.5 rounded-2xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all"
-                  >
-                    {t('Cancel')}
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-2.5 rounded-2xl text-xs font-bold text-white shadow-md hover:opacity-90 transition-all"
-                    style={{ backgroundColor: 'var(--color-accent)' }}
-                  >
-                    {editingTech ? t('Save Changes') : t('Create Technician Profile')}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* 6. VIEW SCHEDULE & HISTORY MODAL */}
-        {selectedTechForSchedule && (
-          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-              {/* Header */}
-              <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={selectedTechForSchedule.avatar}
-                    alt={selectedTechForSchedule.firstName}
-                    className="w-12 h-12 rounded-2xl object-cover border border-slate-200"
-                  />
-                  <div>
-                    <h3 className="text-xl font-extrabold text-slate-900">
-                      {selectedTechForSchedule.firstName} {selectedTechForSchedule.lastName}
-                    </h3>
-                    <p className="text-xs font-medium text-slate-500">
-                      {selectedTechForSchedule.roleTitle} • {selectedTechForSchedule.id}
-                    </p>
-                  </div>
-                </div>
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
@@ -1351,109 +839,9 @@ export default function EmployeeIndex() {
                   <ChevronLeft className="w-3.5 h-3.5" />
                   <span>{t('Previous')}</span>
                 </button>
-              </div>
-
-              {/* Modal Content */}
-              <div className="p-6 space-y-6">
-                {/* Stats Summary Grid */}
-                <div className="grid grid-cols-3 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  <div className="text-center">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                      {t('Overall Rating')}
-                    </span>
-                    <span className="text-xl font-extrabold text-slate-900 flex items-center justify-center gap-1 mt-1">
-                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      {selectedTechForSchedule.rating}
-                    </span>
-                  </div>
-                  <div className="text-center border-x border-slate-200/60">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                      {t('Jobs Completed')}
-                    </span>
-                    <span className="text-xl font-extrabold text-slate-900 mt-1 block">
-                      {selectedTechForSchedule.completedJobs}
-                    </span>
-                  </div>
-                  <div className="text-center">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                      {t('Hourly Rate')}
-                    </span>
-                    <span className="text-xl font-extrabold text-emerald-800 mt-1 block">
-                      ${selectedTechForSchedule.hourlyRate}/hr
-                    </span>
-                  </div>
-                </div>
-
-                {/* Shift & Location Details */}
-                <div className="space-y-2 text-xs">
-                  <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                    <span className="text-slate-500 font-semibold">{t('Assigned Shift:')}</span>
-                    <span className="font-bold text-slate-800">
-                      {selectedTechForSchedule.shiftAssignment}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                    <span className="text-slate-500 font-semibold">
-                      {t('Primary Service Zone:')}
-                    </span>
-                    <span className="font-bold text-slate-800 flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                      {selectedTechForSchedule.location}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-slate-500 font-semibold">{t('Joined Workforce:')}</span>
-                    <span className="font-bold text-slate-800">
-                      {selectedTechForSchedule.joinedDate}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Recent Completed / Active Jobs List */}
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-3 flex items-center gap-1.5">
-                    <Briefcase className="w-3.5 h-3.5 text-slate-500" />
-                    {t('Recent Dispatch & Job History')}
-                  </h4>
-                  {selectedTechForSchedule.recentJobs &&
-                  selectedTechForSchedule.recentJobs.length > 0 ? (
-                    <div className="space-y-2">
-                      {selectedTechForSchedule.recentJobs.map((job) => (
-                        <div
-                          key={job.id}
-                          className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100 text-xs"
-                        >
-                          <div>
-                            <div className="font-bold text-slate-900">{job.service}</div>
-                            <div className="text-slate-500 mt-0.5">
-                              {job.client} • <span className="font-mono">{job.id}</span>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <span
-                              className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                                job.status === 'In Progress'
-                                  ? 'bg-emerald-100 text-emerald-800'
-                                  : 'bg-slate-200 text-slate-700'
-                              }`}
-                            >
-                              {job.status}
-                            </span>
-                            <div className="text-[10px] text-slate-400 mt-1">{job.date}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="p-4 bg-slate-50 rounded-2xl text-center text-xs text-slate-400 italic">
-                      {t('No recent job history recorded yet.')}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Modal Footer */}
-              <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end">
+                <span className="px-3 py-1 font-semibold text-slate-800">
+                  {currentPage} / {totalPages}
+                </span>
                 <button
                   type="button"
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
@@ -1466,7 +854,7 @@ export default function EmployeeIndex() {
               </div>
             </div>
           </div>
-        )}
+        </TableCard>
 
         {/* 5. EMPLOYEE VIEW DETAILS SIDE DRAWER */}
         <EmployeeDetailsDrawer
@@ -1495,41 +883,22 @@ export default function EmployeeIndex() {
         />
 
         {/* 7. DELETE CONFIRMATION MODAL */}
-        {deletingTech && (
-          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-              <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100">
-                <AlertCircle className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-lg font-extrabold text-slate-900">
-                  {t('Deactivate / Delete Technician?')}
-                </h3>
-                <p className="text-xs font-medium text-slate-500 mt-1">
-                  {t('Are you sure you want to remove')}{' '}
-                  <strong className="text-slate-800">
-                    {deletingTech.firstName} {deletingTech.lastName}
-                  </strong>{' '}
-                  ({deletingTech.id}) {t('from active service dispatch?')}
-                </p>
-              </div>
-              <div className="flex items-center justify-end gap-3 pt-2">
-                <button
-                  onClick={() => setDeletingTech(null)}
-                  className="px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all"
-                >
-                  {t('Cancel')}
-                </button>
-                <button
-                  onClick={handleDeleteTech}
-                  className="px-5 py-2.5 rounded-2xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 transition-all shadow-md"
-                >
-                  {t('Deactivate Technician')}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <DeleteConfirmationModal
+          isOpen={!!deletingTech}
+          onClose={() => setDeletingTech(null)}
+          onConfirm={handleDeleteTech}
+          title={t('Remove Employee?')}
+          description={
+            deletingTech
+              ? t('Are you sure you want to remove :name (:id) from active workforce? This action cannot be undone.', {
+                  name: `${deletingTech.firstName} ${deletingTech.lastName}`,
+                  id: deletingTech.id,
+                })
+              : t('Are you sure you want to remove this employee? This action cannot be undone.')
+          }
+          confirmText={t('Remove Employee')}
+        />
+
       </div>
     </AppLayout>
   );
