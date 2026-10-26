@@ -4,14 +4,11 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Company\StoreEmployeeRequest;
-use Illuminate\Http\JsonResponse;
-use App\Http\Resources\Company\CompanyEmployeeResource;
 use App\Models\Provider;
-use App\Models\User;
+use App\Models\ServiceCategory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -27,8 +24,14 @@ class EmployeeController extends Controller
             ->whereHas('user', fn ($q) => $q->where('status', '!=', 'inactive'))
             ->get();
 
+        $serviceCategories = ServiceCategory::with(['services' => function ($q) {
+            $q->where('is_active', true)->select(['id', 'service_category_id', 'name', 'description']);
+        }])->where('is_active', true)->orderBy('id')->get(['id', 'service_name', 'icon', 'description']);
+
         return Inertia::render('Company/Employee/Index', [
             'technicians' => $employees,
+            'serviceCategories' => $serviceCategories,
+            'googleMapsApiKey' => env('VITE_GOOGLE_MAPS_API_KEY'),
         ]);
     }
 

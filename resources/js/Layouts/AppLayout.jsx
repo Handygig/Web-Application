@@ -98,7 +98,7 @@ export default function AppLayout({ children }) {
             onClose={() => setMobileOpen(false)}
             navCategories={navCategories}
           />
-          <main className="scrollbar-none flex-1 overflow-y-auto p-6">{children}</main>
+          <main className="scrollbar-none flex-1 overflow-y-auto p-6 flex flex-col">{children}</main>
         </div>
       </div>
 

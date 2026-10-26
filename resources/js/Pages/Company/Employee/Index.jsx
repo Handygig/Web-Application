@@ -27,6 +27,12 @@ import {
   Droplets,
   Wind,
   Wrench,
+  Layers,
+  Hammer,
+  Sparkles,
+  Paintbrush,
+  MapPin,
+  Globe,
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
@@ -34,11 +40,11 @@ import EmployeeDetailsDrawer from './EmployeeDetailsDrawer';
 import EmployeeFormDrawer from './EmployeeFormDrawer';
 import { useCompanyTechnicians } from '@/Hooks/useCompanyTechnicians';
 
-export default function EmployeeIndex() {
+export default function EmployeeIndex({ serviceCategories = [], googleMapsApiKey = '' }) {
   const { t } = useTranslation();
-  const { auth, flash } = usePage().props;
+  const { flash } = usePage().props;
 
-  // Toast Notification State (Matching Bookings Page)
+  // Toast Notification State
   const [toastMessage, setToastMessage] = useState(null);
 
   const showToast = (msg, type = 'success') => {
@@ -48,13 +54,15 @@ export default function EmployeeIndex() {
 
   useEffect(() => {
     if (flash?.success) {
-      showToast(flash.success, 'success');
+      const timer = setTimeout(() => showToast(flash.success, 'success'), 0);
+      return () => clearTimeout(timer);
     } else if (flash?.error) {
-      showToast(flash.error, 'error');
+      const timer = setTimeout(() => showToast(flash.error, 'error'), 0);
+      return () => clearTimeout(timer);
     }
   }, [flash]);
 
-  // Initial technicians dataset
+  // Initial technicians dataset (no hourly rate, no shift assignment, supports multiple services & Google Map radius)
   const initialTechnicians = [
     {
       id: 'TECH-101',
@@ -62,23 +70,25 @@ export default function EmployeeIndex() {
       lastName: 'Miller',
       email: 'david.m@apexservices.com',
       phone: '+94 77 234 5678',
-      specialization: 'Plumbing',
-      roleTitle: 'Master Plumber',
+      specialization: 'Electrical',
+      services: ['test sub service'],
+      roleTitle: 'Master Electrician',
       status: 'on_shift_job', // 'on_shift_job', 'available', 'off_duty', 'on_break'
       activeAssignment: 'JOB-4089',
-      hourlyRate: '48.00',
-      shiftAssignment: 'Morning Shift (08:00 - 16:00)',
+      serviceRadius: 25,
+      latitude: 6.9271,
+      longitude: 79.8612,
       rating: 4.9,
       completedJobs: 142,
       avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80',
-      location: 'Downtown District 4',
+      location: 'Colombo 04, Sri Lanka',
       joinedDate: 'Jan 2024',
       emergencyContact: 'Sarah Miller — +94 71 987 1234 (Spouse)',
-      certifications: 'Master Plumber License #LK-884, Backflow Prevention Certified.',
+      certifications: 'Electrical Safety License #LK-884.',
       recentJobs: [
-        { id: 'JOB-4089', client: 'Sarah Jenkins', service: 'Emergency Pipe Leak Repair', status: 'In Progress', date: 'Today' },
-        { id: 'JOB-4055', client: 'Michael Scott', service: 'Water Heater Replacement', status: 'Completed', date: 'Yesterday' },
-        { id: 'JOB-4012', client: 'Pam Beesly', service: 'Drain Clog Removal', status: 'Completed', date: '3 days ago' },
+        { id: 'JOB-4089', client: 'Sarah Jenkins', service: 'test sub service', status: 'In Progress', date: 'Today' },
+        { id: 'JOB-4055', client: 'Michael Scott', service: 'Circuit Inspection', status: 'Completed', date: 'Yesterday' },
+        { id: 'JOB-4012', client: 'Pam Beesly', service: 'test sub service', status: 'Completed', date: '3 days ago' },
       ],
     },
     {
@@ -87,16 +97,18 @@ export default function EmployeeIndex() {
       lastName: 'Rivera',
       email: 'alex.r@apexservices.com',
       phone: '+94 77 876 5432',
-      specialization: 'HVAC',
+      specialization: 'Electrical',
+      services: ['test sub service'],
       roleTitle: 'Lead HVAC Specialist',
       status: 'on_shift_job',
       activeAssignment: 'JOB-4084',
-      hourlyRate: '52.00',
-      shiftAssignment: 'Day Shift (09:00 - 17:00)',
+      serviceRadius: 30,
+      latitude: 6.9319,
+      longitude: 79.8478,
       rating: 4.85,
       completedJobs: 98,
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      location: 'Northside Suburbs',
+      location: 'Colombo 03, Sri Lanka',
       joinedDate: 'Mar 2024',
       emergencyContact: 'Carlos Rivera — +94 71 321 7654 (Brother)',
       certifications: 'EPA Universal HVAC Certification, NATE Certified.',
@@ -112,15 +124,17 @@ export default function EmployeeIndex() {
       email: 'james.w@apexservices.com',
       phone: '+94 77 345 6789',
       specialization: 'Electrical',
+      services: ['Electrical', 'General Repair', 'Roofing'],
       roleTitle: 'Master Electrician',
       status: 'available',
       activeAssignment: null,
-      hourlyRate: '55.00',
-      shiftAssignment: 'Day Shift (08:30 - 16:30)',
+      serviceRadius: 20,
+      latitude: 6.9147,
+      longitude: 79.8731,
       rating: 4.95,
       completedJobs: 176,
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-      location: 'Commercial Zone West',
+      location: 'Colombo 07, Sri Lanka',
       joinedDate: 'Nov 2023',
       emergencyContact: 'Martha Wilson — +94 71 876 1234 (Mother)',
       certifications: 'Commercial Master Electrician License #EL-9901.',
@@ -136,15 +150,17 @@ export default function EmployeeIndex() {
       email: 'sam.p@apexservices.com',
       phone: '+94 77 901 2345',
       specialization: 'Plumbing',
+      services: ['Plumbing', 'Cleaning'],
       roleTitle: 'Plumbing Specialist',
       status: 'on_shift_job',
       activeAssignment: 'JOB-4078',
-      hourlyRate: '45.00',
-      shiftAssignment: 'Morning Shift (07:00 - 15:00)',
+      serviceRadius: 15,
+      latitude: 6.8941,
+      longitude: 79.8547,
       rating: 4.78,
       completedJobs: 84,
       avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-      location: 'Westside Avenue',
+      location: 'Colombo 05, Sri Lanka',
       joinedDate: 'May 2024',
       emergencyContact: 'Priya Patel — +94 71 234 9988 (Wife)',
       certifications: 'Journeyman Plumber License #PL-3312.',
@@ -159,15 +175,17 @@ export default function EmployeeIndex() {
       email: 'elena.g@apexservices.com',
       phone: '+94 77 654 9870',
       specialization: 'General Repair',
+      services: ['General Repair', 'Carpentry', 'Painting'],
       roleTitle: 'Senior Maintenance Tech',
       status: 'available',
       activeAssignment: null,
-      hourlyRate: '42.00',
-      shiftAssignment: 'Day Shift (09:00 - 17:00)',
+      serviceRadius: 35,
+      latitude: 6.9016,
+      longitude: 79.8703,
       rating: 4.92,
       completedJobs: 115,
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-      location: 'Central Plaza',
+      location: 'Colombo 08, Sri Lanka',
       joinedDate: 'Feb 2024',
       emergencyContact: 'Luis Gomez — +94 71 443 8877 (Father)',
       certifications: 'OSHA 30 Maintenance Certification, Multi-Trade Skilled.',
@@ -182,15 +200,17 @@ export default function EmployeeIndex() {
       email: 'marcus.v@apexservices.com',
       phone: '+94 77 432 1098',
       specialization: 'HVAC',
+      services: ['HVAC', 'General Repair'],
       roleTitle: 'HVAC Technician',
       status: 'available',
       activeAssignment: null,
-      hourlyRate: '46.00',
-      shiftAssignment: 'Evening Shift (14:00 - 22:00)',
+      serviceRadius: 25,
+      latitude: 6.8856,
+      longitude: 79.8654,
       rating: 4.88,
       completedJobs: 67,
       avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
-      location: 'Eastside Sector',
+      location: 'Colombo 06, Sri Lanka',
       joinedDate: 'Jun 2024',
       emergencyContact: 'Tanya Vance — +94 71 112 9900 (Sister)',
       certifications: 'HVAC Duct & Air Flow Diagnostics Certified.',
@@ -205,15 +225,17 @@ export default function EmployeeIndex() {
       email: 'sophia.c@apexservices.com',
       phone: '+94 77 789 0123',
       specialization: 'Electrical',
+      services: ['Electrical', 'HVAC'],
       roleTitle: 'Electrical Specialist',
       status: 'available',
       activeAssignment: null,
-      hourlyRate: '49.00',
-      shiftAssignment: 'Morning Shift (08:00 - 16:00)',
+      serviceRadius: 40,
+      latitude: 6.9110,
+      longitude: 79.8600,
       rating: 4.96,
       completedJobs: 130,
       avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
-      location: 'Tech Corridor',
+      location: 'Colombo 02, Sri Lanka',
       joinedDate: 'Jan 2024',
       emergencyContact: 'Kevin Chen — +94 71 776 5544 (Husband)',
       certifications: 'Residential & EV Charger Installation Specialist.',
@@ -228,15 +250,17 @@ export default function EmployeeIndex() {
       email: 'robert.t@apexservices.com',
       phone: '+94 77 321 6549',
       specialization: 'Roofing',
+      services: ['Roofing', 'General Repair', 'Carpentry'],
       roleTitle: 'Roofing & Gutter Expert',
       status: 'on_break',
       activeAssignment: null,
-      hourlyRate: '44.00',
-      shiftAssignment: 'Day Shift (08:00 - 16:00)',
+      serviceRadius: 30,
+      latitude: 6.8722,
+      longitude: 79.8789,
       rating: 4.75,
       completedJobs: 52,
       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
-      location: 'Southside Heights',
+      location: 'Dehiwala, Sri Lanka',
       joinedDate: 'Jul 2024',
       emergencyContact: 'Laura Taylor — +94 71 334 1122 (Mother)',
       certifications: 'Commercial Roofing & Waterproofing Specialist.',
@@ -249,15 +273,17 @@ export default function EmployeeIndex() {
       email: 'lucas.b@apexservices.com',
       phone: '+94 77 890 1234',
       specialization: 'Plumbing',
+      services: ['Plumbing'],
       roleTitle: 'Junior Plumber',
       status: 'off_duty',
       activeAssignment: null,
-      hourlyRate: '38.00',
-      shiftAssignment: 'Off Duty',
+      serviceRadius: 15,
+      latitude: 6.9400,
+      longitude: 79.8600,
       rating: 4.70,
       completedJobs: 41,
       avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
-      location: 'Suburban North',
+      location: 'Colombo 10, Sri Lanka',
       joinedDate: 'Aug 2024',
       emergencyContact: 'George Bennett — +94 71 998 1122 (Father)',
       certifications: 'Apprentice Plumber License #AP-7041.',
@@ -270,15 +296,17 @@ export default function EmployeeIndex() {
       email: 'hannah.a@apexservices.com',
       phone: '+94 77 456 7890',
       specialization: 'HVAC',
+      services: ['HVAC', 'Electrical', 'Cleaning'],
       roleTitle: 'HVAC Diagnostics Tech',
       status: 'off_duty',
       activeAssignment: null,
-      hourlyRate: '47.00',
-      shiftAssignment: 'Off Duty',
+      serviceRadius: 25,
+      latitude: 6.9350,
+      longitude: 79.8550,
       rating: 4.82,
       completedJobs: 79,
       avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
-      location: 'Downtown East',
+      location: 'Colombo 11, Sri Lanka',
       joinedDate: 'Apr 2024',
       emergencyContact: 'Neville Abbott — +94 71 667 8899 (Brother)',
       certifications: 'Commercial HVAC Diagnostics & System Balancing.',
@@ -295,7 +323,7 @@ export default function EmployeeIndex() {
   const [skillFilter, setSkillFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Side Drawer States (Matching Bookings Page)
+  // Side Drawer States
   const [selectedEmployeeForDetails, setSelectedEmployeeForDetails] = useState(null);
   const [isDetailsDrawerOpen, setIsDetailsDrawerOpen] = useState(false);
 
@@ -317,17 +345,21 @@ export default function EmployeeIndex() {
     return (sum / activeTechnicians.length).toFixed(1);
   }, [activeTechnicians]);
 
-  // Filtered Technicians List
+  // Filtered Technicians List (matching multi-service capabilities)
   const filteredTechnicians = useMemo(() => {
     return activeTechnicians.filter((tech) => {
       const q = searchQuery.toLowerCase().trim();
+      const techServices = Array.isArray(tech.services) ? tech.services : [tech.specialization || ''];
+      const servicesString = techServices.join(' ').toLowerCase();
+
       const matchesSearch =
         !q ||
         tech.firstName.toLowerCase().includes(q) ||
         tech.lastName.toLowerCase().includes(q) ||
         tech.id.toLowerCase().includes(q) ||
-        tech.specialization.toLowerCase().includes(q) ||
-        tech.roleTitle.toLowerCase().includes(q) ||
+        servicesString.includes(q) ||
+        (tech.roleTitle && tech.roleTitle.toLowerCase().includes(q)) ||
+        (tech.location && tech.location.toLowerCase().includes(q)) ||
         tech.phone.includes(q) ||
         tech.email.toLowerCase().includes(q);
 
@@ -344,11 +376,15 @@ export default function EmployeeIndex() {
         matchesStatus = tech.status === 'on_break';
       }
 
-      const matchesSkill = skillFilter === 'all' || tech.specialization.toLowerCase() === skillFilter.toLowerCase();
+      // Check if any assigned service matches the skill filter
+      const matchesSkill =
+        skillFilter === 'all' ||
+        techServices.some((s) => s.toLowerCase() === skillFilter.toLowerCase()) ||
+        (tech.specialization && tech.specialization.toLowerCase() === skillFilter.toLowerCase());
 
       return matchesSearch && matchesStatus && matchesSkill;
     });
-  }, [technicians, searchQuery, statusFilter, skillFilter]);
+  }, [activeTechnicians, searchQuery, statusFilter, skillFilter]);
 
   // Pagination calculations
   const itemsPerPage = 8;
@@ -411,11 +447,15 @@ export default function EmployeeIndex() {
       const newTech = {
         id: `TECH-${newIdNumber}`,
         ...savedData,
+        services: savedData.services && savedData.services.length > 0 ? savedData.services : [savedData.specialization || 'General Repair'],
+        serviceRadius: savedData.serviceRadius || 25,
+        latitude: savedData.latitude || 6.9271,
+        longitude: savedData.longitude || 79.8612,
         activeAssignment: null,
         rating: 5.0,
         completedJobs: 0,
         avatar: `https://images.unsplash.com/photo-${1534528741775 + newIdNumber}?w=150&auto=format&fit=crop&q=80`,
-        location: savedData.location || 'Main Service Hub',
+        location: savedData.location || 'Colombo, Sri Lanka',
         joinedDate: 'Just Now',
         recentJobs: [],
       };
@@ -438,10 +478,14 @@ export default function EmployeeIndex() {
   // Category Icon Renderer
   const getCategoryIcon = (specialization) => {
     const cat = specialization?.toLowerCase() || '';
-    if (cat.includes('plumb')) return <Droplets className="w-4 h-4 text-sky-500 shrink-0" />;
-    if (cat.includes('electric')) return <Zap className="w-4 h-4 text-amber-500 shrink-0" />;
-    if (cat.includes('hvac') || cat.includes('air') || cat.includes('heat')) return <Wind className="w-4 h-4 text-teal-500 shrink-0" />;
-    return <Wrench className="w-4 h-4 text-slate-500 shrink-0" />;
+    if (cat.includes('plumb')) return <Droplets className="w-3.5 h-3.5 text-sky-500 shrink-0" />;
+    if (cat.includes('electric')) return <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />;
+    if (cat.includes('hvac') || cat.includes('air') || cat.includes('heat')) return <Wind className="w-3.5 h-3.5 text-teal-500 shrink-0" />;
+    if (cat.includes('roof')) return <Layers className="w-3.5 h-3.5 text-purple-500 shrink-0" />;
+    if (cat.includes('carpent')) return <Hammer className="w-3.5 h-3.5 text-orange-500 shrink-0" />;
+    if (cat.includes('clean')) return <Sparkles className="w-3.5 h-3.5 text-emerald-500 shrink-0" />;
+    if (cat.includes('paint')) return <Paintbrush className="w-3.5 h-3.5 text-rose-500 shrink-0" />;
+    return <Wrench className="w-3.5 h-3.5 text-slate-500 shrink-0" />;
   };
 
   // Status Badge / Dropdown Config Renderer (matching Bookings design)
@@ -480,7 +524,7 @@ export default function EmployeeIndex() {
       <Head title={t('Employee Management')} />
 
       <div className="flex w-full flex-col gap-6">
-        {/* Toast Notifications (Matching Bookings Page) */}
+        {/* Toast Notifications */}
         <FloatingToast
           message={toastMessage?.msg}
           type={toastMessage?.type}
@@ -490,7 +534,7 @@ export default function EmployeeIndex() {
         {/* 1. PAGE HEADER */}
         <PageHeader
           title={t('Employee Management')}
-          description={t('Manage field service technicians, assignments, and availability.')}
+          description={t('Manage field staff, assign multiple service capabilities, and set coverage radius on Google Maps.')}
           action={
             <button
               type="button"
@@ -516,7 +560,7 @@ export default function EmployeeIndex() {
 
           <StatCard
             icon={Clock}
-            label={t('Currently On Shift')}
+            label={t('Active on Duty')}
             value={currentlyOnShift.toString()}
             iconBgClass="bg-emerald-50"
             iconColorClass="text-emerald-600"
@@ -534,7 +578,7 @@ export default function EmployeeIndex() {
 
           <StatCard
             icon={Star}
-            label={t('Average Rating')}
+            label={t('Average Staff Rating')}
             value={`${avgRating} / 5.0`}
             iconBgClass="bg-amber-50"
             iconColorClass="text-amber-600"
@@ -544,18 +588,18 @@ export default function EmployeeIndex() {
 
         {/* 3. FILTERS & CONTROLS */}
         <div className="space-y-3">
-          {/* Results Counter directly above filter bar */}
           <div className="flex items-center justify-between px-1">
             <div className="text-xs text-slate-500 font-medium">
-              {t('Showing')} <span className="font-bold text-slate-900">{filteredTechnicians.length}</span> {t('technicians')}
+              {t('Showing')}{' '}
+              <span className="font-bold text-slate-900">{filteredTechnicians.length}</span>{' '}
+              {t('technicians')}
             </div>
           </div>
 
           {/* Filter & Search Bar */}
           <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-            
-            {/* Search Input Box */}
-            <div className="relative w-full lg:w-1/2">
+            {/* Search Box */}
+            <div className="relative flex-1">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
@@ -564,7 +608,7 @@ export default function EmployeeIndex() {
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                placeholder={t('Search by Name, Employee ID (TECH-101), or Specialty...')}
+                placeholder={t('Search by Name, ID (TECH-101), Service, or Location...')}
                 className="w-full pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all outline-none"
               />
               {searchQuery && (
@@ -583,7 +627,6 @@ export default function EmployeeIndex() {
 
             {/* Filter Dropdowns */}
             <div className="flex flex-wrap items-center gap-3 justify-between lg:justify-end">
-              
               {/* Status Dropdown */}
               <div className="relative flex items-center">
                 <Filter className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
@@ -596,7 +639,7 @@ export default function EmployeeIndex() {
                   className="pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
                 >
                   <option value="all">{t('Status: All')}</option>
-                  <option value="on_shift">{t('On Shift (Any)')}</option>
+                  <option value="on_shift">{t('Active / On Shift')}</option>
                   <option value="available">{t('Available Only')}</option>
                   <option value="on_shift_job">{t('In Active Job')}</option>
                   <option value="on_break">{t('On Break')}</option>
@@ -605,7 +648,7 @@ export default function EmployeeIndex() {
                 <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 pointer-events-none" />
               </div>
 
-              {/* Skill / Specialization Dropdown */}
+              {/* Service / Capabilities Dropdown */}
               <div className="relative flex items-center">
                 <Briefcase className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
                 <select
@@ -616,12 +659,20 @@ export default function EmployeeIndex() {
                   }}
                   className="pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all cursor-pointer outline-none appearance-none bg-none [background-image:none]"
                 >
-                  <option value="all">{t('Skill: All Specialties')}</option>
+                  <option value="all">{t('Service: All Capabilities')}</option>
                   <option value="Plumbing">{t('Plumbing')}</option>
-                  <option value="HVAC">{t('HVAC')}</option>
+                  <option value="HVAC">{t('HVAC & Cooling')}</option>
                   <option value="Electrical">{t('Electrical')}</option>
                   <option value="General Repair">{t('General Repair')}</option>
                   <option value="Roofing">{t('Roofing')}</option>
+                  <option value="Carpentry">{t('Carpentry')}</option>
+                  <option value="Cleaning">{t('Cleaning')}</option>
+                  <option value="Painting">{t('Painting')}</option>
+                  {serviceCategories?.map((c) => (
+                    <option key={c.id} value={c.service_name}>
+                      {c.service_name}
+                    </option>
+                  ))}
                 </select>
                 <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 pointer-events-none" />
               </div>
@@ -637,11 +688,11 @@ export default function EmployeeIndex() {
                 <thead>
                   <tr className="bg-slate-50/60 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                     <th className="px-6 py-4">{t('Technician')}</th>
-                    <th className="px-6 py-4">{t('Specialization')}</th>
+                    <th className="px-6 py-4">{t('Assigned Services')}</th>
                     <th className="px-6 py-4">{t('Status')}</th>
                     <th className="px-6 py-4">{t('Active Job')}</th>
                     <th className="px-6 py-4">{t('Rating & Jobs')}</th>
-                    <th className="px-6 py-4">{t('Hourly Rate')}</th>
+                    <th className="px-6 py-4">{t('Coverage Radius')}</th>
                     <th className="px-6 py-4 text-right">{t('Actions')}</th>
                   </tr>
                 </thead>
@@ -663,6 +714,10 @@ export default function EmployeeIndex() {
                       const techInitials = techName
                         ? techName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
                         : 'T';
+
+                      const techServices = Array.isArray(tech.services) && tech.services.length > 0
+                        ? tech.services
+                        : [tech.specialization || 'General Repair'];
 
                       return (
                         <tr
@@ -701,11 +756,23 @@ export default function EmployeeIndex() {
                             </div>
                           </td>
 
-                          {/* 2. Specialization */}
-                          <td className="px-6 py-4 align-middle whitespace-nowrap">
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200/70 text-slate-700 text-xs font-semibold">
-                              {getCategoryIcon(tech.specialization)}
-                              <span>{tech.specialization}</span>
+                          {/* 2. Assigned Services (Multiple Services) */}
+                          <td className="px-6 py-4 align-middle">
+                            <div className="flex flex-wrap gap-1 max-w-[240px]">
+                              {techServices.slice(0, 2).map((srv, idx) => (
+                                <span
+                                  key={idx}
+                                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-slate-50 border border-slate-200/80 text-slate-700"
+                                >
+                                  {getCategoryIcon(srv)}
+                                  <span>{srv}</span>
+                                </span>
+                              ))}
+                              {techServices.length > 2 && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-bold bg-theme-accent/10 text-theme-accent">
+                                  +{techServices.length - 2}
+                                </span>
+                              )}
                             </div>
                           </td>
 
@@ -765,9 +832,19 @@ export default function EmployeeIndex() {
                             </div>
                           </td>
 
-                          {/* 6. Hourly Rate */}
+                          {/* 6. Coverage Radius (Google Maps) */}
                           <td className="px-6 py-4 align-middle whitespace-nowrap">
-                            <span className="font-bold text-slate-900 text-sm">${tech.hourlyRate}/hr</span>
+                            {tech.isEntireCountry || String(tech.serviceRadius || '').toLowerCase().includes('entire') || String(tech.serviceRadius || '').toLowerCase().includes('island') ? (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs">
+                                <Globe className="w-3.5 h-3.5 text-emerald-600" />
+                                {t('Entire Country')}
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200 shadow-2xs">
+                                <MapPin className="w-3.5 h-3.5 text-theme-accent" />
+                                {tech.serviceRadius || 25} km
+                              </span>
+                            )}
                           </td>
 
                           {/* 7. Actions */}
@@ -869,6 +946,7 @@ export default function EmployeeIndex() {
             handleOpenEditDrawer(tech);
           }}
           onUpdateStatus={handleStatusChange}
+          googleMapsApiKey={googleMapsApiKey}
         />
 
         {/* 6. ADD / EDIT EMPLOYEE SIDE DRAWER */}
@@ -880,6 +958,8 @@ export default function EmployeeIndex() {
           }}
           onSave={handleSaveTechnician}
           editingTech={editingTech}
+          googleMapsApiKey={googleMapsApiKey}
+          availableCategories={serviceCategories}
         />
 
         {/* 7. DELETE CONFIRMATION MODAL */}

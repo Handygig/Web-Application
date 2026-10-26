@@ -21,9 +21,9 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Company\BookingController as CompanyBookingController;
-use App\Http\Controllers\Company\CompanyServiceAreaController;
 use App\Http\Controllers\Company\DashboardController as CompanyDashboardController;
 use App\Http\Controllers\Company\EmployeeController as CompanyEmployeeController;
+use App\Http\Controllers\Company\JobController as CompanyJobController;
 use App\Http\Controllers\Company\PaymentController as CompanyPaymentController;
 use App\Http\Controllers\Company\ProfileController as CompanyProfileController;
 use App\Http\Controllers\LocaleController;
@@ -172,10 +172,11 @@ Route::middleware('auth')->group(function () {
         Route::delete('notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
         Route::delete('notifications', [NotificationController::class, 'clearAll'])->name('notifications.clearAll');
 
-        // Service Areas
-        Route::get('service-areas', [CompanyServiceAreaController::class, 'index'])->name('service-areas.index');
-        Route::post('service-areas', [CompanyServiceAreaController::class, 'store'])->name('service-areas.store');
-        Route::delete('service-areas/{serviceArea}', [CompanyServiceAreaController::class, 'destroy'])->name('service-areas.destroy');
+        // Jobs
+        Route::get('jobs/search', [CompanyJobController::class, 'search'])->name('jobs.search');
+        Route::post('jobs/toggle-online', [CompanyJobController::class, 'toggleOnline'])->name('jobs.toggle-online');
+        Route::get('jobs/assignments', [CompanyJobController::class, 'assignments'])->name('jobs.assignments');
+        Route::post('jobs/assignments/{assignment}/assign-technician', [CompanyJobController::class, 'assignTechnician'])->name('jobs.assignments.assign-technician');
 
         // Employees
         Route::get('employees', [CompanyEmployeeController::class, 'index'])->name('employees.index');
