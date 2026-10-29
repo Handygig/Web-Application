@@ -64,18 +64,18 @@ class ProviderProfileResource extends JsonResource
                 'name' => $cat->name,
                 'slug' => $cat->slug,
             ])->values()->all(),
-            'kyc' => [
-                'status' => $latestKyc?->status ?? 'PENDING',
-                'documents' => collect($latestKyc?->documents ?? [])->map(function ($val, $key) {
+            'kyc' => $latestKyc ? [
+                'status' => $latestKyc->status,
+                'documents' => collect($latestKyc->documents ?? [])->map(function ($val, $key) {
                     if (is_string($val) && (str_starts_with($val, 'kyc-documents/') || str_starts_with($val, 'documents/'))) {
                         return asset('storage/'.$val);
                     }
                     return $val;
                 })->all(),
-                'rejection_reason' => $latestKyc?->rejection_reason,
-                'submitted_at' => $latestKyc?->submitted_at?->toIso8601String(),
-                'verified_at' => $latestKyc?->reviewed_at?->toIso8601String() ?? $latestKyc?->verified_at?->toIso8601String(),
-            ],
+                'rejection_reason' => $latestKyc->rejection_reason,
+                'submitted_at' => $latestKyc->submitted_at?->toIso8601String(),
+                'verified_at' => $latestKyc->reviewed_at?->toIso8601String() ?? $latestKyc->verified_at?->toIso8601String(),
+            ] : null,
             'rating' => $rating,
             'reviews_count' => $reviewsCount,
             'completed_jobs_count' => $completedJobsCount,
