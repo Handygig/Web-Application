@@ -177,6 +177,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Payout Accounts (Bank accounts)
         Route::get('payout-accounts', [ProviderPayoutAccountController::class, 'index']);
         Route::post('payout-accounts', [ProviderPayoutAccountController::class, 'store']);
+        Route::put('payout-accounts/{payoutAccount}', [ProviderPayoutAccountController::class, 'update']);
         Route::put('payout-accounts/{payoutAccount}/default', [ProviderPayoutAccountController::class, 'setDefault']);
         Route::delete('payout-accounts/{payoutAccount}', [ProviderPayoutAccountController::class, 'destroy']);
 

@@ -87,6 +87,29 @@ class PayoutAccountController extends Controller
     }
 
     /**
+     * Update the specified payout account.
+     */
+    public function update(StorePayoutAccountRequest $request, PayoutAccount $payoutAccount): JsonResponse
+    {
+        $this->authorizeAccountAccess($request, $payoutAccount);
+
+        $payoutAccount->update([
+            'bank_name' => $request->bank_name,
+            'branch_name' => $request->branch_name,
+            'account_holder_name' => $request->account_holder_name,
+            'account_number' => $request->account_number,
+            'routing_number' => $request->routing_number,
+            'swift_code' => $request->swift_code,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('Payout account updated successfully.'),
+            'data' => new ProviderPayoutAccountResource($payoutAccount),
+        ]);
+    }
+
+    /**
      * Set a payout account as default.
      */
     public function setDefault(Request $request, PayoutAccount $payoutAccount): JsonResponse
