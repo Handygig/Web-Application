@@ -50,9 +50,15 @@ class JobController extends Controller
             $isOnline = $user->provider->availability === 'available';
         }
 
+        $technicians = Provider::with('user')
+            ->when($companyId, fn ($q) => $q->where('company_id', $companyId))
+            ->whereHas('user', fn ($q) => $q->where('status', '!=', 'inactive'))
+            ->get();
+
         return Inertia::render('Company/Job/Search', [
             'ongoingJobs' => $ongoingJobs,
             'serviceCategories' => $serviceCategories,
+            'technicians' => $technicians,
             'googleMapsApiKey' => env('VITE_GOOGLE_MAPS_API_KEY'),
             'initialOnlineStatus' => $isOnline,
             'filters' => [
@@ -163,5 +169,53 @@ class JobController extends Controller
         }
 
         return redirect()->back()->with('success', __('Technician assigned successfully.'));
+    }
+
+    /**
+     * Assign or reassign a technician directly to a job request.
+     */
+    public function assignTechnicianToJob(Request $request, JobRequest $job): JsonResponse|RedirectResponse
+    {
+        $user = auth()->user();
+        $companyId = $user?->company?->id;
+
+        $validated = $request->validate([
+            'provider_id' => ['nullable', 'exists:providers,id'],
+        ]);
+
+        $assignment = $job->assignment;
+        if (! $assignment) {
+            $assignment = JobAssignment::create([
+                'job_request_id' => $job->id,
+                'company_id' => $companyId,
+                'provider_id' => $validated['provider_id'] ?: null,
+                'assigned_at' => $validated['provider_id'] ? now() : null,
+                'status' => $validated['provider_id'] ? 'assigned' : 'pending',
+            ]);
+        } else {
+            if ($companyId && $assignment->company_id && $assignment->company_id !== $companyId) {
+                abort(403, 'Unauthorized.');
+            }
+            $assignment->update([
+                'company_id' => $companyId ?: $assignment->company_id,
+                'provider_id' => $validated['provider_id'] ?: null,
+                'assigned_at' => $validated['provider_id'] ? now() : null,
+                'status' => $validated['provider_id'] ? 'assigned' : 'pending',
+            ]);
+        }
+
+        if ($validated['provider_id']) {
+            $job->update(['status' => 'assigned']);
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Provider assigned successfully.'),
+                'assignment' => $assignment->load(['provider.user', 'jobRequest']),
+            ]);
+        }
+
+        return redirect()->back()->with('success', __('Provider assigned successfully.'));
     }
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { Head, Link, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import FloatingToast from '@/Components/Other/FloatingToast';
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Circle } from '@react-google-maps/api';
 import {
   Search,
   MapPin,
@@ -18,6 +18,18 @@ import {
   Zap,
   Droplets,
   Wind,
+  Sparkles,
+  FileText,
+  Building2,
+  Calendar,
+  CheckCircle2,
+  Navigation,
+  MessageSquare,
+  ShieldCheck,
+  Info,
+  ArrowRight,
+  Share2,
+  UserCheck,
 } from 'lucide-react';
 import { useTranslation } from '@/Hooks/useTranslation';
 
@@ -483,9 +495,167 @@ const renderCustomerPinCanvas = (customerImg, customerInitials, priceText, isSel
   }
 };
 
+// Web Audio API Synthesizer for incoming dispatch alert chime
+const playDispatchChime = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+    osc1.frequency.setValueAtTime(880, ctx.currentTime + 0.12); // A5
+    gain1.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start();
+    osc1.stop(ctx.currentTime + 0.45);
+  } catch {
+    // Audio context not allowed or unsupported
+  }
+};
+
+// Pool of realistic incoming customer job requests for real-time simulation
+const SIMULATED_REQUESTS_POOL = [
+  {
+    title: 'Emergency Main Breaker Tripping & Spark Diagnostic',
+    service_category: { service_name: 'Electrical', icon: 'Zap' },
+    budget: '145.00',
+    price_badge: 'LKR 145',
+    customer: {
+      user: {
+        name: 'Malsha Senanayake',
+        phone: '+94 77 441 2288',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80',
+        avatar_initials: 'MS',
+      },
+    },
+    property: {
+      address_line: 'No. 28 Duplication Road, Kollupitiya',
+      city: 'Colombo 03',
+      latitude: 6.9042,
+      longitude: 79.8540,
+    },
+  },
+  {
+    title: 'Ceiling High-Pressure Water Pipe Leak & Flooding',
+    service_category: { service_name: 'Plumbing', icon: 'Droplets' },
+    budget: '190.00',
+    price_badge: 'LKR 190',
+    customer: {
+      user: {
+        name: 'Tariq Al-Mansoor',
+        phone: '+94 71 882 4433',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80',
+        avatar_initials: 'TM',
+      },
+    },
+    property: {
+      address_line: '52 Gregorys Road, Cinnamon Gardens',
+      city: 'Colombo 07',
+      latitude: 6.9118,
+      longitude: 79.8715,
+    },
+  },
+  {
+    title: 'Inverter Air Conditioner Compressor Failure Repair',
+    service_category: { service_name: 'HVAC', icon: 'Wind' },
+    budget: '230.00',
+    price_badge: 'LKR 230',
+    customer: {
+      user: {
+        name: 'Nethmi Wickramatunga',
+        phone: '+94 76 559 1100',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80',
+        avatar_initials: 'NW',
+      },
+    },
+    property: {
+      address_line: '109 Havelock Road, Havelock Town',
+      city: 'Colombo 05',
+      latitude: 6.8835,
+      longitude: 79.8652,
+    },
+  },
+  {
+    title: 'Perimeter Smart CCTV & Motion Sensor Setup',
+    service_category: { service_name: 'Smart Home', icon: 'Sparkles' },
+    budget: '175.00',
+    price_badge: 'LKR 175',
+    customer: {
+      user: {
+        name: 'Shehan De Silva',
+        phone: '+94 77 993 6611',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80',
+        avatar_initials: 'SS',
+      },
+    },
+    property: {
+      address_line: '16 Flower Road, Cinnamon Gardens',
+      city: 'Colombo 07',
+      latitude: 6.9080,
+      longitude: 79.8605,
+    },
+  },
+];
+
+const FALLBACK_TECHNICIANS = [
+  {
+    id: 1,
+    name: 'Ananya Perera',
+    specialty: 'HVAC Specialist',
+    phone: '+94 71 889 2233',
+    rating: '4.9',
+    active_jobs: 1,
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80',
+    avatar_initials: 'AP',
+    status: 'available',
+  },
+  {
+    id: 2,
+    name: 'Liam Chen',
+    specialty: 'Master Electrician',
+    phone: '+94 76 554 1122',
+    rating: '4.8',
+    active_jobs: 2,
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80',
+    avatar_initials: 'LC',
+    status: 'available',
+  },
+  {
+    id: 3,
+    name: 'Samantha Reed',
+    specialty: 'Plumbing Lead',
+    phone: '+94 72 331 9900',
+    rating: '5.0',
+    active_jobs: 0,
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80',
+    avatar_initials: 'SR',
+    status: 'available',
+  },
+  {
+    id: 4,
+    name: 'Carlos Mendez',
+    specialty: 'Smart Home & Security',
+    phone: '+94 77 001 2233',
+    rating: '4.7',
+    active_jobs: 1,
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80',
+    avatar_initials: 'CM',
+    status: 'available',
+  },
+];
+
 export default function JobSearch({
   ongoingJobs = [],
   serviceCategories = [],
+  technicians = [],
   googleMapsApiKey = '',
   initialOnlineStatus = true,
   filters = {},
@@ -539,11 +709,21 @@ export default function JobSearch({
   const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [reviewingJob, setReviewingJob] = useState(null);
+  const [isAssignDrawerOpen, setIsAssignDrawerOpen] = useState(false);
+  const [selectedProviderId, setSelectedProviderId] = useState('');
+  const [providerSearch, setProviderSearch] = useState('');
+
+  // Simulated requests state
+  const [simulatedJobs, setSimulatedJobs] = useState([]);
+  const [simulatedIndex, setSimulatedIndex] = useState(0);
+  const [pulsingJobId, setPulsingJobId] = useState(null);
 
   // Parse backend jobs with coordinates or use rich fallback
   const allOngoingJobs = useMemo(() => {
+    let baseJobs = [];
     if (Array.isArray(ongoingJobs) && ongoingJobs.length > 0) {
-      return ongoingJobs.map((job, index) => {
+      baseJobs = ongoingJobs.map((job, index) => {
         const prop = job.property || {};
         const fallback = FALLBACK_ONGOING_JOBS[index % FALLBACK_ONGOING_JOBS.length];
         const lat = parseFloat(prop.latitude) || fallback.property.latitude;
@@ -599,9 +779,13 @@ export default function JobSearch({
             : (isNewJob ? null : fallback.technician),
         };
       });
+    } else {
+      baseJobs = FALLBACK_ONGOING_JOBS;
     }
-    return FALLBACK_ONGOING_JOBS;
-  }, [ongoingJobs, t]);
+
+    // Prepend simulated requests so they appear right at the top
+    return [...simulatedJobs, ...baseJobs];
+  }, [ongoingJobs, simulatedJobs, t]);
 
   // Counts for each status chip
   const counts = useMemo(() => {
@@ -712,6 +896,176 @@ export default function JobSearch({
       });
       mapRef.current.setZoom(15);
     }
+  };
+
+  const handleSimulateRequest = () => {
+    // 1. Play dispatch incoming audio alert
+    playDispatchChime();
+
+    // 2. Pick next sample request from the simulation pool
+    const sample = SIMULATED_REQUESTS_POOL[simulatedIndex % SIMULATED_REQUESTS_POOL.length];
+    setSimulatedIndex((prev) => prev + 1);
+
+    const newJobId = 9000 + (Date.now() % 1000);
+    const newJob = {
+      id: newJobId,
+      job_code: `REQ-${String(newJobId).slice(-4)}`,
+      title: sample.title,
+      service_category: sample.service_category,
+      status: 'pending',
+      sub_status: 'New Request',
+      budget: sample.budget,
+      price_badge: sample.price_badge,
+      started_at: t('Just now'),
+      customer: sample.customer,
+      property: sample.property,
+      technician: null,
+    };
+
+    // 3. Prepend into simulated requests and select it
+    setSimulatedJobs((prev) => [newJob, ...prev]);
+    setSelectedJob(newJob);
+    setStatusFilter('new');
+    setIsSidebarOpen(true);
+    setPulsingJobId(newJobId);
+
+    // Auto-clear radar pulse after 7 seconds
+    setTimeout(() => {
+      setPulsingJobId((current) => (current === newJobId ? null : current));
+    }, 7000);
+
+    // 4. Ensure status is online
+    if (!isOnline) {
+      setIsOnline(true);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('company_online_status', 'true');
+      }
+    }
+
+    // 5. Toast announcement
+    setToast({
+      type: 'success',
+      msg: `${t('⚡ New Job Request Received!')} ${sample.title} (${sample.property.city})`,
+    });
+    setTimeout(() => setToast(null), 4500);
+
+    // 6. Smooth Animated Navigation to Job Location
+    if (mapRef.current) {
+      const lat = Number(sample.property.latitude);
+      const rawLng = Number(sample.property.longitude);
+      // On desktop, the drawer is open on the left (~384px), so offset lng slightly so marker is visually centered in the viewable map canvas
+      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
+      const targetLng = isDesktop ? rawLng - 0.0035 : rawLng;
+
+      mapRef.current.panTo({ lat, lng: targetLng });
+
+      // Stepped zoom animation for aerial cinematic zoom-in
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.setZoom(15);
+        }
+      }, 250);
+
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.setZoom(16);
+        }
+      }, 600);
+    }
+  };
+
+  const availableProviders = useMemo(() => {
+    if (Array.isArray(technicians) && technicians.length > 0) {
+      return technicians.map((tech) => {
+        const u = tech.user || {};
+        const name = u.name || u.full_name || 'Staff Specialist';
+        const initials = name
+          .split(' ')
+          .map((n) => n[0])
+          .join('')
+          .slice(0, 2)
+          .toUpperCase();
+        return {
+          id: tech.id,
+          name,
+          specialty: tech.specialty || tech.skills || t('Field Technician'),
+          phone: u.phone || '+94 77 000 0000',
+          rating: '4.9',
+          active_jobs: 0,
+          avatar: u.image_url || u.profile_image || u.avatar || null,
+          avatar_initials: initials,
+          status: tech.availability || 'available',
+        };
+      });
+    }
+    return FALLBACK_TECHNICIANS;
+  }, [technicians, t]);
+
+  const filteredProviders = useMemo(() => {
+    if (!providerSearch) return availableProviders;
+    const q = providerSearch.toLowerCase();
+    return availableProviders.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.specialty.toLowerCase().includes(q) ||
+        p.phone.includes(q)
+    );
+  }, [availableProviders, providerSearch]);
+
+  const handleOpenAssignDrawer = (job) => {
+    setSelectedProviderId(job?.technician?.id ? String(job.technician.id) : '');
+    setProviderSearch('');
+    setIsAssignDrawerOpen(true);
+  };
+
+  const handleAssignProvider = () => {
+    if (!selectedProviderId || !reviewingJob) return;
+
+    const chosenProvider = availableProviders.find(
+      (p) => String(p.id) === String(selectedProviderId)
+    );
+    if (!chosenProvider) return;
+
+    const updatedTech = {
+      id: chosenProvider.id,
+      name: chosenProvider.name,
+      specialty: chosenProvider.specialty,
+      phone: chosenProvider.phone,
+      avatar: chosenProvider.avatar,
+      avatar_initials: chosenProvider.avatar_initials,
+    };
+
+    const updatedJob = {
+      ...reviewingJob,
+      technician: updatedTech,
+      status: 'assigned',
+      sub_status: 'Dispatched',
+    };
+
+    setReviewingJob(updatedJob);
+    if (selectedJob?.id === reviewingJob.id) {
+      setSelectedJob(updatedJob);
+    }
+
+    setSimulatedJobs((prev) =>
+      prev.map((j) => (j.id === reviewingJob.id ? updatedJob : j))
+    );
+
+    if (reviewingJob.id < 9000) {
+      router.post(
+        `/company/jobs/${reviewingJob.id}/assign-technician`,
+        { provider_id: chosenProvider.id },
+        { preserveScroll: true, preserveState: true }
+      );
+    }
+
+    setIsAssignDrawerOpen(false);
+
+    setToast({
+      type: 'success',
+      msg: `${t('Provider Assigned:')} ${chosenProvider.name} ${t('dispatched to')} ${reviewingJob.job_code}`,
+    });
+    setTimeout(() => setToast(null), 4000);
   };
 
   const handleRecenter = () => {
@@ -864,6 +1218,24 @@ export default function JobSearch({
                   />
                 );
               })}
+
+              {pulsingJobId && selectedJob && selectedJob.id === pulsingJobId && (
+                <Circle
+                  center={{
+                    lat: Number(selectedJob.property.latitude),
+                    lng: Number(selectedJob.property.longitude),
+                  }}
+                  radius={130}
+                  options={{
+                    fillColor: '#f59e0b',
+                    fillOpacity: 0.25,
+                    strokeColor: '#d97706',
+                    strokeOpacity: 0.85,
+                    strokeWeight: 2,
+                    clickable: false,
+                  }}
+                />
+              )}
 
               {selectedJob && (
                 <InfoWindow
@@ -1048,8 +1420,23 @@ export default function JobSearch({
             </button>
           </div>
 
-          {/* Top Right Cluster: Online/Offline Toggle & Live Active Count */}
+          {/* Top Right Cluster: Simulate Request, Online/Offline Toggle & Live Active Count */}
           <div className="pointer-events-auto flex items-center gap-2.5 self-start md:self-auto">
+            {/* Simulate Request Button */}
+            <button
+              type="button"
+              onClick={handleSimulateRequest}
+              title={t('Simulate an incoming real-time customer job request with map animation')}
+              className="bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-700 hover:from-amber-600 hover:to-emerald-800 text-white rounded-2xl shadow-lg border border-amber-300/60 px-3.5 py-2 flex items-center gap-2 text-xs font-extrabold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer group"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+              </span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-100 group-hover:rotate-12 transition-transform" />
+              <span>{t('Simulate Request')}</span>
+            </button>
+
             {/* Online / Offline Toggle Pill */}
             <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200/90 px-3.5 py-1.5 flex items-center gap-3">
               <div className="flex items-center gap-2">
@@ -1189,6 +1576,7 @@ export default function JobSearch({
           <div className="flex-1 overflow-y-auto p-3 space-y-2.5 scrollbar-thin">
             {filteredJobs.map((job) => {
               const isSelected = selectedJob?.id === job.id;
+              const isPulsing = job.id === pulsingJobId;
               const colorConfig = getCategoryColor(job.service_category?.service_name);
               const isNewRequest = job.status === 'pending' || job.sub_status?.toLowerCase().includes('new') || !job.technician?.name;
 
@@ -1197,7 +1585,9 @@ export default function JobSearch({
                   key={job.id}
                   onClick={() => handleSelectJob(job)}
                   className={`p-3.5 rounded-2xl border transition-all cursor-pointer relative ${
-                    isSelected
+                    isPulsing
+                      ? 'border-amber-500 bg-amber-50/80 ring-2 ring-amber-400 shadow-md animate-pulse'
+                      : isSelected
                       ? 'border-[#0f4a2d] bg-emerald-50/70 shadow-sm ring-1 ring-[#0f4a2d]'
                       : isNewRequest
                       ? 'border-amber-200/90 bg-amber-50/30 hover:bg-amber-50/60 shadow-xs'
@@ -1401,22 +1791,658 @@ export default function JobSearch({
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-              <div>
-                <span className="text-[10px] text-slate-400 uppercase font-bold block">{t('Job Value')}</span>
-                <span className="font-extrabold text-sm text-slate-900">${selectedJob.budget}</span>
-              </div>
-
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
               <button
+                type="button"
                 onClick={() => setSelectedJob(null)}
-                className="px-4 py-2 rounded-xl bg-[#0f4a2d] text-white text-xs font-bold hover:bg-[#0c3c24] transition-colors shadow-xs"
+                className="px-3.5 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-bold transition-colors"
               >
                 {t('Close Detail')}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setReviewingJob(selectedJob)}
+                className="px-4 py-2 rounded-xl bg-[#0f4a2d] hover:bg-[#0a341f] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:shadow-md cursor-pointer"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>{t('Review Request')}</span>
               </button>
             </div>
           </div>
         )}
       </div>
+
+      {/* Redesigned Job Details Modal (Inspired by Provider Mobile App) */}
+      {reviewingJob && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/65 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-slate-100 rounded-3xl shadow-2xl border border-slate-200/90 w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 relative">
+            {/* 1. Mobile App Inspired Olive Green Top Header */}
+            <div className="bg-gradient-to-br from-[#283719] via-[#354822] to-[#3d5228] text-white p-5 sm:p-6 relative shrink-0 shadow-md">
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <button
+                  type="button"
+                  onClick={() => setReviewingJob(null)}
+                  className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors shrink-0"
+                  title={t('Close')}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                <h3 className="font-extrabold text-base sm:text-lg text-white tracking-tight">
+                  {t('Job Details')}
+                </h3>
+
+                <span className="px-3 py-1 rounded-full bg-white text-orange-600 font-black text-xs shadow-xs tracking-wide">
+                  {reviewingJob.technician?.name ? t('Dispatched') : t('Needs Quote')}
+                </span>
+              </div>
+
+              {/* Subheader info line */}
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-lime-100/90 flex-wrap mt-2">
+                <span className="font-black text-lime-300">{reviewingJob.job_code}</span>
+                <span className="text-white/40">•</span>
+                <span className="font-bold text-white">
+                  {reviewingJob.service_category?.service_name || t('Plumbing')}
+                </span>
+                <span className="text-white/40">•</span>
+                <span className="text-white/80">{reviewingJob.property?.city || t('Colombo')}</span>
+                <span className="text-white/60 text-xs ml-auto font-medium">
+                  {t('2.4 km away')}
+                </span>
+              </div>
+
+              {/* Company Work Order Tag Pill */}
+              <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-lime-200 text-xs font-semibold backdrop-blur-xs">
+                <Building2 className="w-3.5 h-3.5 text-lime-300 shrink-0" />
+                <span>{t('Company Dispatched • Apex Home Solutions Pvt Ltd')}</span>
+              </div>
+            </div>
+
+            {/* Modal Scrollable Body */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 scrollbar-thin bg-slate-50/70">
+              {/* 2. Company Work Order & Dispatch Note (Dark Banner) */}
+              <div className="bg-[#1c2016] text-white rounded-3xl p-4 sm:p-5 border border-[#2f3824] shadow-sm space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-2xl bg-[#2d3620] text-lime-300">
+                      <Building2 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="font-extrabold text-sm text-white flex items-center gap-2">
+                        <span>Apex Home Solutions Pvt Ltd</span>
+                        <span className="bg-[#d2e87c] text-[#1c2e0e] font-black text-[9px] px-2 py-0.5 rounded-md uppercase tracking-wider">
+                          {t('STAFF DISPATCH')}
+                        </span>
+                      </div>
+                      <span className="text-xs text-lime-100/70 font-medium">
+                        {t('Assigned Company Work Order')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-[#242b1d] rounded-2xl p-3.5 border border-[#354026] text-xs text-lime-100/90 space-y-1">
+                  <div className="flex items-center gap-1.5 font-bold text-lime-300">
+                    <Info className="w-3.5 h-3.5" />
+                    <span>{t('Dispatch Note')}</span>
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-white/80 leading-relaxed">
+                    {t(
+                      'This work order has been routed to your company dispatch console. Assign an authorized staff specialist to execute standard quoting and service milestones. Client payment will be credited to company account.'
+                    )}
+                  </p>
+                </div>
+              </div>
+
+              {/* 3. Job Stage Progress (5-Stage Stepper) */}
+              <div className="bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-5 shadow-xs space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
+                      <Share2 className="w-4 h-4" />
+                    </div>
+                    <span className="font-extrabold text-sm text-slate-900">
+                      {t('Job Stage Progress')}
+                    </span>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
+                    {t('Auto • Step 1/4')}
+                  </span>
+                </div>
+
+                {/* Stepper Graphic */}
+                <div className="grid grid-cols-5 gap-1 sm:gap-2 text-center pt-1">
+                  {/* Step 1 */}
+                  <div className="flex flex-col items-center">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-orange-600 to-amber-500 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-orange-500/25 ring-2 ring-orange-200">
+                      <FileText className="w-4 h-4" />
+                    </div>
+                    <span className="text-[10px] font-bold text-orange-600 mt-1.5">
+                      {t('To Quote')}
+                    </span>
+                    <span className="text-[9px] font-extrabold text-orange-700/80">
+                      {t('Active')}
+                    </span>
+                  </div>
+
+                  {/* Step 2 */}
+                  <div className="flex flex-col items-center opacity-70">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center font-bold text-xs">
+                      2
+                    </div>
+                    <span className="text-[10px] font-semibold text-slate-600 mt-1.5 truncate max-w-full">
+                      {t('Pending app...')}
+                    </span>
+                    <span className="text-[9px] text-slate-400">{t('Pending')}</span>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div className="flex flex-col items-center opacity-70">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center font-bold text-xs">
+                      3
+                    </div>
+                    <span className="text-[10px] font-semibold text-slate-600 mt-1.5 truncate max-w-full">
+                      {t('To Start')}
+                    </span>
+                    <span className="text-[9px] text-slate-400">{t('Pending')}</span>
+                  </div>
+
+                  {/* Step 4 */}
+                  <div className="flex flex-col items-center opacity-70">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center font-bold text-xs">
+                      4
+                    </div>
+                    <span className="text-[10px] font-semibold text-slate-600 mt-1.5 truncate max-w-full">
+                      {t('Ongoing')}
+                    </span>
+                    <span className="text-[9px] text-slate-400">{t('Pending')}</span>
+                  </div>
+
+                  {/* Step 5 */}
+                  <div className="flex flex-col items-center opacity-70">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center font-bold text-xs">
+                      5
+                    </div>
+                    <span className="text-[10px] font-semibold text-slate-600 mt-1.5 truncate max-w-full">
+                      {t('Finished')}
+                    </span>
+                    <span className="text-[9px] text-slate-400">{t('Pending')}</span>
+                  </div>
+                </div>
+
+                {/* Stage 1 Action Box */}
+                <div className="bg-amber-50/70 border border-amber-200/90 rounded-2xl p-3.5 sm:p-4 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1 rounded-md bg-amber-100 text-amber-800">
+                        <FileText className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="font-extrabold text-xs text-amber-900">
+                        {t('Stage 1: Quotation & Dispatch Pending')}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">
+                      {t('Action Required')}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    {t(
+                      'Review customer request and assign an available technician specialist. Dispatching your staff will automatically advance this job to Active In-Progress.'
+                    )}
+                  </p>
+                  <div className="pt-1 flex items-center gap-1.5 text-xs font-bold text-amber-800">
+                    <ArrowRight className="w-3.5 h-3.5 text-amber-600" />
+                    <span>{t('Action: Assign specialist technician below')}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Scheduled Booking Card (Blue Theme) */}
+              <div className="bg-sky-50/60 border border-sky-100 rounded-3xl p-4 sm:p-5 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-xl bg-sky-100 text-sky-700">
+                      <Calendar className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="font-extrabold text-xs sm:text-sm text-sky-950 block">
+                        {t('SCHEDULED BOOKING')}
+                      </span>
+                      <span className="text-[11px] text-sky-700/80">
+                        {t('Future date & time appointment confirmed')}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-full bg-sky-600 text-white text-[10px] font-extrabold flex items-center gap-1 shadow-xs">
+                    <CheckCircle2 className="w-3 h-3" />
+                    {t('Booked')}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className="bg-white rounded-2xl p-3 border border-sky-100/90 space-y-1 shadow-xs">
+                    <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                      <Calendar className="w-3 h-3 text-sky-600" />
+                      <span>{t('Scheduled Date')}</span>
+                    </div>
+                    <div className="font-extrabold text-xs sm:text-sm text-slate-900">
+                      {t('Tuesday, 27 Oct 2026')}
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-2xl p-3 border border-sky-100/90 space-y-1 shadow-xs">
+                    <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                      <Clock className="w-3 h-3 text-sky-600" />
+                      <span>{t('Time Window')}</span>
+                    </div>
+                    <div className="font-extrabold text-xs sm:text-sm text-slate-900">
+                      04:30 PM ({t('Flexible')})
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-2.5 border border-sky-100/80 flex items-center justify-between text-xs text-sky-900">
+                  <span className="flex items-center gap-1.5 font-bold text-[11px]">
+                    <Clock className="w-3.5 h-3.5 text-sky-600" />
+                    {t('Scheduled for Tomorrow')}
+                  </span>
+                  <span className="px-2.5 py-1 rounded-xl bg-sky-50 text-sky-700 text-[10px] font-extrabold">
+                    {t('+ Add Reminder')}
+                  </span>
+                </div>
+              </div>
+
+              {/* 5. Customer Information & Location Card */}
+              <div className="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 space-y-4 shadow-xs">
+                <h4 className="font-extrabold text-sm text-slate-900">
+                  {t('Customer Information')}
+                </h4>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {reviewingJob.customer?.user?.avatar ? (
+                      <img
+                        src={reviewingJob.customer.user.avatar}
+                        alt={reviewingJob.customer.user.name}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-slate-200 shadow-xs shrink-0"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-[#0f4a2d] text-white flex items-center justify-center font-black text-sm shrink-0">
+                        {reviewingJob.customer?.user?.avatar_initials || 'SK'}
+                      </div>
+                    )}
+                    <div>
+                      <div className="font-extrabold text-sm sm:text-base text-slate-900">
+                        {reviewingJob.customer?.user?.name}
+                      </div>
+                      <div className="text-xs text-slate-500 font-medium mt-0.5">
+                        {reviewingJob.customer?.user?.phone || t('Verified Customer')}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mobile App Style Circular Call and Message Action Buttons */}
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={`tel:${reviewingJob.customer?.user?.phone}`}
+                      className="w-10 h-10 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center justify-center transition-all shadow-xs"
+                      title={t('Call Customer')}
+                    >
+                      <Phone className="w-4 h-4 text-emerald-700" />
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (typeof window !== 'undefined') {
+                          window.location.href = `mailto:${reviewingJob.customer?.user?.email || 'customer@example.com'}`;
+                        }
+                      }}
+                      className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center transition-all shadow-xs"
+                      title={t('Message Customer')}
+                    >
+                      <MessageSquare className="w-4 h-4 text-slate-600" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Service Location Address Box */}
+                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 space-y-2">
+                  <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                    <MapPin className="w-3.5 h-3.5 text-[#0f4a2d]" />
+                    <span>{t('Service Location Address')}</span>
+                  </div>
+                  <div className="font-extrabold text-xs sm:text-sm text-slate-900 leading-snug">
+                    {reviewingJob.property?.address_line}, {reviewingJob.property?.city}
+                  </div>
+                  <div className="text-[11px] text-slate-500">
+                    {t('Distance: 2.4 km away from your central dispatch depot')}
+                  </div>
+                </div>
+
+                {/* Interactive Google Map Preview Container */}
+                <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 h-40 sm:h-44 w-full shadow-inner">
+                  {isLoaded && !loadError ? (
+                    <GoogleMap
+                      mapContainerStyle={{ width: '100%', height: '100%' }}
+                      center={{
+                        lat: Number(reviewingJob.property?.latitude) || DEFAULT_CENTER.lat,
+                        lng: Number(reviewingJob.property?.longitude) || DEFAULT_CENTER.lng,
+                      }}
+                      zoom={15}
+                      options={{
+                        styles: MAP_STYLES,
+                        disableDefaultUI: true,
+                        zoomControl: false,
+                        scrollwheel: false,
+                        gestureHandling: 'none',
+                        draggable: false,
+                        mapTypeControl: false,
+                        streetViewControl: false,
+                        fullscreenControl: false,
+                      }}
+                    >
+                      <Marker
+                        position={{
+                          lat: Number(reviewingJob.property?.latitude) || DEFAULT_CENTER.lat,
+                          lng: Number(reviewingJob.property?.longitude) || DEFAULT_CENTER.lng,
+                        }}
+                      />
+                    </GoogleMap>
+                  ) : (
+                    /* Fallback when Google Maps script is loading or unavailable */
+                    <div className="relative w-full h-full bg-slate-100 flex items-center justify-center">
+                      <div
+                        className="absolute inset-0 opacity-20"
+                        style={{
+                          backgroundImage:
+                            'radial-gradient(#0f4a2d 1px, transparent 1px), radial-gradient(#0f4a2d 1px, transparent 1px)',
+                          backgroundSize: '16px 16px',
+                          backgroundPosition: '0 0, 8px 8px',
+                        }}
+                      />
+                      <svg className="absolute inset-0 w-full h-full opacity-40" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20,90 Q150,20 300,70 T600,30" fill="none" stroke="#0f4a2d" strokeWidth="4" />
+                        <circle cx="20" cy="90" r="4" fill="#0f4a2d" />
+                        <circle cx="300" cy="70" r="6" fill="#dc2626" />
+                      </svg>
+                      <div className="relative z-10 flex flex-col items-center">
+                        <span className="w-3 h-3 rounded-full bg-rose-500 ring-4 ring-rose-200 animate-ping" />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Top Left Distance Tag */}
+                  <div className="absolute top-2.5 left-2.5 z-10 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-xl border border-slate-200 text-[11px] font-bold text-slate-800 shadow-sm flex items-center gap-1.5 pointer-events-none">
+                    <Navigation className="w-3.5 h-3.5 text-sky-600" />
+                    <span>{t('2.4 km away • ~8 mins')}</span>
+                  </div>
+
+                  {/* Bottom Right Get Directions Button */}
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${reviewingJob.property?.latitude || 6.8985},${reviewingJob.property?.longitude || 79.8558}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="absolute bottom-2.5 right-2.5 z-10 bg-slate-900/90 hover:bg-slate-950 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  >
+                    <Navigation className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>{t('Get Directions')}</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* 6. Service Scope & Request */}
+              <div className="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 space-y-2.5 shadow-xs">
+                <h4 className="font-extrabold text-sm text-slate-900">
+                  {t('Service Scope & Request')}
+                </h4>
+                <div className="font-extrabold text-sm text-slate-900">
+                  {reviewingJob.title}
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  {t(
+                    'Need full diagnostic inspection and authorized specialist service for residential plumbing and electrical maintenance. Client requested immediate response upon quotation.'
+                  )}
+                </p>
+                <div className="pt-1">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold">
+                    <Calendar className="w-3.5 h-3.5 text-amber-600" />
+                    {t('Inspection Today • 04:30 PM')}
+                  </span>
+                </div>
+              </div>
+
+              {/* 7. Payment Method & Protection */}
+              <div className="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 space-y-3 shadow-xs">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-extrabold text-sm text-slate-900">
+                    {t('Payment Method')}
+                  </h4>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-extrabold flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {t('Pay on Completion')}
+                  </span>
+                </div>
+
+                <div className="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80 space-y-1">
+                  <div className="font-bold text-xs text-slate-900">
+                    {t('Cash on Delivery / Direct Invoicing')}
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    {t('Collect payment directly from customer upon finishing or direct charge to company corporate billing.')}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 text-xs text-emerald-800 font-bold pt-1">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{t('HandyGig Payment Protection: Verified provider payout guaranteed.')}</span>
+                </div>
+              </div>
+
+              {/* 8. Technician Assignment Status */}
+              <div className="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 space-y-2 shadow-xs">
+                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
+                  {t('Assigned Specialist')}
+                </span>
+                {reviewingJob.technician?.name ? (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-[#0f4a2d]/10 text-[#0f4a2d] flex items-center justify-center font-bold text-xs">
+                        {reviewingJob.technician.avatar_initials || 'T'}
+                      </div>
+                      <div>
+                        <div className="font-extrabold text-sm text-slate-800">
+                          {reviewingJob.technician.name}
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          {reviewingJob.technician.specialty}
+                        </div>
+                      </div>
+                    </div>
+                    <a
+                      href={`tel:${reviewingJob.technician.phone}`}
+                      className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700"
+                    >
+                      <Phone className="w-4 h-4" />
+                    </a>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+                    <span>{t('Awaiting Specialist Assignment • No technician assigned yet')}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 9. Mobile-App Style Sticky Footer Bar */}
+            <div className="sticky bottom-0 bg-white/95 backdrop-blur-md px-5 sm:px-6 py-4 border-t border-slate-200/90 flex items-center justify-between gap-3 shadow-lg shrink-0">
+              <button
+                type="button"
+                onClick={() => setReviewingJob(null)}
+                className="flex-1 sm:flex-initial px-6 py-2.5 rounded-2xl border border-rose-200 bg-white hover:bg-rose-50 text-rose-600 text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 shadow-xs"
+              >
+                <X className="w-4 h-4 text-rose-500" />
+                <span>{t('Decline')}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleOpenAssignDrawer(reviewingJob)}
+                className="flex-1 sm:flex-initial px-7 py-2.5 rounded-2xl bg-[#3d5228] hover:bg-[#2e3e1d] text-white text-xs font-black transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <UserCheck className="w-4 h-4 text-lime-300" />
+                <span>
+                  {reviewingJob.technician?.name
+                    ? t('Reassign Provider')
+                    : t('Assign a Provider')}
+                </span>
+              </button>
+            </div>
+
+            {/* Slide-over Assign Provider Drawer inside the popped up modal */}
+            {isAssignDrawerOpen && (
+              <div className="absolute inset-0 z-40 flex justify-end bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
+                <div className="w-full sm:w-[440px] h-full bg-white shadow-2xl flex flex-col border-l border-slate-200 animate-in slide-in-from-right duration-300">
+                  {/* Drawer Header */}
+                  <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-2 rounded-xl bg-[#3d5228]/10 text-[#3d5228]">
+                        <UserCheck className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="font-extrabold text-base text-slate-900">
+                          {t('Assign a Provider')}
+                        </h4>
+                        <p className="text-xs text-slate-500 font-semibold truncate max-w-[240px]">
+                          {reviewingJob.job_code} • {reviewingJob.title}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsAssignDrawerOpen(false)}
+                      className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Search Input */}
+                  <div className="p-4 border-b border-slate-100 bg-white">
+                    <div className="relative">
+                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        value={providerSearch}
+                        onChange={(e) => setProviderSearch(e.target.value)}
+                        placeholder={t('Search available staff by name or specialty...')}
+                        className="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3d5228]/20 focus:border-[#3d5228] transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Providers List */}
+                  <div className="flex-1 overflow-y-auto p-4 space-y-2.5 scrollbar-thin">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1 px-1">
+                      {t('Available Staff Specialists')} ({filteredProviders.length})
+                    </div>
+
+                    {filteredProviders.map((provider) => {
+                      const isSelected = String(selectedProviderId) === String(provider.id);
+                      return (
+                        <div
+                          key={provider.id}
+                          onClick={() => setSelectedProviderId(provider.id)}
+                          className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+                            isSelected
+                              ? 'border-[#3d5228] bg-[#3d5228]/5 ring-2 ring-[#3d5228]/30 shadow-sm'
+                              : 'border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50/80 shadow-xs'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            {provider.avatar ? (
+                              <img
+                                src={provider.avatar}
+                                alt={provider.name}
+                                className="w-11 h-11 rounded-full object-cover border border-slate-200 shrink-0"
+                              />
+                            ) : (
+                              <div className="w-11 h-11 rounded-full bg-[#3d5228] text-white flex items-center justify-center font-bold text-xs shrink-0">
+                                {provider.avatar_initials}
+                              </div>
+                            )}
+
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-extrabold text-xs sm:text-sm text-slate-900 truncate">
+                                  {provider.name}
+                                </span>
+                                <span className="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md shrink-0">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                  {t('Available')}
+                                </span>
+                              </div>
+
+                              <div className="text-xs text-slate-500 font-medium truncate mt-0.5">
+                                {provider.specialty}
+                              </div>
+
+                              <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                                {provider.phone}
+                              </div>
+                            </div>
+                          </div>
+
+                          <input
+                            type="radio"
+                            name="providerSelectRadio"
+                            checked={isSelected}
+                            onChange={() => setSelectedProviderId(provider.id)}
+                            className="accent-[#3d5228] w-4 h-4 ml-3 cursor-pointer shrink-0"
+                          />
+                        </div>
+                      );
+                    })}
+
+                    {filteredProviders.length === 0 && (
+                      <div className="p-8 text-center text-slate-500">
+                        <UserCheck className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+                        <p className="text-xs font-bold text-slate-700">{t('No providers found')}</p>
+                        <p className="text-[11px] text-slate-400 mt-1">{t('Try searching with a different term.')}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Drawer Sticky Footer */}
+                  <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-end gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setIsAssignDrawerOpen(false)}
+                      className="px-4 py-2.5 rounded-2xl border border-slate-200 text-slate-600 hover:bg-slate-200/60 text-xs font-bold transition-colors"
+                    >
+                      {t('Cancel')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleAssignProvider}
+                      disabled={!selectedProviderId}
+                      className={`px-6 py-2.5 rounded-2xl text-xs font-black transition-all flex items-center gap-2 shadow-sm ${
+                        selectedProviderId
+                          ? 'bg-[#3d5228] hover:bg-[#2e3e1d] text-white hover:shadow-md cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                          : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                      }`}
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>{t('Confirm Assignment')}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {toast && (
         <FloatingToast

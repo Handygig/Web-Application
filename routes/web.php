@@ -177,6 +177,7 @@ Route::middleware('auth')->group(function () {
         Route::post('jobs/toggle-online', [CompanyJobController::class, 'toggleOnline'])->name('jobs.toggle-online');
         Route::get('jobs/assignments', [CompanyJobController::class, 'assignments'])->name('jobs.assignments');
         Route::post('jobs/assignments/{assignment}/assign-technician', [CompanyJobController::class, 'assignTechnician'])->name('jobs.assignments.assign-technician');
+        Route::post('jobs/{job}/assign-technician', [CompanyJobController::class, 'assignTechnicianToJob'])->name('jobs.assign-technician');
 
         // Employees
         Route::get('employees', [CompanyEmployeeController::class, 'index'])->name('employees.index');
