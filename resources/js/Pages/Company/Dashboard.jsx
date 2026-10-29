@@ -38,7 +38,6 @@ export default function Dashboard({ stats }) {
   const totalRevenue = stats?.totalRevenue ?? 32450.0;
   const totalCustomers = stats?.totalCustomers ?? 142;
   const pendingPayoutsAmount = stats?.pendingPayoutsAmount ?? 2150.0;
-  const totalEmployees = stats?.totalEmployees ?? 16;
   const activeBookingsCount = stats?.activeBookings ?? 8;
   const customerRating = stats?.customerRating ?? '4.9';
 
@@ -236,9 +235,9 @@ export default function Dashboard({ stats }) {
           />
 
           <StatCard
-            icon={Wrench}
-            label={t('Field Technicians')}
-            value={totalEmployees.toString()}
+            icon={Users}
+            label={t('Total Customers')}
+            value={totalCustomers.toString()}
             iconBgClass="bg-sky-50"
             iconColorClass="text-sky-600"
             ringClass="ring-sky-50/50"
@@ -449,11 +448,11 @@ export default function Dashboard({ stats }) {
               </div>
             </div>
 
-            {/* B. UPCOMING TECHNICIAN PAYOUT CARD */}
+            {/* B. UPCOMING PAYOUT CARD */}
             <div className="p-6 rounded-2xl border border-[#E2E4D9] bg-white shadow-sm flex flex-col justify-between space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-base font-bold text-slate-900">{t('Technician Payouts')}</h3>
+                  <h3 className="text-base font-bold text-slate-900">{t('Upcoming Payouts')}</h3>
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
                     {t('Scheduled')}
                   </span>
@@ -461,7 +460,7 @@ export default function Dashboard({ stats }) {
 
                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/70 space-y-2 mb-4">
                   <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
-                    {t('Owed to Field Staff')}
+                    {t('Pending Payout Amount')}
                   </span>
                   <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
                     {formattedCurrency(pendingPayoutsAmount)}

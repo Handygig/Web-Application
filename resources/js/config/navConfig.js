@@ -2,19 +2,16 @@ import {
     LayoutDashboard,
     Users,
     UserCheck,
-    ShieldAlert,
     Layers,
     CalendarDays,
     CreditCard,
     UserCircle,
     UserCog,
-    FileText,
-    Settings,
-    MapPin,
     Wrench,
     Tag,
     Gift,
     HelpCircle,
+    Briefcase,
 } from 'lucide-react';
 
 export function getNavByRole(t) {
@@ -107,6 +104,15 @@ export function getNavByRole(t) {
                     href: '/company/dashboard',
                 },
                 {
+                    label: t('Jobs'),
+                    icon: Briefcase,
+                    children: [
+                        { label: t('Search'), href: '/company/jobs/search', activePaths: ['/company/jobs/search'] },
+                        { label: t('New Requests'), href: '/company/jobs/search?status=new', activePaths: ['/company/jobs/search?status=new*'] },
+                        { label: t('Assignments'), href: '/company/jobs/assignments', activePaths: ['/company/jobs/assignments*'] },
+                    ],
+                },
+                {
                     label: t('Bookings'),
                     icon: CalendarDays,
                     href: '/company/bookings',
@@ -122,12 +128,6 @@ export function getNavByRole(t) {
                     icon: UserCog,
                     href: '/company/employees',
                     activePaths: ['/company/employees*'],
-                },
-                {
-                    label: t('Service Areas'),
-                    icon: MapPin,
-                    href: '/company/service-areas',
-                    activePaths: ['/company/service-areas*'],
                 },
                 {
                     label: t('Payments'),

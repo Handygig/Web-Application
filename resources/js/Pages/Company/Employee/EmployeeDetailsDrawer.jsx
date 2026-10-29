@@ -1,21 +1,35 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   X,
   User,
   Phone,
   Mail,
   Briefcase,
-  Clock,
-  DollarSign,
   Star,
   MapPin,
   Award,
   Droplets,
-  Zap,
   Wind,
+  Zap,
   Wrench,
+  Layers,
+  Hammer,
+  Sparkles,
+  Paintbrush,
+  CheckCircle2,
+  Globe,
 } from 'lucide-react';
+import { GoogleMap, useJsApiLoader, Circle, Marker } from '@react-google-maps/api';
 import { useTranslation } from '@/Hooks/useTranslation';
+
+const mapLibraries = ['places'];
+const mapContainerStyle = {
+  width: '100%',
+  height: '200px',
+  borderRadius: '1rem',
+};
+
+const DEFAULT_CENTER = { lat: 6.9271, lng: 79.8612 };
 
 export default function EmployeeDetailsDrawer({
   employee,
@@ -23,8 +37,18 @@ export default function EmployeeDetailsDrawer({
   onClose,
   onEdit,
   onUpdateStatus,
+  googleMapsApiKey = '',
 }) {
   const { t } = useTranslation();
+  const mapRef = useRef(null);
+
+  const effectiveApiKey = googleMapsApiKey || import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: effectiveApiKey,
+    libraries: mapLibraries,
+  });
 
   if (!isOpen || !employee) return null;
 
@@ -34,6 +58,10 @@ export default function EmployeeDetailsDrawer({
     if (cat.includes('plumb')) return <Droplets className="w-4 h-4 text-sky-500 shrink-0" />;
     if (cat.includes('electric')) return <Zap className="w-4 h-4 text-amber-500 shrink-0" />;
     if (cat.includes('hvac') || cat.includes('air') || cat.includes('heat')) return <Wind className="w-4 h-4 text-teal-500 shrink-0" />;
+    if (cat.includes('roof')) return <Layers className="w-4 h-4 text-purple-500 shrink-0" />;
+    if (cat.includes('carpent')) return <Hammer className="w-4 h-4 text-orange-500 shrink-0" />;
+    if (cat.includes('clean')) return <Sparkles className="w-4 h-4 text-emerald-500 shrink-0" />;
+    if (cat.includes('paint')) return <Paintbrush className="w-4 h-4 text-rose-500 shrink-0" />;
     return <Wrench className="w-4 h-4 text-slate-500 shrink-0" />;
   };
 
@@ -70,6 +98,25 @@ export default function EmployeeDetailsDrawer({
 
   const statusConfig = getStatusConfig(employee.status);
 
+  // Normalize services array
+  const assignedServices = Array.isArray(employee.services) && employee.services.length > 0
+    ? employee.services
+    : employee.specialization
+      ? [employee.specialization]
+      : ['General Repair'];
+
+  const isEntireCountry = Boolean(
+    employee.isEntireCountry ||
+    String(employee.serviceRadius || '').toLowerCase().includes('entire') ||
+    String(employee.serviceRadius || '').toLowerCase().includes('island') ||
+    Number(employee.serviceRadius) >= 999
+  );
+  const radiusKm = isEntireCountry ? 100 : (employee.serviceRadius ? Number(employee.serviceRadius) : 25);
+  const centerCoords = {
+    lat: isEntireCountry ? 7.8731 : (employee.latitude ? Number(employee.latitude) : DEFAULT_CENTER.lat),
+    lng: isEntireCountry ? 80.7718 : (employee.longitude ? Number(employee.longitude) : DEFAULT_CENTER.lng),
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/60 backdrop-blur-xs flex justify-end animate-in fade-in duration-200">
       <div className="w-full max-w-2xl bg-white h-full shadow-2xl overflow-y-auto flex flex-col justify-between animate-in slide-in-from-right duration-300">
@@ -103,18 +150,29 @@ export default function EmployeeDetailsDrawer({
                 </span>
               </div>
               <p className="text-xs font-semibold text-slate-500 mt-0.5">
-                {employee.roleTitle || `${employee.specialization} Technician`}
+                {employee.roleTitle || `${assignedServices[0]} Specialist`}
               </p>
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {onEdit && (
+              <button
+                type="button"
+                onClick={() => onEdit(employee)}
+                className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                {t('Edit Profile')}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Drawer Body Content */}
@@ -151,7 +209,7 @@ export default function EmployeeDetailsDrawer({
             )}
           </div>
 
-          {/* Performance & Metrics Summary */}
+          {/* Performance & Metrics Summary: Rating, Completed Jobs, Coverage Radius */}
           <div className="grid grid-cols-3 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
             <div className="text-center">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">{t('Rating')}</span>
@@ -167,10 +225,120 @@ export default function EmployeeDetailsDrawer({
               </span>
             </div>
             <div className="text-center">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">{t('Pay Rate')}</span>
-              <span className="text-xl font-extrabold text-emerald-800 mt-1 block">
-                ${employee.hourlyRate}/hr
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">{t('Service Radius')}</span>
+              <span className="text-xl font-extrabold text-theme-accent mt-1 flex items-center justify-center gap-1">
+                <MapPin className="w-4 h-4" />
+                {radiusKm} km
               </span>
+            </div>
+          </div>
+
+          {/* ASSIGNED SERVICES (MULTIPLE SERVICES) */}
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <Briefcase className="w-4 h-4 text-theme-accent" />
+                {t('Assigned Services')}
+              </h3>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-theme-accent/10 text-theme-accent">
+                {assignedServices.length} {t('Active Capabilities')}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-2 pt-1">
+              {assignedServices.map((srv, idx) => (
+                <div
+                  key={idx}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs text-xs font-bold text-slate-800"
+                >
+                  {getCategoryIcon(srv)}
+                  <span>{srv}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* GOOGLE MAPS SERVICE RADIUS & COVERAGE PREVIEW */}
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-theme-accent" />
+                {t('Service Coverage Map')}
+              </h3>
+              <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                {isEntireCountry ? (
+                  <span className="inline-flex items-center gap-1 text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 text-xs font-bold">
+                    <Globe className="w-3.5 h-3.5 text-emerald-600" />
+                    {t('Entire Country (Island-wide)')}
+                  </span>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    {radiusKm} km {t('Operating Zone')}
+                  </>
+                )}
+              </span>
+            </div>
+
+            <div className="text-xs space-y-1">
+              <div className="flex items-center justify-between text-slate-600">
+                <span className="text-slate-400">{t('Base Location:')}</span>
+                <span className="font-bold text-slate-800">{employee.location || t('Colombo, Sri Lanka')}</span>
+              </div>
+            </div>
+
+            {/* Google Map Radius Display */}
+            <div className="rounded-2xl overflow-hidden border border-slate-200/80 shadow-2xs relative">
+              {isEntireCountry && (
+                <div className="absolute top-2.5 left-2.5 right-2.5 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-emerald-300 shadow-sm flex items-center justify-between text-xs font-bold text-emerald-900 z-10">
+                  <div className="flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
+                    <span>{t('Entire Country Coverage Active')}</span>
+                  </div>
+                  <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    {t('All Districts')}
+                  </span>
+                </div>
+              )}
+              {isLoaded ? (
+                <GoogleMap
+                  mapContainerStyle={mapContainerStyle}
+                  center={centerCoords}
+                  zoom={isEntireCountry ? 7 : (radiusKm > 50 ? 9 : radiusKm > 20 ? 10 : 12)}
+                  onLoad={(map) => {
+                    mapRef.current = map;
+                  }}
+                  options={{
+                    disableDefaultUI: true,
+                    zoomControl: true,
+                  }}
+                >
+                  <Marker position={centerCoords} title={isEntireCountry ? t('Nationwide Coverage') : employee.location} />
+                  {!isEntireCountry && (
+                    <Circle
+                      center={centerCoords}
+                      radius={radiusKm * 1000}
+                      options={{
+                        fillColor: '#5E6933',
+                        fillOpacity: 0.18,
+                        strokeColor: '#5E6933',
+                        strokeOpacity: 0.85,
+                        strokeWeight: 2,
+                      }}
+                    />
+                  )}
+                </GoogleMap>
+              ) : (
+                <div className="h-[200px] bg-slate-100 flex flex-col items-center justify-center p-4 text-center">
+                  <MapPin className="w-7 h-7 text-slate-400 mb-1" />
+                  <span className="text-xs font-bold text-slate-700">
+                    {isEntireCountry ? t('Entire Country (Island-wide)') : `${radiusKm} km ${t('Coverage Radius')}`}
+                  </span>
+                  <span className="text-[11px] text-slate-400 mt-0.5">
+                    {employee.location || t('Base Hub')}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -205,11 +373,14 @@ export default function EmployeeDetailsDrawer({
                 </a>
               </div>
               <div>
-                <span className="text-slate-400 font-medium block">{t('Primary Service Zone')}</span>
-                <span className="font-bold text-slate-800 flex items-center gap-1 mt-0.5">
-                  <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                  {employee.location || t('Main Hub')}
-                </span>
+                <span className="text-slate-400 font-medium block">{t('Active Assignment')}</span>
+                {employee.activeAssignment ? (
+                  <span className="inline-block font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 mt-0.5">
+                    {employee.activeAssignment}
+                  </span>
+                ) : (
+                  <span className="text-slate-400 italic block mt-0.5">{t('Unassigned')}</span>
+                )}
               </div>
               <div>
                 <span className="text-slate-400 font-medium block">{t('Joined Workforce')}</span>
@@ -224,45 +395,6 @@ export default function EmployeeDetailsDrawer({
                 {employee.emergencyContact || `${employee.lastName} Family — ${employee.phone} (Primary)`}
               </span>
             </div>
-          </div>
-
-          {/* Professional Work & Schedule Info */}
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-              <Briefcase className="w-4 h-4 text-theme-accent" />
-              {t('Work Schedule & Specialization')}
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div>
-                <span className="text-slate-400 font-medium block">{t('Specialization')}</span>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-800 font-bold mt-1">
-                  {getCategoryIcon(employee.specialization)}
-                  <span>{employee.specialization}</span>
-                </div>
-              </div>
-              <div>
-                <span className="text-slate-400 font-medium block">{t('Role Title')}</span>
-                <span className="font-bold text-slate-900 block mt-1">{employee.roleTitle}</span>
-              </div>
-              <div>
-                <span className="text-slate-400 font-medium block">{t('Assigned Shift')}</span>
-                <span className="font-bold text-slate-800 flex items-center gap-1 mt-1">
-                  <Clock className="w-3.5 h-3.5 text-slate-400" />
-                  {employee.shiftAssignment}
-                </span>
-              </div>
-              <div>
-                <span className="text-slate-400 font-medium block">{t('Active Job')}</span>
-                {employee.activeAssignment ? (
-                  <span className="inline-block font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 mt-1">
-                    {employee.activeAssignment}
-                  </span>
-                ) : (
-                  <span className="text-slate-400 italic block mt-1">{t('Unassigned')}</span>
-                )}
-              </div>
-            </div>
 
             {/* Certifications & Experience */}
             <div className="pt-2 border-t border-slate-200/60 text-xs">
@@ -271,7 +403,7 @@ export default function EmployeeDetailsDrawer({
                 {t('Certifications & Background')}
               </span>
               <p className="font-semibold text-slate-700 mt-0.5">
-                {employee.certifications || `${employee.specialization} Verified Specialist License, Safety Protocol Certified.`}
+                {employee.certifications || t('Verified Specialist License, Safety Protocol Certified.')}
               </p>
             </div>
           </div>
@@ -307,7 +439,7 @@ export default function EmployeeDetailsDrawer({
                 ))}
               </div>
             ) : (
-              <div className="p-4 bg-slate-50 rounded-2xl text-center text-xs text-slate-400 italic border border-slate-200/80">
+              <div className="p-4 bg-slate-50 rounded-2xl text-center text-xs text-slate-400 italic border border-slate-200/60">
                 {t('No recent job history recorded yet.')}
               </div>
             )}
@@ -315,25 +447,12 @@ export default function EmployeeDetailsDrawer({
 
         </div>
 
-        {/* Drawer Footer */}
-        <div className="p-4 border-t border-slate-100 bg-slate-50/80 sticky bottom-0 z-20 flex items-center justify-between">
-          {onEdit && (
-            <button
-              type="button"
-              onClick={() => {
-                onClose();
-                onEdit(employee);
-              }}
-              className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 transition-colors"
-            >
-              {t('Edit Technician')}
-            </button>
-          )}
-
+        {/* Drawer Footer Action */}
+        <div className="p-4 border-t border-slate-100 bg-slate-50/80 sticky bottom-0 z-20 backdrop-blur-md flex items-center justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2.5 rounded-xl bg-slate-200 text-slate-800 font-bold text-xs hover:bg-slate-300 transition-colors ml-auto"
+            className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 transition-colors"
           >
             {t('Close Details')}
           </button>
