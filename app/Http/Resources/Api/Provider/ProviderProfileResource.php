@@ -66,9 +66,15 @@ class ProviderProfileResource extends JsonResource
             ])->values()->all(),
             'kyc' => [
                 'status' => $latestKyc?->status ?? 'PENDING',
-                'documents' => $latestKyc?->documents ?? [],
+                'documents' => collect($latestKyc?->documents ?? [])->map(function ($val, $key) {
+                    if (is_string($val) && (str_starts_with($val, 'kyc-documents/') || str_starts_with($val, 'documents/'))) {
+                        return asset('storage/'.$val);
+                    }
+                    return $val;
+                })->all(),
                 'rejection_reason' => $latestKyc?->rejection_reason,
-                'verified_at' => $latestKyc?->verified_at?->toIso8601String(),
+                'submitted_at' => $latestKyc?->submitted_at?->toIso8601String(),
+                'verified_at' => $latestKyc?->reviewed_at?->toIso8601String() ?? $latestKyc?->verified_at?->toIso8601String(),
             ],
             'rating' => $rating,
             'reviews_count' => $reviewsCount,

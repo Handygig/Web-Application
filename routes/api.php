@@ -141,6 +141,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('profile', [ProviderProfileController::class, 'update']);
         Route::post('status', [ProviderProfileController::class, 'toggleAvailability']);
         Route::post('location', [ProviderProfileController::class, 'updateLocation']);
+        Route::post('kyc', [ProviderProfileController::class, 'uploadKyc']);
 
         // Dashboard Overview
         Route::get('dashboard', [ProviderDashboardController::class, 'index']);
