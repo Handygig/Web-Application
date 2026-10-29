@@ -52,23 +52,25 @@ export default function ProviderKyc({ verifications, dbProviders }) {
         return {
           id: lastKyc.id || item.id,
           applicationId: `APP-${9000 + (lastKyc.id || item.id)}`,
-          providerName: provider?.user?.full_name || 'Provider Name',
+          providerName: provider?.full_name || provider?.user?.full_name || 'Provider',
           businessName:
-            provider?.company?.business_name || provider?.user?.full_name || 'Business Name',
-          email: provider?.user?.email || '',
-          phone: provider?.user?.phone || '',
-          address: provider?.location || 'New York, NY',
-          country: 'United States',
+            provider?.company?.business_name || provider?.full_name || provider?.user?.full_name || 'Individual Provider',
+          email: provider?.email || provider?.user?.email || '',
+          phone: provider?.phone || provider?.user?.phone || '',
+          address: provider?.location || 'Sri Lanka',
+          country: 'Sri Lanka',
           registrationDate: provider?.created_at
             ? new Date(provider.created_at).toLocaleDateString()
-            : 'Jan 2025',
+            : 'Jan 2026',
           verificationType:
             lastKyc.verification_type || (provider?.provider_type === 'company' ? 'KYB' : 'KYC'),
-          submittedDate: lastKyc.created_at
-            ? new Date(lastKyc.created_at).toLocaleString()
-            : item.created_at
-              ? new Date(item.created_at).toLocaleString()
-              : 'Jan 2025',
+          submittedDate: lastKyc.submitted_at
+            ? new Date(lastKyc.submitted_at).toLocaleString()
+            : lastKyc.created_at
+              ? new Date(lastKyc.created_at).toLocaleString()
+              : item.created_at
+                ? new Date(item.created_at).toLocaleString()
+                : 'Recently',
           documentsCount: lastKyc.documents?.length || 0,
           status: lastKyc.status
             ? lastKyc.status.charAt(0).toUpperCase() + lastKyc.status.slice(1).toLowerCase()
@@ -77,6 +79,8 @@ export default function ProviderKyc({ verifications, dbProviders }) {
           rejectionReason: lastKyc.rejection_reason || '',
           history: lastKyc.history || [],
           documents: lastKyc.documents || [],
+          nicNumber: lastKyc.nic_number || '',
+          skillName: lastKyc.skill_name || '',
         };
       });
     }
@@ -185,56 +189,25 @@ export default function ProviderKyc({ verifications, dbProviders }) {
     if (!approvingRequest) return;
     setActionProcessing(true);
 
-    setTimeout(() => {
-      const nowFormatted = new Date().toLocaleString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-
-      const updatedHistory = [
-        ...(approvingRequest.history || []),
-        {
-          date: nowFormatted,
-          action: 'Verification Approved',
-          status: 'Approved',
-          reviewer: 'Current Admin',
-          reason: 'All submitted checklist items and documents verified successfully.',
+    router.patch(
+      route('admin.providers.kyc.approve', approvingRequest.id),
+      {},
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setActionProcessing(false);
+          setIsApproveModalOpen(false);
+          setApprovingRequest(null);
+          setActiveReviewRequest(null);
+          setToastMessage(t('Provider verification has been approved successfully.'));
+          setTimeout(() => setToastMessage(''), 4000);
         },
-      ];
-
-      setRequestList((prev) =>
-        prev.map((r) =>
-          r.id === approvingRequest.id
-            ? {
-                ...r,
-                status: 'Approved',
-                reviewer: 'Current Admin',
-                approvedAt: nowFormatted,
-                history: updatedHistory,
-              }
-            : r
-        )
-      );
-
-      if (activeReviewRequest && activeReviewRequest.id === approvingRequest.id) {
-        setActiveReviewRequest({
-          ...activeReviewRequest,
-          status: 'Approved',
-          reviewer: 'Current Admin',
-          approvedAt: nowFormatted,
-          history: updatedHistory,
-        });
+        onError: (errs) => {
+          setActionProcessing(false);
+          setError(Object.values(errs).join(', ') || t('Failed to approve verification.'));
+        },
       }
-
-      setActionProcessing(false);
-      setIsApproveModalOpen(false);
-      setApprovingRequest(null);
-      setToastMessage(t('Provider verification has been approved successfully.'));
-      setTimeout(() => setToastMessage(''), 4000);
-    }, 400);
+    );
   };
 
   // Reject Workflow
@@ -247,56 +220,25 @@ export default function ProviderKyc({ verifications, dbProviders }) {
     if (!rejectingRequest) return;
     setActionProcessing(true);
 
-    setTimeout(() => {
-      const nowFormatted = new Date().toLocaleString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-
-      const updatedHistory = [
-        ...(rejectingRequest.history || []),
-        {
-          date: nowFormatted,
-          action: 'Verification Rejected',
-          status: 'Rejected',
-          reviewer: 'Current Admin',
-          reason: reason,
+    router.patch(
+      route('admin.providers.kyc.reject', rejectingRequest.id),
+      { reason },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setActionProcessing(false);
+          setIsRejectModalOpen(false);
+          setRejectingRequest(null);
+          setActiveReviewRequest(null);
+          setToastMessage(t('Provider verification has been rejected.'));
+          setTimeout(() => setToastMessage(''), 4000);
         },
-      ];
-
-      setRequestList((prev) =>
-        prev.map((r) =>
-          r.id === rejectingRequest.id
-            ? {
-                ...r,
-                status: 'Rejected',
-                reviewer: 'Current Admin',
-                rejectionReason: reason,
-                history: updatedHistory,
-              }
-            : r
-        )
-      );
-
-      if (activeReviewRequest && activeReviewRequest.id === rejectingRequest.id) {
-        setActiveReviewRequest({
-          ...activeReviewRequest,
-          status: 'Rejected',
-          reviewer: 'Current Admin',
-          rejectionReason: reason,
-          history: updatedHistory,
-        });
+        onError: (errs) => {
+          setActionProcessing(false);
+          setError(Object.values(errs).join(', ') || t('Failed to reject verification.'));
+        },
       }
-
-      setActionProcessing(false);
-      setIsRejectModalOpen(false);
-      setRejectingRequest(null);
-      setToastMessage(t('Provider verification has been rejected.'));
-      setTimeout(() => setToastMessage(''), 4000);
-    }, 400);
+    );
   };
 
   const handleRetry = () => {

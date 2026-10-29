@@ -230,6 +230,34 @@ export default function KycReviewWorkspace({
                   </span>
                 </div>
               </div>
+
+              {request.nicNumber && (
+                <div className="flex items-start gap-3">
+                  <ShieldCheck className="h-4 w-4 text-theme-accent shrink-0 mt-0.5" />
+                  <div>
+                    <span className="block text-slate-400 font-medium">
+                      {t('NIC / Identity Number')}
+                    </span>
+                    <span className="font-mono font-bold text-slate-900">
+                      {request.nicNumber}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {request.skillName && (
+                <div className="flex items-start gap-3">
+                  <FileText className="h-4 w-4 text-theme-accent shrink-0 mt-0.5" />
+                  <div>
+                    <span className="block text-slate-400 font-medium">
+                      {t('Verified Trade / Skill')}
+                    </span>
+                    <span className="font-semibold text-slate-900">
+                      {request.skillName}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

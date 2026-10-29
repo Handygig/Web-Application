@@ -42,7 +42,7 @@ class DashboardController extends Controller
         $kycItems = [];
         if (class_exists(KycVerification::class)) {
             $kycRecords = KycVerification::with('provider.user')
-                ->where('status', 'pending')
+                ->whereIn('status', ['PENDING', 'pending'])
                 ->latest()
                 ->take(5)
                 ->get();
