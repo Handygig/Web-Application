@@ -143,6 +143,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('complete-profile', [ProviderAuthController::class, 'completeProfile']);
         Route::get('profile', [ProviderProfileController::class, 'show']);
         Route::put('profile', [ProviderProfileController::class, 'update']);
+        Route::get('profile/coverage', [ProviderProfileController::class, 'getCoverage']);
+        Route::put('profile/coverage', [ProviderProfileController::class, 'updateCoverage']);
+        Route::put('profile/availability', [ProviderProfileController::class, 'toggleAvailability']);
         Route::post('status', [ProviderProfileController::class, 'toggleAvailability']);
         Route::post('location', [ProviderProfileController::class, 'updateLocation']);
         Route::post('kyc', [ProviderProfileController::class, 'uploadKyc']);

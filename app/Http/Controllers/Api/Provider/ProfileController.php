@@ -114,6 +114,110 @@ class ProfileController extends Controller
     }
 
     /**
+     * Get provider coverage and service radius settings.
+     */
+    public function getCoverage(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $provider = $user->provider;
+
+        if (! $provider) {
+            return response()->json(['message' => __('Provider profile not found')], 404);
+        }
+
+        $baseLocation = $provider->address_line1
+            ?: ($provider->city ? $provider->city.', Sri Lanka' : 'Colombo, Sri Lanka');
+
+        $data = [
+            'is_available_now' => ($provider->availability ?? 'available') === 'available',
+            'base_location' => $baseLocation,
+            'base_latitude' => $provider->latitude ? (float) $provider->latitude : 6.8982,
+            'base_longitude' => $provider->longitude ? (float) $provider->longitude : 79.8550,
+            'radius_km' => $provider->service_radius ? (float) $provider->service_radius : 20.0,
+            'catalog_zones' => [
+                'Colombo 01 - Fort',
+                'Colombo 03 - Kollupitiya',
+                'Colombo 07 - Cinnamon Gardens',
+                'Dehiwala - Mount Lavinia',
+                'Rajagiriya / Sri Jayawardenepura',
+            ],
+            'selected_zones' => [
+                'Colombo 03 - Kollupitiya',
+                'Colombo 07 - Cinnamon Gardens',
+            ],
+            'accept_emergency_jobs' => true,
+            'emergency_multiplier' => 1.5,
+            'allow_extra_distance' => true,
+            'extra_distance_rate_per_km' => 120,
+            'schedules' => [
+                ['day_key' => 'monday', 'day_name' => 'Monday', 'short_name' => 'Mon', 'is_open' => true, 'open_hour' => 8, 'open_minute' => 0, 'close_hour' => 18, 'close_minute' => 0],
+                ['day_key' => 'tuesday', 'day_name' => 'Tuesday', 'short_name' => 'Tue', 'is_open' => true, 'open_hour' => 8, 'open_minute' => 0, 'close_hour' => 18, 'close_minute' => 0],
+                ['day_key' => 'wednesday', 'day_name' => 'Wednesday', 'short_name' => 'Wed', 'is_open' => true, 'open_hour' => 8, 'open_minute' => 0, 'close_hour' => 18, 'close_minute' => 0],
+                ['day_key' => 'thursday', 'day_name' => 'Thursday', 'short_name' => 'Thu', 'is_open' => true, 'open_hour' => 8, 'open_minute' => 0, 'close_hour' => 18, 'close_minute' => 0],
+                ['day_key' => 'friday', 'day_name' => 'Friday', 'short_name' => 'Fri', 'is_open' => true, 'open_hour' => 8, 'open_minute' => 0, 'close_hour' => 18, 'close_minute' => 0],
+                ['day_key' => 'saturday', 'day_name' => 'Saturday', 'short_name' => 'Sat', 'is_open' => true, 'open_hour' => 9, 'open_minute' => 0, 'close_hour' => 17, 'close_minute' => 0],
+                ['day_key' => 'sunday', 'day_name' => 'Sunday', 'short_name' => 'Sun', 'is_open' => false, 'open_hour' => 9, 'open_minute' => 0, 'close_hour' => 13, 'close_minute' => 0],
+            ],
+        ];
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+        ]);
+    }
+
+    /**
+     * Update provider coverage and service radius settings.
+     */
+    public function updateCoverage(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $provider = $user->provider;
+
+        if (! $provider) {
+            return response()->json(['message' => __('Provider profile not found')], 404);
+        }
+
+        if ($request->has('radius_km')) {
+            $provider->service_radius = (int) $request->input('radius_km');
+        } elseif ($request->has('radiusKm')) {
+            $provider->service_radius = (int) $request->input('radiusKm');
+        } elseif ($request->has('service_radius')) {
+            $provider->service_radius = (int) $request->input('service_radius');
+        }
+
+        if ($request->has('base_latitude')) {
+            $provider->latitude = $request->input('base_latitude');
+        } elseif ($request->has('baseLatitude')) {
+            $provider->latitude = $request->input('baseLatitude');
+        } elseif ($request->has('latitude')) {
+            $provider->latitude = $request->input('latitude');
+        }
+
+        if ($request->has('base_longitude')) {
+            $provider->longitude = $request->input('base_longitude');
+        } elseif ($request->has('baseLongitude')) {
+            $provider->longitude = $request->input('baseLongitude');
+        } elseif ($request->has('longitude')) {
+            $provider->longitude = $request->input('longitude');
+        }
+
+        if ($request->has('base_location')) {
+            $provider->address_line1 = $request->input('base_location');
+        } elseif ($request->has('baseLocation')) {
+            $provider->address_line1 = $request->input('baseLocation');
+        }
+
+        if ($request->has('is_available_now')) {
+            $provider->availability = $request->boolean('is_available_now') ? 'available' : 'unavailable';
+        }
+
+        $provider->save();
+
+        return $this->getCoverage($request);
+    }
+
+    /**
      * Toggle online/offline status.
      */
     public function toggleAvailability(Request $request): JsonResponse
@@ -127,6 +231,9 @@ class ProfileController extends Controller
         if ($request->has('is_online')) {
             $isOnline = $request->boolean('is_online');
             $provider->availability = $isOnline ? 'available' : 'unavailable';
+        } elseif ($request->has('is_available')) {
+            $isAvailable = $request->boolean('is_available');
+            $provider->availability = $isAvailable ? 'available' : 'unavailable';
         } elseif ($request->has('availability')) {
             $provider->availability = $request->input('availability');
         } else {
