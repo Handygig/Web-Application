@@ -95,6 +95,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('job-assignments/{jobAssignment}/extra-charge/approve', [JobAssignmentController::class, 'approveExtra']);
         Route::post('job-assignments/{jobAssignment}/extra-charge/reject', [JobAssignmentController::class, 'rejectExtra']);
         Route::post('job-assignments/{jobAssignment}/simulate-extra-quote', [JobAssignmentController::class, 'simulateExtraQuote']);
+        Route::post('job-assignments/{jobAssignment}/simulate-complete-job', [JobAssignmentController::class, 'simulateCompleteJob']);
 
         // Cards
         Route::get('cards', [CardController::class, 'index']);
