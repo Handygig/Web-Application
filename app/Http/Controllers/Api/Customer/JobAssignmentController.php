@@ -18,7 +18,7 @@ class JobAssignmentController extends Controller
     {
         $customer = $request->user()->customer;
 
-        $assignments = JobAssignment::with(['jobRequest.property', 'jobRequest.serviceCategory', 'provider.user'])
+        $assignments = JobAssignment::with(['jobRequest.property', 'jobRequest.serviceCategory', 'provider.user', 'payment', 'quotation'])
             ->whereHas('jobRequest', function ($query) use ($customer) {
                 $query->where('customer_id', $customer?->id);
             })
@@ -39,7 +39,7 @@ class JobAssignmentController extends Controller
             return response()->json(['message' => __('Unauthorized')], 403);
         }
 
-        $jobAssignment->load(['jobRequest.property', 'jobRequest.serviceCategory', 'provider.user', 'payment']);
+        $jobAssignment->load(['jobRequest.property', 'jobRequest.serviceCategory', 'provider.user', 'payment', 'quotation']);
 
         return new JobAssignmentResource($jobAssignment);
     }
@@ -121,5 +121,38 @@ class JobAssignmentController extends Controller
             'message' => __('Extra charge declined.'),
             'extra_status' => 'rejected',
         ]);
+    }
+
+    /**
+     * Simulate an updated/extra quotation request from the assigned provider for dev/testing.
+     */
+    public function simulateExtraQuote(Request $request, JobAssignment $jobAssignment): JsonResponse
+    {
+        $customer = $request->user()->customer;
+
+        if ($jobAssignment->jobRequest?->customer_id !== $customer?->id) {
+            return response()->json(['message' => __('Unauthorized')], 403);
+        }
+
+        $extraAmount = 1500.00;
+        $extraReason = 'Additional replacement parts and extended labor required';
+
+        $jobAssignment->update([
+            'extra_amount' => $extraAmount,
+            'extra_reason' => $extraReason,
+            'extra_status' => 'pending',
+        ]);
+
+        $jobAssignment->load([
+            'jobRequest.property',
+            'jobRequest.serviceCategory',
+            'provider.user',
+            'payment',
+            'quotation',
+        ]);
+
+        return (new JobAssignmentResource($jobAssignment))
+            ->response()
+            ->setStatusCode(200);
     }
 }
