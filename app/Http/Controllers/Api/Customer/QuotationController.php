@@ -123,6 +123,25 @@ class QuotationController extends Controller
             'status' => 'pending',
         ]);
 
+        // Send Notification to Customer
+        $customerUser = $jobRequest->customer?->user;
+        $providerName = $provider->user?->full_name ?? 'Provider';
+        if ($customerUser) {
+            \App\Models\Notification::create([
+                'recipient_user_id' => $customerUser->id,
+                'title' => __('New Quotation Received! 📋'),
+                'message' => __(':name submitted a quotation of LKR :price for your :service request.', [
+                    'name' => $providerName,
+                    'price' => number_format((float) $quotation->quoted_price, 2),
+                    'service' => $jobRequest->serviceCategory?->name ?? 'service',
+                ]),
+                'type' => 'job',
+                'related_id' => $quotation->id,
+                'related_type' => Quotation::class,
+                'is_read' => false,
+            ]);
+        }
+
         $quotation->load(['bidder', 'jobRequest']);
 
         return (new QuotationResource($quotation))

@@ -124,6 +124,57 @@ class JobAssignmentController extends Controller
     }
 
     /**
+     * Simulate provider starting the job for dev/testing.
+     */
+    public function simulateStartJob(Request $request, JobAssignment $jobAssignment): JsonResponse
+    {
+        $customer = $request->user()->customer;
+
+        if ($jobAssignment->jobRequest?->customer_id !== $customer?->id) {
+            return response()->json(['message' => __('Unauthorized')], 403);
+        }
+
+        $jobAssignment->update([
+            'status' => 'in_progress',
+            'start_date' => $jobAssignment->start_date ?? now(),
+        ]);
+
+        $jobAssignment->jobRequest?->update([
+            'status' => 'assigned',
+        ]);
+
+        // Send notification to customer
+        $customerUser = $jobAssignment->jobRequest?->customer?->user;
+        $providerName = $jobAssignment->provider?->user?->full_name ?? ($jobAssignment->company?->name ?? 'Your service provider');
+        if ($customerUser) {
+            \App\Models\Notification::create([
+                'recipient_user_id' => $customerUser->id,
+                'title' => __('Job Started! 🛠️'),
+                'message' => __(':provider has arrived and started work on your :service job.', [
+                    'provider' => $providerName,
+                    'service' => $jobAssignment->jobRequest?->serviceCategory?->name ?? 'service',
+                ]),
+                'type' => 'job',
+                'related_id' => $jobAssignment->id,
+                'related_type' => JobAssignment::class,
+                'is_read' => false,
+            ]);
+        }
+
+        $jobAssignment->load([
+            'jobRequest.property',
+            'jobRequest.serviceCategory',
+            'provider.user',
+            'payment',
+            'quotation',
+        ]);
+
+        return (new JobAssignmentResource($jobAssignment))
+            ->response()
+            ->setStatusCode(200);
+    }
+
+    /**
      * Simulate an updated/extra quotation request from the assigned provider for dev/testing.
      */
     public function simulateExtraQuote(Request $request, JobAssignment $jobAssignment): JsonResponse
@@ -146,6 +197,25 @@ class JobAssignmentController extends Controller
             'extra_reason' => $extraReason,
             'extra_status' => 'pending',
         ]);
+
+        // Send notification to customer
+        $customerUser = $jobAssignment->jobRequest?->customer?->user;
+        $providerName = $jobAssignment->provider?->user?->full_name ?? ($jobAssignment->company?->name ?? 'Your service provider');
+        if ($customerUser) {
+            \App\Models\Notification::create([
+                'recipient_user_id' => $customerUser->id,
+                'title' => __('Updated Quotation Received 📋'),
+                'message' => __(':provider sent an updated quotation of LKR :amount for ":reason". Please review and approve.', [
+                    'provider' => $providerName,
+                    'amount' => number_format((float) $extraAmount, 2),
+                    'reason' => $extraReason,
+                ]),
+                'type' => 'job',
+                'related_id' => $jobAssignment->id,
+                'related_type' => JobAssignment::class,
+                'is_read' => false,
+            ]);
+        }
 
         $jobAssignment->load([
             'jobRequest.property',
@@ -179,6 +249,24 @@ class JobAssignmentController extends Controller
         $jobAssignment->jobRequest?->update([
             'status' => 'completed',
         ]);
+
+        // Send notification to customer
+        $customerUser = $jobAssignment->jobRequest?->customer?->user;
+        $providerName = $jobAssignment->provider?->user?->full_name ?? ($jobAssignment->company?->name ?? 'Your service provider');
+        if ($customerUser) {
+            \App\Models\Notification::create([
+                'recipient_user_id' => $customerUser->id,
+                'title' => __('Job Completed! 🎉'),
+                'message' => __(':provider has finished your :service job. Please rate your experience.', [
+                    'provider' => $providerName,
+                    'service' => $jobAssignment->jobRequest?->serviceCategory?->name ?? 'service',
+                ]),
+                'type' => 'job',
+                'related_id' => $jobAssignment->id,
+                'related_type' => JobAssignment::class,
+                'is_read' => false,
+            ]);
+        }
 
         $jobAssignment->load([
             'jobRequest.property',

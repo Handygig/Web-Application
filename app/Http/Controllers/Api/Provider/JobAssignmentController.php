@@ -160,7 +160,7 @@ class JobAssignmentController extends Controller
             Notification::create([
                 'recipient_user_id' => $customerUser->id,
                 'title' => __('Extra Quotation Requested'),
-                'message' => __('Your provider requested an extra $:amount for ":reason". Please review and approve.', [
+                'message' => __('Your provider requested an extra LKR :amount for ":reason". Please review and approve.', [
                     'amount' => number_format((float) $request->extra_amount, 2),
                     'reason' => $request->extra_reason,
                 ]),
