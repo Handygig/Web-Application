@@ -58,6 +58,18 @@ class ServiceCategorySeeder extends Seeder
                 'icon' => 'security',
                 'is_active' => true,
             ],
+            [
+                'service_name' => 'Carpentry',
+                'description' => 'Custom woodworking, furniture repairs, cabinetry, door hanging, and trim installation.',
+                'icon' => 'carpentry',
+                'is_active' => true,
+            ],
+            [
+                'service_name' => 'Pest Control',
+                'description' => 'Termite inspection, rodent eradication, insect fogging, and preventive pest treatments.',
+                'icon' => 'pest-control',
+                'is_active' => true,
+            ],
         ];
 
         foreach ($categories as $cat) {

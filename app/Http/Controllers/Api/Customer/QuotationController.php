@@ -74,4 +74,78 @@ class QuotationController extends Controller
 
         return response()->json(['message' => __('Quotation accepted and job assigned successfully')]);
     }
+
+    /**
+     * Simulate a quotation from an available provider for dev/testing.
+     */
+    public function simulateQuotation(Request $request, JobRequest $jobRequest): JsonResponse
+    {
+        $customer = $request->user()->customer;
+        if ($jobRequest->customer_id !== $customer?->id) {
+            return response()->json(['message' => __('Unauthorized')], 403);
+        }
+
+        if ($jobRequest->status === 'assigned' || $jobRequest->assignment()->exists()) {
+            return response()->json(['message' => __('This job request is already assigned.')], 422);
+        }
+
+        // Avoid duplicate quotes from the same provider if possible
+        $existingBidderIds = $jobRequest->quotations()
+            ->where('bidder_type', \App\Models\Provider::class)
+            ->pluck('bidder_id');
+
+        $provider = \App\Models\Provider::whereHas('serviceCategories', function ($q) use ($jobRequest) {
+            $q->where('service_categories.id', $jobRequest->service_category_id);
+        })->whereNotIn('id', $existingBidderIds)->first()
+            ?? \App\Models\Provider::whereNotIn('id', $existingBidderIds)->first()
+            ?? \App\Models\Provider::first();
+
+        if (! $provider) {
+            return response()->json(['message' => __('No providers available to simulate quotation.')], 404);
+        }
+
+        $prices = [2500.00, 3200.00, 3800.00, 4500.00, 5200.00, 6000.00];
+        $durations = ['1-2 hours', '2 hours', '2-3 hours', 'Half day (4h)'];
+        $messages = [
+            'Hello! I am nearby and available with all required tools and equipment.',
+            'Experienced professional in this service category. Ready to start as requested.',
+            'I can complete this job quickly and ensure 100% satisfaction. Quality guaranteed.',
+            'Specialist in this field with top reviews. Looking forward to assisting you.',
+        ];
+
+        $quotation = Quotation::create([
+            'job_request_id' => $jobRequest->id,
+            'bidder_id' => $provider->id,
+            'bidder_type' => \App\Models\Provider::class,
+            'quoted_price' => $prices[array_rand($prices)],
+            'estimated_duration' => $durations[array_rand($durations)],
+            'message' => $messages[array_rand($messages)],
+            'status' => 'pending',
+        ]);
+
+        // Send Notification to Customer
+        $customerUser = $jobRequest->customer?->user;
+        $providerName = $provider->user?->full_name ?? 'Provider';
+        if ($customerUser) {
+            \App\Models\Notification::create([
+                'recipient_user_id' => $customerUser->id,
+                'title' => __('New Quotation Received! 📋'),
+                'message' => __(':name submitted a quotation of LKR :price for your :service request.', [
+                    'name' => $providerName,
+                    'price' => number_format((float) $quotation->quoted_price, 2),
+                    'service' => $jobRequest->serviceCategory?->name ?? 'service',
+                ]),
+                'type' => 'job',
+                'related_id' => $quotation->id,
+                'related_type' => Quotation::class,
+                'is_read' => false,
+            ]);
+        }
+
+        $quotation->load(['bidder', 'jobRequest']);
+
+        return (new QuotationResource($quotation))
+            ->response()
+            ->setStatusCode(201);
+    }
 }

@@ -104,12 +104,12 @@ class QuotationController extends Controller
             Notification::create([
                 'recipient_user_id' => $customerUser->id,
                 'title' => __('New Quotation Received!'),
-                'message' => __(':name submitted a quotation of $:price for your :service request.', [
+                'message' => __(':name submitted a quotation of LKR :price for your :service request.', [
                     'name' => $bidderName,
                     'price' => number_format((float) $request->quoted_price, 2),
                     'service' => $jobRequest->serviceCategory?->name ?? 'service',
                 ]),
-                'type' => 'quotation',
+                'type' => 'job',
                 'related_id' => $quotation->id,
                 'related_type' => Quotation::class,
                 'is_read' => false,

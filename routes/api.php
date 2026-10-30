@@ -87,12 +87,16 @@ Route::middleware('auth:sanctum')->group(function () {
         // Quotations
         Route::get('job-requests/{jobRequest}/quotations', [QuotationController::class, 'index']);
         Route::post('quotations/{quotation}/accept', [QuotationController::class, 'accept']);
+        Route::post('job-requests/{jobRequest}/simulate-quotation', [QuotationController::class, 'simulateQuotation']);
 
         // Job Assignments
         Route::get('job-assignments', [JobAssignmentController::class, 'index']);
         Route::get('job-assignments/{jobAssignment}', [JobAssignmentController::class, 'show']);
         Route::post('job-assignments/{jobAssignment}/extra-charge/approve', [JobAssignmentController::class, 'approveExtra']);
         Route::post('job-assignments/{jobAssignment}/extra-charge/reject', [JobAssignmentController::class, 'rejectExtra']);
+        Route::post('job-assignments/{jobAssignment}/simulate-extra-quote', [JobAssignmentController::class, 'simulateExtraQuote']);
+        Route::post('job-assignments/{jobAssignment}/simulate-start-job', [JobAssignmentController::class, 'simulateStartJob']);
+        Route::post('job-assignments/{jobAssignment}/simulate-complete-job', [JobAssignmentController::class, 'simulateCompleteJob']);
 
         // Cards
         Route::get('cards', [CardController::class, 'index']);

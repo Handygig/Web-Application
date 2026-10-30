@@ -20,6 +20,9 @@ class JobAssignmentResource extends JsonResource
             'assigned_at' => $this->assigned_at?->toIso8601String(),
             'start_date' => $this->start_date?->toIso8601String(),
             'end_date' => $this->end_date?->toIso8601String(),
+            'extra_amount' => $this->extra_amount ? (float) $this->extra_amount : null,
+            'extra_reason' => $this->extra_reason,
+            'extra_status' => $this->extra_status ?? 'none',
             'provider' => [
                 'id' => $this->provider_id,
                 'name' => $this->provider?->user?->full_name,
@@ -30,6 +33,7 @@ class JobAssignmentResource extends JsonResource
                 'id' => $this->company_id,
                 'name' => $this->company?->user?->full_name,
             ] : null,
+            'quotation' => new QuotationResource($this->whenLoaded('quotation')),
             'job_request' => new JobRequestResource($this->whenLoaded('jobRequest')),
             'payment' => new PaymentResource($this->whenLoaded('payment')),
         ];
