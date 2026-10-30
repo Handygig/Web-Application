@@ -134,13 +134,50 @@ class JobAssignmentController extends Controller
             return response()->json(['message' => __('Unauthorized')], 403);
         }
 
-        $extraAmount = 1500.00;
-        $extraReason = 'Additional replacement parts and extended labor required';
+        $extraAmount = $request->filled('extra_amount')
+            ? (float) $request->input('extra_amount')
+            : 2500.00;
+        $extraReason = $request->filled('extra_reason')
+            ? (string) $request->input('extra_reason')
+            : 'Additional materials and extra pipe fittings required';
 
         $jobAssignment->update([
             'extra_amount' => $extraAmount,
             'extra_reason' => $extraReason,
             'extra_status' => 'pending',
+        ]);
+
+        $jobAssignment->load([
+            'jobRequest.property',
+            'jobRequest.serviceCategory',
+            'provider.user',
+            'payment',
+            'quotation',
+        ]);
+
+        return (new JobAssignmentResource($jobAssignment))
+            ->response()
+            ->setStatusCode(200);
+    }
+
+    /**
+     * Simulate provider completing the job for dev/testing.
+     */
+    public function simulateCompleteJob(Request $request, JobAssignment $jobAssignment): JsonResponse
+    {
+        $customer = $request->user()->customer;
+
+        if ($jobAssignment->jobRequest?->customer_id !== $customer?->id) {
+            return response()->json(['message' => __('Unauthorized')], 403);
+        }
+
+        $jobAssignment->update([
+            'status' => 'completed',
+            'completed_at' => now(),
+        ]);
+
+        $jobAssignment->jobRequest?->update([
+            'status' => 'completed',
         ]);
 
         $jobAssignment->load([
