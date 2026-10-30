@@ -32,10 +32,10 @@ class StoreJobRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'property_id' => ['required', 'exists:properties,id'],
+            'property_id' => ['nullable', 'exists:properties,id'],
             'service_category_id' => ['required', 'exists:service_categories,id'],
             'description' => ['required', 'string'],
-            'preferred_date' => ['required', 'date', 'after:now'],
+            'preferred_date' => ['required', 'date'],
             'payment_method' => ['nullable', 'string', 'in:card,cash'],
             'card_id' => ['nullable', 'exists:customer_cards,id'],
         ];
