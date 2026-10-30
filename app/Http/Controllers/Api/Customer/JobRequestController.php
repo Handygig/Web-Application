@@ -18,7 +18,7 @@ class JobRequestController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $customer = $request->user()->customer;
-        $jobRequests = JobRequest::with(['property', 'serviceCategory', 'card'])
+        $jobRequests = JobRequest::with(['property', 'serviceCategory', 'card', 'assignment.provider.user', 'quotations.provider.user'])
             ->where('customer_id', $customer?->id)
             ->latest()
             ->get();
